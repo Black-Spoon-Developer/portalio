@@ -1,1 +1,1 @@
-front pagedd
+front paged
