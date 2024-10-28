@@ -53,6 +53,9 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_thumbnail_img", nullable = false, columnDefinition = "TEXT")
     private String portfolioThumbnailImg;
 
+    @Column(name = "portfolio_recommendation_count", nullable = false)
+    private Integer portfolioRecommendationCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
