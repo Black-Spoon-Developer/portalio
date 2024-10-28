@@ -45,6 +45,9 @@ public class Board extends AuditableCreatedEntity {
     @Column(name = "board_views", nullable = false)
     private Integer boardViews;
 
+    @Column(name = "board_recommendation_count", nullable = false)
+    private Integer boardRecommendationCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
