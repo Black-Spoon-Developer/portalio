@@ -16,7 +16,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,6 +51,12 @@ public class Portfolio extends AuditableCreatedEntity {
 
     @Column(name = "portfolio_thumbnail_img", nullable = false, columnDefinition = "TEXT")
     private String portfolioThumbnailImg;
+
+    @Column(name = "portfolio_recommendation_count", nullable = false)
+    private Integer portfolioRecommendationCount;
+
+    @Column(name = "portfolio_post", nullable = false)
+    private boolean portfolioPost = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
