@@ -1,6 +1,6 @@
 package com.example.portalio.domain.refreshtoken.entity;
 
-import com.example.portalio.domain.userdetail.entity.UserDetail;
+import com.example.portalio.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,5 +38,5 @@ public class RefreshToken {
     private Boolean revoked = false;
 
     @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
-    private UserDetail userDetail;
+    private Member member;
 }
