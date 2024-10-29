@@ -40,8 +40,4 @@ public class UserDetail {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oauth_token_id")
-    private OauthToken oauthToken;
 }
