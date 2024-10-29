@@ -9,6 +9,7 @@ import com.example.portalio.domain.chatbot.entity.Chatbot;
 import com.example.portalio.domain.common.entity.AuditableCreatedEntity;
 import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.message.entity.Message;
+import com.example.portalio.domain.oauthtoken.entity.OauthToken;
 import com.example.portalio.domain.portfolio.entity.Portfolio;
 import com.example.portalio.domain.portfoliocomment.entity.PortfolioComment;
 import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
@@ -23,7 +24,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +56,10 @@ public class Member extends AuditableCreatedEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_role", nullable = false)
     private Role memberRole = USER;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oauth_token_id")
+    private OauthToken oauthToken;
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Subscribe> followers = new ArrayList<>();
