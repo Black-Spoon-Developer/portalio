@@ -43,10 +43,10 @@ public class Board extends AuditableCreatedEntity {
     private String boardContent;
 
     @Column(name = "board_views", nullable = false)
-    private Integer boardViews;
+    private Integer boardViews = 0;
 
     @Column(name = "board_recommendation_count", nullable = false)
-    private Integer boardRecommendationCount;
+    private Integer boardRecommendationCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -54,4 +54,14 @@ public class Board extends AuditableCreatedEntity {
 
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
+
+    private Board(BoardRole boardCategory, String boardTitle, String boardContent) {
+        this.boardCategory = boardCategory;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+    }
+
+    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent) {
+        return new Board(boardCategory, boardTitle, boardContent);
+    }
 }

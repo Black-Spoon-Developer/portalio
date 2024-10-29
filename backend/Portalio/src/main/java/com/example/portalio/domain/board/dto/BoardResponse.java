@@ -2,6 +2,7 @@ package com.example.portalio.domain.board.dto;
 
 import com.example.portalio.domain.board.entity.Board;
 import com.example.portalio.domain.board.enums.BoardRole;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,7 +15,10 @@ public class BoardResponse {
     private String boardTitle;
     private String boardContent;
     private Integer boardViews;
-    private Long memberId;
+    private Integer boardRecommendationCount;
+    private LocalDateTime created;
+//    private String nickname;
+//    private Long memberId;
 
     public static BoardResponse from(Board board) {
         return BoardResponse.builder()
@@ -23,7 +27,10 @@ public class BoardResponse {
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
                 .boardViews(board.getBoardViews())
-                .memberId(board.getMember().getMemberId())
+                .boardRecommendationCount(board.getBoardRecommendationCount())
+                .created(board.getCreated())
+//                .nickname(board.getMember().getMemberNickname())
+//                .memberId(board.getMember().getMemberId())
                 .build();
     }
 }
