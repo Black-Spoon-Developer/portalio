@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,8 +46,6 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-
-
     @Operation(summary = "[자유/질문]글 전체보기(리스트)", description = "무한스크롤, 사용시 skip을 10씩 증가해서 넣으세요, limit 10 고정")
     @GetMapping("/all")
     public ResponseEntity<BoardListResponse> getBoardsList(
@@ -68,6 +67,20 @@ public class BoardController {
     ) {
 
         BoardResponse response = boardService.registerBoard(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "[자유/질문]글 수정", description = "글 수정")
+//    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> updateBoard(
+            @PathVariable Long boardId,
+            @RequestBody @Valid BoardRequest request
+            //@AuthenticationPrincipal CustomOauth2User oauth2User
+            // 로그인 구현 후 주석 해제
+    ) {
+        BoardResponse response = boardService.updateBoard(boardId, request);
 
         return ResponseEntity.ok(response);
     }
