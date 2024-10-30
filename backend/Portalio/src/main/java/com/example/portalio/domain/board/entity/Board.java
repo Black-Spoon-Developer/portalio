@@ -42,6 +42,12 @@ public class Board extends AuditableCreatedEntity {
     @Column(name = "board_content", nullable = false, columnDefinition = "TEXT")
     private String boardContent;
 
+    @Column(name = "board_img_key", nullable = false, columnDefinition = "TEXT")
+    private String boardImgKey;
+
+    @Column(name = "board_solve", nullable = false)
+    private boolean boardSolve = false;
+
     @Column(name = "board_views", nullable = false)
     private Integer boardViews = 0;
 
@@ -63,5 +69,17 @@ public class Board extends AuditableCreatedEntity {
 
     public static Board of(BoardRole boardCategory, String boardTitle, String boardContent) {
         return new Board(boardCategory, boardTitle, boardContent);
+    }
+
+    public void setBoardCategory(BoardRole boardCategory) {
+        this.boardCategory = boardCategory;
+    }
+
+    public void setBoardTitle(String boardTitle) {
+        this.boardTitle = boardTitle;
+    }
+
+    public void setBoardContent(String boardContent) {
+        this.boardContent = boardContent;
     }
 }

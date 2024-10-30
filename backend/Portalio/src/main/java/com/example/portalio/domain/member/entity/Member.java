@@ -13,6 +13,7 @@ import com.example.portalio.domain.oauthtoken.entity.OauthToken;
 import com.example.portalio.domain.portfolio.entity.Portfolio;
 import com.example.portalio.domain.portfoliocomment.entity.PortfolioComment;
 import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
+import com.example.portalio.domain.refreshtoken.entity.RefreshToken;
 import com.example.portalio.domain.repository.entity.Repository;
 import com.example.portalio.domain.subscribe.entity.Subscribe;
 import com.example.portalio.domain.userhopejob.entity.UserHopeJob;
@@ -58,8 +59,8 @@ public class Member extends AuditableCreatedEntity {
     private Role memberRole = USER;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oauth_token_id")
-    private OauthToken oauthToken;
+    @JoinColumn(name = "refresh_token_id")
+    private RefreshToken refreshToken;
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Subscribe> followers = new ArrayList<>();

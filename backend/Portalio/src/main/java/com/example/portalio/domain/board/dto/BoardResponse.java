@@ -14,6 +14,7 @@ public class BoardResponse {
     private BoardRole boardCategory;
     private String boardTitle;
     private String boardContent;
+    private String boardImgKey;
     private Integer boardViews;
     private Integer boardRecommendationCount;
     private LocalDateTime created;
@@ -26,6 +27,7 @@ public class BoardResponse {
                 .boardCategory(board.getBoardCategory())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
+                .boardImgKey(board.getBoardImgKey())
                 .boardViews(board.getBoardViews())
                 .boardRecommendationCount(board.getBoardRecommendationCount())
                 .created(board.getCreated())

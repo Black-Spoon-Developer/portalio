@@ -4,12 +4,14 @@ import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
 import com.example.portalio.domain.board.entity.Board;
+import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.board.repository.BoardRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +30,8 @@ public class BoardService {
     // 게시글 상세보기, params : boardId
     public BoardResponse getBoardDetails(Long boardId) {
 
-        Board board = boardRepository.findByBoardId(boardId);
+        Board board = boardRepository.findByBoardId(boardId)
+                .orElseThrow(BoardNotFoundException::new);
 
         return BoardResponse.from(board);
     }
@@ -44,15 +47,50 @@ public class BoardService {
         return BoardListResponse.from(boards);
     }
 
+    // 게시글 등록
+    @Transactional
     public BoardResponse registerBoard(BoardRequest request
 //            CustomOauth2User oauth2User
             ) {
 
         // BoardRequest를 Board 엔티티로 변환
         Board board = Board.of(request.getBoardCategory(), request.getBoardTitle(), request.getBoardContent());
+
         boardRepository.save(board);
 
         // 저장된 엔티티를 기반으로 BoardResponse 반환
+        return BoardResponse.from(board);
+    }
+
+    @Transactional
+    public BoardResponse updateBoard(Long boardId, BoardRequest request) {
+
+        Board board = boardRepository.findByBoardId(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        if (request.getBoardCategory() != null) {
+            board.setBoardCategory(request.getBoardCategory());
+        }
+        if (request.getBoardTitle() != null) {
+            board.setBoardTitle(request.getBoardTitle());
+        }
+        if (request.getBoardContent() != null) {
+            board.setBoardContent(request.getBoardContent());
+        }
+
+        boardRepository.save(board);
+
+        return BoardResponse.from(board);
+    }
+
+    @Transactional
+    public BoardResponse deleteBoard(Long boardId) {
+
+        Board board = boardRepository.findByBoardId(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        boardRepository.delete(board);
+
         return BoardResponse.from(board);
     }
 }
