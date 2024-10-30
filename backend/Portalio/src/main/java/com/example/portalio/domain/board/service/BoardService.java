@@ -82,4 +82,15 @@ public class BoardService {
 
         return BoardResponse.from(board);
     }
+
+    @Transactional
+    public BoardResponse deleteBoard(Long boardId) {
+
+        Board board = boardRepository.findByBoardId(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        boardRepository.delete(board);
+
+        return BoardResponse.from(board);
+    }
 }

@@ -45,6 +45,9 @@ public class Board extends AuditableCreatedEntity {
     @Column(name = "board_img_key", nullable = false, columnDefinition = "TEXT")
     private String boardImgKey;
 
+    @Column(name = "board_solve", nullable = false)
+    private boolean boardSolve = false;
+
     @Column(name = "board_views", nullable = false)
     private Integer boardViews = 0;
 

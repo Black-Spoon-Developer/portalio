@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,9 +63,7 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<BoardResponse> getBoardsSearch(
             @RequestBody @Valid BoardRequest request
-            //@AuthenticationPrincipal CustomOauth2User oauth2User
-            // 로그인 구현 후 주석 해제
-    ) {
+            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제**/) {
 
         BoardResponse response = boardService.registerBoard(request);
 
@@ -77,10 +76,19 @@ public class BoardController {
     public ResponseEntity<BoardResponse> updateBoard(
             @PathVariable Long boardId,
             @RequestBody @Valid BoardRequest request
-            //@AuthenticationPrincipal CustomOauth2User oauth2User
-            // 로그인 구현 후 주석 해제
-    ) {
+            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
         BoardResponse response = boardService.updateBoard(boardId, request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "[자유/질문]글 삭제", description = "글 삭제")
+//    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/boardId")
+    public ResponseEntity<BoardResponse> deleteBoard(
+            @PathVariable Long boardId
+            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
+        BoardResponse response = boardService.deleteBoard(boardId);
 
         return ResponseEntity.ok(response);
     }

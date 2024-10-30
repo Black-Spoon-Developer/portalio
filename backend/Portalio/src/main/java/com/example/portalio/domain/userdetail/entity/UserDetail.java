@@ -22,7 +22,7 @@ public class UserDetail {
 
     @Id
     @Column(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @Column(name = "user_email", nullable = false, length = 40)
     private String userEmail;
@@ -31,13 +31,13 @@ public class UserDetail {
     private String userMajor;
 
     @Column(name = "user_ticket")
-    private Long userTicket;
+    private Integer userTicket = 0;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "refresh_token_id")
-    private RefreshToken refreshToken;
+    @JoinColumn(name = "oauth_token_id")
+    private OauthToken oauthToken;
 }
