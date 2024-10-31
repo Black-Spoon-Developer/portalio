@@ -1,4 +1,4 @@
-package com.example.portalio.domain.member.oauth;
+package com.example.portalio.common.oauth;
 
 import lombok.AccessLevel;
 import lombok.Builder;

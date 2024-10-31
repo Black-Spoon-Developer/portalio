@@ -1,4 +1,4 @@
-package com.example.portalio.domain.member.oauth;
+package com.example.portalio.common.oauth;
 
 import com.example.portalio.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;

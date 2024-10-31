@@ -1,6 +1,6 @@
-package com.example.portalio.domain.jwt;
+package com.example.portalio.common.jwt.util;
 
-import com.example.portalio.properties.JwtProperties;
+import com.example.portalio.common.jwt.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

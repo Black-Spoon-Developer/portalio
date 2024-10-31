@@ -1,4 +1,4 @@
-package com.example.portalio.domain.member.oauth.handler;
+package com.example.portalio.common.oauth.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

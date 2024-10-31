@@ -2,7 +2,6 @@ package com.example.portalio.domain.userdetail.entity;
 
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.oauthtoken.entity.OauthToken;
-import com.example.portalio.domain.refreshtoken.entity.RefreshToken;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

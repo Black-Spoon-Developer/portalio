@@ -1,4 +1,4 @@
-package com.example.portalio.properties;
+package com.example.portalio.common.jwt.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
