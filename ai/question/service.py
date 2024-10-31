@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import APIRouter, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 import openai
 import markdown
@@ -12,7 +12,7 @@ load_dotenv()
 # OpenAI API 키 설정
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-app = FastAPI()
+router = APIRouter()
 
 # .md 파일에서 텍스트 추출 함수
 def extract_text_from_md(file_content: str) -> str:
@@ -48,7 +48,7 @@ def generate_interview_questions(md_content: str, category: str, num_questions: 
     return questions
 
 # FastAPI 엔드포인트
-@app.post("/questions")
+@router.post("/questions")
 async def generate_questions(
     category: str = Form(...),  # 카테고리 입력
     num_questions: int = Form(...),  # 질문 개수 입력
