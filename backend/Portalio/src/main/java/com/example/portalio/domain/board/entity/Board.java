@@ -43,7 +43,7 @@ public class Board extends AuditableCreatedEntity {
     private String boardContent;
 
     @Column(name = "board_img_key", nullable = false, columnDefinition = "TEXT")
-    private String boardImgKey;
+    private String boardImgKey = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png";
 
     @Column(name = "board_solve", nullable = false)
     private boolean boardSolve = false;
@@ -61,14 +61,15 @@ public class Board extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
-    private Board(BoardRole boardCategory, String boardTitle, String boardContent) {
+    private Board(BoardRole boardCategory, String boardTitle, String boardContent, String boardImgKey) {
         this.boardCategory = boardCategory;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
+        this.boardImgKey = boardImgKey;
     }
 
-    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent) {
-        return new Board(boardCategory, boardTitle, boardContent);
+    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent, String boardImgKey) {
+        return new Board(boardCategory, boardTitle, boardContent, boardImgKey);
     }
 
     public void setBoardCategory(BoardRole boardCategory) {
@@ -82,4 +83,6 @@ public class Board extends AuditableCreatedEntity {
     public void setBoardContent(String boardContent) {
         this.boardContent = boardContent;
     }
+
+    public void setBoardImgKey(String boardImgKey) {}
 }
