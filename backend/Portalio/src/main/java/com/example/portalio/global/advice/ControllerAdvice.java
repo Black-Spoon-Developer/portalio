@@ -3,6 +3,7 @@ package com.example.portalio.global.advice;
 import com.example.portalio.domain.activityboard.error.ActivityBoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
+import com.example.portalio.domain.repository.error.RepositoryNotFoundExcception;
 import com.example.portalio.global.error.ErrorCode;
 import com.example.portalio.global.error.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,12 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleActivityBoardNotFound(ActivityBoardNotFoundException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.ACTIVITYBOARD_NOT_FOUND);
+    }
+
+    @ExceptionHandler(RepositoryNotFoundExcception.class)
+    public ResponseEntity<ErrorResponseDto> handleRepositoryNotFound(RepositoryNotFoundExcception e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.REPOSITORY_NOT_FOUND);
     }
 
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {

@@ -63,7 +63,7 @@ public class PortfolioController {
     @Operation(summary = "[포트폴리오]글 작성", description = "글 작성")
     //@PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<PortfolioResponse> getBoardsSearch(
+    public ResponseEntity<PortfolioResponse> registerPortfolio(
             @RequestBody @Valid PortfolioRequest request
             /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
 
