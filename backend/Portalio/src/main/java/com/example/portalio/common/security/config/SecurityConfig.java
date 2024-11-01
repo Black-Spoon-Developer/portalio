@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable) // HTTP 기본 인증을 비활성화
                 .cors(Customizer.withDefaults()) // CORS 활성화
                 .csrf(AbstractHttpConfigurer::disable)  // CSRF 보호를 비활성화
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.)) // 세션 관리 정책을 STATELESS(세션이 있으면 쓰지도 않고, 없으면 만들지도 않는다
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 관리 정책을 STATELESS(세션이 있으면 쓰지도 않고, 없으면 만들지도 않는다
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/users/reissue").permitAll() // 토큰 발급 경로 허용
                         .requestMatchers("/api/v1/users/login", "/api/v1/users/signup").permitAll()
