@@ -46,7 +46,7 @@ public class Board extends AuditableCreatedEntity {
     private String boardImgKey = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png";
 
     @Column(name = "board_solve", nullable = false)
-    private boolean boardSolve = false;
+    private Boolean boardSolve = false;
 
     @Column(name = "board_views", nullable = false)
     private Integer boardViews = 0;
@@ -84,5 +84,7 @@ public class Board extends AuditableCreatedEntity {
         this.boardContent = boardContent;
     }
 
-    public void setBoardImgKey(String boardImgKey) {}
+    public void setBoardImgKey(String boardImgKey) { this.boardImgKey = boardImgKey; }
+
+    public void setBoardSolve(Boolean boardSolve) { this.boardSolve = boardSolve; }
 }
