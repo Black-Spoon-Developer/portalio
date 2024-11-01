@@ -41,3 +41,7 @@ out/
 
 ### QueryDSL ###
 /src/main/generated/
+
+
+### jasypt
+application-key.yml
