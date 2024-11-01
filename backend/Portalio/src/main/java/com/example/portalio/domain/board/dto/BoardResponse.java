@@ -15,6 +15,7 @@ public class BoardResponse {
     private String boardTitle;
     private String boardContent;
     private String boardImgKey;
+    private Boolean boardSolve;
     private Integer boardViews;
     private Integer boardRecommendationCount;
     private LocalDateTime created;
@@ -28,6 +29,7 @@ public class BoardResponse {
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
                 .boardImgKey(board.getBoardImgKey())
+                .boardSolve(board.getBoardSolve())
                 .boardViews(board.getBoardViews())
                 .boardRecommendationCount(board.getBoardRecommendationCount())
                 .created(board.getCreated())

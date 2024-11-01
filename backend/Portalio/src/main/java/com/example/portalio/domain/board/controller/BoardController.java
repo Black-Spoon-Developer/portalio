@@ -3,7 +3,9 @@ package com.example.portalio.domain.board.controller;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
+import com.example.portalio.domain.board.dto.BoardSolveResponse;
 import com.example.portalio.domain.board.service.BoardService;
+import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +61,7 @@ public class BoardController {
     @Operation(summary = "[자유/질문]글 작성", description = "글 작성")
     //@PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<BoardResponse> getBoardsSearch(
+    public ResponseEntity<BoardResponse> registerBoard(
             @RequestBody @Valid BoardRequest request
             /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
 
@@ -87,6 +89,18 @@ public class BoardController {
             @PathVariable Long boardId
             /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
         BoardResponse response = boardService.deleteBoard(boardId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "[자유/질문] 질문 해결 변경하기", description = "무조건 200, 한번 해결하면 변경 불가")
+    //    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{boardId}/solve")
+    public ResponseEntity<BoardSolveResponse> solveBoard(
+            @PathVariable Long boardId
+            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
+
+        BoardSolveResponse response = boardService.solveBoard(boardId);
 
         return ResponseEntity.ok(response);
     }

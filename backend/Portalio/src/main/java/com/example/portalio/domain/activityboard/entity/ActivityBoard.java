@@ -37,7 +37,7 @@ public class ActivityBoard extends AuditableCreatedEntity {
     private String activityBoardImgKey;
 
     @Column(name = "activity_board_post", nullable = false)
-    private boolean activityBoardPost = false;
+    private Boolean activityBoardPost = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "repository_id")

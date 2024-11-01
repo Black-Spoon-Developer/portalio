@@ -3,6 +3,7 @@ package com.example.portalio.domain.board.service;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
+import com.example.portalio.domain.board.dto.BoardSolveResponse;
 import com.example.portalio.domain.board.entity.Board;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.board.repository.BoardRepository;
@@ -99,5 +100,20 @@ public class BoardService {
         boardRepository.delete(board);
 
         return BoardResponse.from(board);
+    }
+
+    @Transactional
+    public BoardSolveResponse solveBoard(Long boardId) {
+
+        Board board = boardRepository.findByBoardId(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        if (!board.getBoardSolve()) {
+            board.setBoardSolve(true);
+        }
+
+        boardRepository.save(board);
+
+        return BoardSolveResponse.from(board);
     }
 }
