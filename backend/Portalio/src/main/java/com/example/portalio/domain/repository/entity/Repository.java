@@ -54,4 +54,31 @@ public class Repository {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    private Repository(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryImgKey, String repositoryFileKey) {
+        this.repositoryTitle = repositoryTitle;
+        this.repositoryContent = repositoryContent;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.repositoryImgKey = repositoryImgKey;
+        this.repositoryFileKey = repositoryFileKey;
+    }
+
+    public static Repository of(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryImgKey, String repositoryFileKey) {
+        return new Repository(repositoryTitle, repositoryContent, startDate, endDate, repositoryImgKey, repositoryFileKey);
+    }
+
+    public void setRepositoryTitle(String repositoryTitle) { this.repositoryTitle = repositoryTitle; }
+
+    public void setRepositoryContent(String repositoryContent) { this.repositoryContent = repositoryContent; }
+
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+
+    public void setRepositoryImgKey(String repositoryImgKey) { this.repositoryImgKey = repositoryImgKey; }
+
+    public void setRepositoryFileKey(String repositoryFileKey) { this.repositoryFileKey = repositoryFileKey; }
+
+
 }
