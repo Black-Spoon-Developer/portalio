@@ -1,7 +1,21 @@
 import React from "react";
+import NavBar from "./components/common/NavBar.tsx";
+import Footer from "./components/common/Footer.tsx";
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/auth/LoginPage.tsx";
+import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 
 const App: React.FC = () => {
-  return <div className="text-3xl bg-blue-500">Tailwind CSS 적용 테스트</div>;
+  return (
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<LoginPage />}></Route>
+        <Route path="/user/signup" element={<UserSignupPage />}></Route>
+      </Routes>
+      <Footer />
+    </>
+  );
 };
 
 export default App;
