@@ -1,8 +1,9 @@
 package com.example.portalio.common.oauth.service;
 
 import com.example.portalio.common.oauth.dto.*;
-import com.example.portalio.domain.member.entity.UserEntity;
-import com.example.portalio.domain.member.repository.UserRepository;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.enums.Role;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -14,10 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomOAuth2UserService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -42,36 +43,53 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         
         // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider()+ " " +oAuth2Response.getProviderId();
-        UserEntity existData = userRepository.findByUsername(username);
+        String name = oAuth2Response.getName();
+        String email = oAuth2Response.getEmail();
+        String picture = oAuth2Response.getPicture();
+
+        Member existData = memberRepository.findByMemberUsername(username);
+
 
         if (existData == null) {
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(username);
-            userEntity.setEmail(oAuth2Response.getEmail());
-            userEntity.setName(oAuth2Response.getName());
-            userEntity.setRole("USER");
 
-            userRepository.save(userEntity);
+            Member member = Member.builder()
+                    .memberName(name)
+                    .memberUsername(username)
+                    .memberEmail(email)
+                    .memberPicture(picture)
+                    .memberRole(Role.USER)
+                    .build();
+
+            memberRepository.save(member);
 
             UserDTO userDTO = UserDTO.builder()
                     .username(username)
-                    .name(oAuth2Response.getName())
+                    .name(name)
                     .role("USER")
+                    .isNewUser(true)
                     .build();
 
             return new CustomOAuth2User(userDTO);
 
         } else {
-            existData.setEmail(oAuth2Response.getEmail());
-            existData.setName(oAuth2Response.getName());
 
-            userRepository.save(existData);
+            Member updateMember = Member.builder()
+                    .memberName(name)
+                    .memberUsername(username)
+                    .memberPicture(picture)
+                    .memberRole(Role.USER)
+                    .memberEmail(email)
+                    .build();
+
+            memberRepository.save(updateMember);
 
             UserDTO userDTO = UserDTO.builder()
-                    .username(existData.getUsername())
-                    .name(oAuth2Response.getName())
-                    .role(existData.getRole())
+                    .username(existData.getMemberUsername())
+                    .name(name)
+                    .role("USER")
+                    .isNewUser(false)
                     .build();
+
 
             return new CustomOAuth2User(userDTO);
         }

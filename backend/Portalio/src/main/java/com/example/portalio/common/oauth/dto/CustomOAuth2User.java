@@ -14,6 +14,10 @@ public class CustomOAuth2User implements OAuth2User {
         this.userDTO = userDTO;
     }
 
+    public boolean isNewUser() {
+        return userDTO.isNewUser();
+    }
+
     @Override
     public Map<String, Object> getAttributes() {
 
@@ -32,7 +36,7 @@ public class CustomOAuth2User implements OAuth2User {
             }
         });
 
-        return null;
+        return collection;
     }
 
     @Override

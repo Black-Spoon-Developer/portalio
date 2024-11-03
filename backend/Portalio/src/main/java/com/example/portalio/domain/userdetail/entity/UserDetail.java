@@ -1,7 +1,6 @@
 package com.example.portalio.domain.userdetail.entity;
 
 import com.example.portalio.domain.member.entity.Member;
-import com.example.portalio.domain.oauthtoken.entity.OauthToken;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,9 +22,6 @@ public class UserDetail {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "user_email", nullable = false, length = 40)
-    private String userEmail;
-
     @Column(name = "user_major", nullable = false, length = 20)
     private String userMajor;
 
@@ -35,8 +31,4 @@ public class UserDetail {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private Member member;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oauth_token_id")
-    private OauthToken oauthToken;
 }

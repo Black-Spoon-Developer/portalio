@@ -30,4 +30,10 @@ public class NaverResponse implements OAuth2Response{
         return attribute.get("name").toString();
     }
 
+    @Override
+    public String getPicture() {
+        Object picture = attribute.get("picture");
+        return picture != null ? picture.toString() : "default_picture_url"; // 기본 이미지 URL을 설정하거나 null 처리
+    }
+
 }

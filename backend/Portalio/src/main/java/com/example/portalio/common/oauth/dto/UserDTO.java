@@ -1,14 +1,15 @@
 package com.example.portalio.common.oauth.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+import lombok.*;
+
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
-    private String role;
     private String name;
     private String username;
+    private String role;
+    private boolean isNewUser;
 }
