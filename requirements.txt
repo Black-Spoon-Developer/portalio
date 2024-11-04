@@ -40,10 +40,14 @@ urllib3
 uvicorn
 python-multipart
 markdown2
-openai
+openai==0.28
 sqlalchemy
 bcrypt
 httpx
 PyMySQL
 typing_extensions
 cryptography
+torch
+torchvision
+mediapipe
+librosa

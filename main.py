@@ -7,3 +7,4 @@ from ai.spelling.grammar import router as grammar_router
 
 app = FastAPI()
 
+app.include_router(questions_router, prefix="/api/v1", tags=["ai"])

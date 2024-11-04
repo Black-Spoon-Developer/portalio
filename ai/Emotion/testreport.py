@@ -9,7 +9,7 @@ from collections import deque
 # 모델 설정
 model = resnet50(weights=None)
 model.fc = torch.nn.Linear(model.fc.in_features, 7)
-model.load_state_dict(torch.load('C:/Users/SSAFY/Desktop/2학기 자율/Data/final_model.pth'))
+model.load_state_dict(torch.load('./final_model.pth'))
 model.eval()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
