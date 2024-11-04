@@ -2,9 +2,7 @@ import pyaudio
 import wave
 import threading
 import queue
-import time
 from google.cloud import speech_v1p1beta1 as speech
-from google.cloud import texttospeech
 import os
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/SSAFY/Desktop/JSON key/BSD.json"
@@ -14,28 +12,13 @@ CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-RECORD_SECONDS = 30  # 답변 시간 제한
+RECORD_SECONDS = 20  # 답변 시간 제한
 
 # Google Cloud 클라이언트 초기화
 speech_client = speech.SpeechClient()
-tts_client = texttospeech.TextToSpeechClient()
 
 # 작업 큐 초기화
 task_queue = queue.Queue()
-
-def text_to_speech(text, output_file):
-    synthesis_input = texttospeech.SynthesisInput(text=text)
-    voice = texttospeech.VoiceSelectionParams(
-        language_code="ko-KR", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
-    )
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.LINEAR16
-    )
-    response = tts_client.synthesize_speech(
-        input=synthesis_input, voice=voice, audio_config=audio_config
-    )
-    with open(output_file, "wb") as out:
-        out.write(response.audio_content)
 
 def record_audio(filename):
     p = pyaudio.PyAudio()
@@ -74,11 +57,7 @@ def process_audio(filename, question_number):
     transcript = transcribe_file(filename)
     print(f"답변 {question_number}: {transcript}")
     # 여기에 분석 코드 추가
-    analyze_answer(transcript, question_number)
-
-# def analyze_answer(transcript, question_number):
-#     # 여기에 답변 분석 로직 추가
-#     print(f"답변 {question_number} 분석 결과: {transcript}")
+    # analyze_answer(transcript, question_number)
 
 def worker():
     while True:
@@ -97,11 +76,8 @@ def main():
     questions = ["첫 번째 질문입니다.", "두 번째 질문입니다.", "세 번째 질문입니다."]
     
     for i, question in enumerate(questions, 1):
-        question_file = f"question_{i}.wav"
         answer_file = f"answer_{i}.wav"
         
-        # 질문을 TTS로 변환
-        text_to_speech(question, question_file)
         print(f"질문 {i}: {question}")
         
         # 답변 녹음

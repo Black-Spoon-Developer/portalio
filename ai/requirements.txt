@@ -1,0 +1,9 @@
+opencv-python
+torch
+torchvision
+Pillow
+numpy
+mediapipe
+google-cloud-speech
+librosa
+soundfile
