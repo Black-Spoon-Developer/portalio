@@ -2,6 +2,7 @@ package com.example.portalio.domain.board.dto;
 
 import com.example.portalio.domain.board.enums.BoardRole;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class BoardRequest {
     private BoardRole boardCategory;
 
     @NotNull(message = "empty board title")
+    @Size(max = 50, message = "long title")
     private String boardTitle;
 
     @NotNull(message = "empty board content")

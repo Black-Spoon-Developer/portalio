@@ -3,21 +3,25 @@ package com.example.portalio.domain.board.service;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
+import com.example.portalio.domain.board.dto.BoardSolveResponse;
 import com.example.portalio.domain.board.entity.Board;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.board.repository.BoardRepository;
+import com.example.portalio.s3.service.AwsS3Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final AwsS3Service awsS3Service;
 
     // nickname, title을 사용한 게시글 검색
     public BoardListResponse getBoardsSearch(String nickname, String boardTitle) {
@@ -54,7 +58,8 @@ public class BoardService {
             ) {
 
         // BoardRequest를 Board 엔티티로 변환
-        Board board = Board.of(request.getBoardCategory(), request.getBoardTitle(), request.getBoardContent());
+        Board board = Board.of(request.getBoardCategory(), request.getBoardTitle(), request.getBoardContent(),
+                request.getBoardImgKey());
 
         boardRepository.save(board);
 
@@ -77,6 +82,9 @@ public class BoardService {
         if (request.getBoardContent() != null) {
             board.setBoardContent(request.getBoardContent());
         }
+        if (request.getBoardImgKey() != null) {
+            board.setBoardImgKey(request.getBoardImgKey());
+        }
 
         boardRepository.save(board);
 
@@ -92,5 +100,20 @@ public class BoardService {
         boardRepository.delete(board);
 
         return BoardResponse.from(board);
+    }
+
+    @Transactional
+    public BoardSolveResponse solveBoard(Long boardId) {
+
+        Board board = boardRepository.findByBoardId(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        if (!board.getBoardSolve()) {
+            board.setBoardSolve(true);
+        }
+
+        boardRepository.save(board);
+
+        return BoardSolveResponse.from(board);
     }
 }

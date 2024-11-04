@@ -37,8 +37,8 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_content", nullable = false, columnDefinition = "TEXT")
     private String portfolioContent;
 
-    @Column(name = "portfolio_job", nullable = false, length = 50)
-    private String portfolioJob;
+    @Column(name = "portfolio_job", nullable = false)
+    private Integer portfolioJob;
 
     @Column(name = "portfolio_img_key", nullable = false, columnDefinition = "TEXT")
     private String portfolioImgKey;
@@ -47,16 +47,16 @@ public class Portfolio extends AuditableCreatedEntity {
     private String portfolioFileKey;
 
     @Column(name = "portfolio_views", nullable = false)
-    private Integer portfolioViews;
+    private Integer portfolioViews = 0;
 
     @Column(name = "portfolio_thumbnail_img", nullable = false, columnDefinition = "TEXT")
     private String portfolioThumbnailImg;
 
     @Column(name = "portfolio_recommendation_count", nullable = false)
-    private Integer portfolioRecommendationCount;
+    private Integer portfolioRecommendationCount = 0;
 
     @Column(name = "portfolio_post", nullable = false)
-    private boolean portfolioPost = false;
+    private Boolean portfolioPost = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -67,4 +67,31 @@ public class Portfolio extends AuditableCreatedEntity {
 
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioRecom> portfolioRecoms = new ArrayList<>();
+
+    private Portfolio(String portfolioTitle, String portfolioContent, Integer portfolioJob, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg) {
+        this.portfolioTitle = portfolioTitle;
+        this.portfolioContent = portfolioContent;
+        this.portfolioJob = portfolioJob;
+        this.portfolioImgKey = portfolioImgKey;
+        this.portfolioFileKey = portfolioFileKey;
+        this.portfolioThumbnailImg = portfolioThumbnailImg;
+    }
+
+    public static Portfolio of(String portfolioTitle, String portfolioContent, Integer portfolioJob, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg) {
+        return new Portfolio(portfolioTitle, portfolioContent, portfolioJob, portfolioImgKey, portfolioFileKey, portfolioThumbnailImg);
+    }
+
+    public void setPortfolioTitle(String portfolioTitle) { this.portfolioTitle = portfolioTitle; }
+
+    public void setPortfolioContent(String portfolioContent) { this.portfolioContent = portfolioContent; }
+
+    public void setPortfolioJob(Integer portfolioJob) { this.portfolioJob = portfolioJob; }
+
+    public void setPortfolioImgKey(String portfolioImgKey) { this.portfolioImgKey = portfolioImgKey; }
+
+    public void setPortfolioFileKey(String portfolioFileKey) { this.portfolioFileKey = portfolioFileKey; }
+
+    public void setPortfolioThumbnailImg(String portfolioThumbnailImg) { this.portfolioThumbnailImg = portfolioThumbnailImg; }
+
+    public void setPortfolioPost(Boolean portfolioPost) { this.portfolioPost = portfolioPost; }
 }
