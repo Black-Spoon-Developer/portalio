@@ -7,6 +7,7 @@ import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.handler.CustomSuccessHandler;
 import com.example.portalio.common.oauth.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,9 +20,6 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Collections;
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity(debug = true)
 public class SecurityConfig {
@@ -31,7 +29,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler, JwtUtil jwtUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, CustomSuccessHandler customSuccessHandler,
+                          JwtUtil jwtUtil, RefreshRepository refreshRepository) {
         this.customOAuth2UserService = customOAuth2UserService;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
@@ -57,7 +56,9 @@ public class SecurityConfig {
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
-                        configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization", "access", "refresh"));
+                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+                        configuration.setExposedHeaders(Collections.singletonList("access"));
+                        configuration.setExposedHeaders(Collections.singletonList("refresh"));
 
                         return configuration;
                     }
@@ -85,7 +86,7 @@ public class SecurityConfig {
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler));
-        
+
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
@@ -94,7 +95,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/reissue").permitAll()
                         .requestMatchers("/api/v1/users/login", "/api/v1/users/signup").permitAll()
                         .requestMatchers("/api/v1/recruiter/login", "/api/v1/recruiter/signup").permitAll()
-                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
+                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**")
+                        .permitAll()
                         .anyRequest().authenticated());
 
         // 세션 설정 : STATELESS

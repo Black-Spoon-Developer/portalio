@@ -8,16 +8,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -32,7 +31,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     // 인증 성공 시
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                        Authentication authentication) throws IOException, ServletException {
 
         // OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
@@ -58,9 +58,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 새 유저라면 정보 입력 페이지로 리다이렉트
         if (customUserDetails.isNewUser()) {
-            response.sendRedirect("http://localhost:5173/user/signup");
+            response.sendRedirect("http://localhost:5173/user/signup?access=" + access);
         } else {
-            response.sendRedirect("http://localhost:5173/");
+            response.sendRedirect("http://localhost:5173/?access=" + access);
         }
 
     }
@@ -68,7 +68,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60*60*60);
+        cookie.setMaxAge(60 * 60 * 60);
         // cookie.setSecure(true); // https 설정시 작성해줘야함
         cookie.setPath("/"); // 쿠키가 보일 위치 전역으로 설정
         cookie.setHttpOnly(true); // 자바스크립트가 쿠키를 가져가지 못하도록 설정

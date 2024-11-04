@@ -7,11 +7,10 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Date;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class ReissueService {
@@ -74,7 +73,6 @@ public class ReissueService {
         refreshRepository.deleteByRefresh(refresh);
         addRefreshEntity(username, newResfresh, 86400000L);
 
-
         response.setHeader("access", newAccess);
         response.addCookie(createCookie("refresh", newResfresh));
 
@@ -86,7 +84,7 @@ public class ReissueService {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(24 * 60 * 60);
         //cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);

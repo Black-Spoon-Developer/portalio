@@ -1,6 +1,5 @@
 package com.example.portalio.common.jwt.filter;
 
-import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.common.oauth.dto.UserDTO;
@@ -9,13 +8,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -26,7 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         // 헤더에서 access 키에 담긴 토큰을 꺼냄
         String accessToken = request.getHeader("access");
@@ -47,7 +46,6 @@ public class JwtFilter extends OncePerRequestFilter {
             PrintWriter writer = response.getWriter();
             writer.print("access token expired");
 
-
             // response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -66,28 +64,30 @@ public class JwtFilter extends OncePerRequestFilter {
             // response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        
+
         // username, role 값을 획득
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
+        String email = jwtUtil.getEmail(accessToken);
 
         // userDTO 생성
         UserDTO userDTO = UserDTO.builder()
                 .username(username)
                 .role(role)
+                .email(email)
                 .build();
 
         // UserDetails 회원 정보 객체 담기
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);
         // 스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null, customOAuth2User.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(customOAuth2User, null,
+                customOAuth2User.getAuthorities());
 
         // 세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }
-
 
 
 }

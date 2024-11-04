@@ -1,6 +1,10 @@
 package com.example.portalio.common.oauth.service;
 
-import com.example.portalio.common.oauth.dto.*;
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.common.oauth.dto.GoogleResponse;
+import com.example.portalio.common.oauth.dto.NaverResponse;
+import com.example.portalio.common.oauth.dto.OAuth2Response;
+import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.repository.MemberRepository;
@@ -40,18 +44,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } else {
             return null;
         }
-        
-        // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
-        String username = oAuth2Response.getProvider()+ " " +oAuth2Response.getProviderId();
+
+        // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬 oAuth2Response.getProvider() + " " +
+        String username = oAuth2Response.getProviderId();
         String name = oAuth2Response.getName();
         String email = oAuth2Response.getEmail();
         String picture = oAuth2Response.getPicture();
 
-        Member existData = memberRepository.findByMemberUsername(username);
-
+        Member existData = memberRepository.findByMemberEmail(email);
+        System.out.println(existData);
 
         if (existData == null) {
-
             Member member = Member.builder()
                     .memberName(name)
                     .memberUsername(username)
@@ -64,6 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             UserDTO userDTO = UserDTO.builder()
                     .username(username)
+                    .email(email)
                     .name(name)
                     .role("USER")
                     .isNewUser(true)
@@ -85,19 +89,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             UserDTO userDTO = UserDTO.builder()
                     .username(existData.getMemberUsername())
+                    .email(existData.getMemberEmail())
                     .name(name)
                     .role("USER")
                     .isNewUser(false)
                     .build();
 
-
             return new CustomOAuth2User(userDTO);
         }
-
-
-
-
-
-
     }
 }

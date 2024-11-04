@@ -1,7 +1,5 @@
 package com.example.portalio.domain.member.entity;
 
-import static com.example.portalio.domain.member.enums.Role.USER;
-
 import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.domain.board.entity.Board;
 import com.example.portalio.domain.boardcomment.entity.BoardComment;
@@ -16,12 +14,25 @@ import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
 import com.example.portalio.domain.repository.entity.Repository;
 import com.example.portalio.domain.subscribe.entity.Subscribe;
 import com.example.portalio.domain.userhopejob.entity.UserHopeJob;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -36,17 +47,17 @@ public class Member extends AuditableCreatedEntity {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(name = "member_email", nullable = false, length = 40)
-    private String memberEmail;
+    @Column(name = "member_name", nullable = false, length = 20)
+    private String memberName;
 
     @Column(name = "member_nickname")
     private String memberNickname;
 
-    @Column(name = "member_name", nullable = false, length = 20)
-    private String memberName;
-
     @Column(name = "member_username", nullable = false)
     private String memberUsername;
+
+    @Column(name = "member_email", nullable = false, length = 40, unique = true)
+    private String memberEmail;
 
     @Column(name = "member_picture", nullable = false)
     private String memberPicture;
@@ -97,4 +108,14 @@ public class Member extends AuditableCreatedEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Repository> repositories = new ArrayList<>();
+
+    public void setMemberNickname(String memberNickname) {
+        this.memberNickname = memberNickname;
+    }
+
+    public void setMemberPicture(String memberPicture) {
+        this.memberPicture = memberPicture;
+    }
+
+
 }
