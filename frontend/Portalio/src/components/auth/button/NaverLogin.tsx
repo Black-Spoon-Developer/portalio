@@ -2,11 +2,6 @@ import React, { useEffect } from "react";
 import naverLogo from "../../../assets/btnG_아이콘원형.png";
 import { fetchUserInfo } from "../../../api/auth/LoginAPI";
 
-interface UserInfo {
-  username: string;
-  email: string;
-}
-
 const NaverLogin: React.FC = () => {
   const NaverLogin = () => {
     window.location.href = "http://localhost:8080/oauth2/authorization/naver";
