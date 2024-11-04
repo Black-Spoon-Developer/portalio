@@ -28,17 +28,14 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "member")
 public class Member extends AuditableCreatedEntity {
 
@@ -109,12 +106,28 @@ public class Member extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "member")
     private List<Repository> repositories = new ArrayList<>();
 
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public void setMemberEmail(String memberEmail) {
+        this.memberEmail = memberEmail;
+    }
+
+    public void setMemberUsername(String memberUsername) {
+        this.memberUsername = memberUsername;
+    }
+
     public void setMemberNickname(String memberNickname) {
         this.memberNickname = memberNickname;
     }
 
     public void setMemberPicture(String memberPicture) {
         this.memberPicture = memberPicture;
+    }
+
+    public void setMemberRole(Role memberRole) {
+        this.memberRole = memberRole;
     }
 
 

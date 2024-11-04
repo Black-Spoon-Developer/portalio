@@ -31,15 +31,15 @@ public class MemberController {
     public ResponseEntity<?> memberGet(Authentication authentication) {
         // Authentication에서 email 정보 가져오기
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-//        System.out.println(authentication);
-//        System.out.println(customOAuth2User.getEmail());
-        Member member = memberService.memberGet(customOAuth2User.getEmail());
-//        System.out.println(member);
+
+        String username = customOAuth2User.getUsername();
+
+        Member member = memberService.memberTokenGet(username);
 
         if (member != null) {
             return ResponseEntity.ok(member);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Member not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원을 찾을 수 없습니다.");
         }
     }
 
@@ -47,12 +47,12 @@ public class MemberController {
     @Operation(summary = "[회원]회원 정보 조회", description = "email 값으로 조회하기")
     @GetMapping("/{email}")
     public ResponseEntity<?> memberGet(@PathVariable("email") String email) {
-        Member member = memberService.memberGet(email);
+        Member member = memberService.memberEmailGet(email);
 
         if (member != null) {
             return ResponseEntity.ok(member);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Member not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원을 찾을 수 없습니다.");
         }
     }
 

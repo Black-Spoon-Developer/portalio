@@ -45,22 +45,22 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         // 토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 6000000L);
+//        String access = jwtUtil.createJwt("access", username, role, 6000000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // Refresh 토큰 저장
         addRefreshEntity(username, refresh, 86400000L);
 
         // 응답 설정
-        response.setHeader("access", access);
+//        response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
 
         // 새 유저라면 정보 입력 페이지로 리다이렉트
         if (customUserDetails.isNewUser()) {
-            response.sendRedirect("http://localhost:5173/user/signup?access=" + access);
+            response.sendRedirect("http://localhost:5173/user/signup");
         } else {
-            response.sendRedirect("http://localhost:5173/?access=" + access);
+            response.sendRedirect("http://localhost:5173/");
         }
 
     }

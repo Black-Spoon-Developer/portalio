@@ -71,11 +71,15 @@ public class JwtFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(accessToken);
 
         // userDTO 생성
-        UserDTO userDTO = UserDTO.builder()
-                .username(username)
-                .role(role)
-                .email(email)
-                .build();
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(username);
+        userDTO.setEmail(email);
+        userDTO.setRole(role);
+//        UserDTO userDTO = UserDTO.builder()
+//                .username(username)
+//                .role(role)
+//                .email(email)
+//                .build();
 
         // UserDetails 회원 정보 객체 담기
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);

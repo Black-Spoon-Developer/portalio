@@ -50,51 +50,41 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = oAuth2Response.getName();
         String email = oAuth2Response.getEmail();
         String picture = oAuth2Response.getPicture();
+        System.out.println(username + " " + name + " " + email + " " + picture);
 
         Member existData = memberRepository.findByMemberEmail(email);
-        System.out.println(existData);
 
         if (existData == null) {
-            Member member = Member.builder()
-                    .memberName(name)
-                    .memberUsername(username)
-                    .memberEmail(email)
-                    .memberPicture(picture)
-                    .memberRole(Role.USER)
-                    .build();
+
+            Member member = new Member();
+            member.setMemberName(name);
+            member.setMemberUsername(username);
+            member.setMemberEmail(email);
+            member.setMemberPicture(picture);
+            member.setMemberRole(Role.USER);
 
             memberRepository.save(member);
 
-            UserDTO userDTO = UserDTO.builder()
-                    .username(username)
-                    .email(email)
-                    .name(name)
-                    .role("USER")
-                    .isNewUser(true)
-                    .build();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setName(name);
+            userDTO.setUsername(username);
+            userDTO.setEmail(email);
+            userDTO.setRole("USER");
+            userDTO.setIsNewUser(true);
 
+            System.out.println(userDTO);
             return new CustomOAuth2User(userDTO);
 
         } else {
 
-            Member updateMember = Member.builder()
-                    .memberName(name)
-                    .memberUsername(username)
-                    .memberPicture(picture)
-                    .memberRole(Role.USER)
-                    .memberEmail(email)
-                    .build();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setName(name);
+            userDTO.setUsername(existData.getMemberUsername());
+            userDTO.setEmail(existData.getMemberEmail());
+            userDTO.setRole("USER");
+            userDTO.setIsNewUser(false);
 
-            memberRepository.save(updateMember);
-
-            UserDTO userDTO = UserDTO.builder()
-                    .username(existData.getMemberUsername())
-                    .email(existData.getMemberEmail())
-                    .name(name)
-                    .role("USER")
-                    .isNewUser(false)
-                    .build();
-
+            System.out.println(userDTO);
             return new CustomOAuth2User(userDTO);
         }
     }

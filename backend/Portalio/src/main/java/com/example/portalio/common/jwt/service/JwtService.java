@@ -8,21 +8,23 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ReissueService {
+public class JwtService {
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
 
-    public ReissueService(JwtUtil jwtUtil, RefreshRepository refreshRepository) {
+    public JwtService(JwtUtil jwtUtil, RefreshRepository refreshRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
     }
 
-    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> issue(HttpServletRequest request, HttpServletResponse response) {
         // 리프레시 토큰 얻기
         String refresh = null;
         Cookie[] cookies = request.getCookies();
@@ -73,10 +75,13 @@ public class ReissueService {
         refreshRepository.deleteByRefresh(refresh);
         addRefreshEntity(username, newResfresh, 86400000L);
 
-        response.setHeader("access", newAccess);
+        // 쿠키로 refresh 토큰 전달
         response.addCookie(createCookie("refresh", newResfresh));
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("access", newAccess);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+//        response.setHeader("access", newAccess);
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
 
     }
 

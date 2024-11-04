@@ -2,12 +2,10 @@ package com.example.portalio.common.oauth.dto;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
@@ -16,4 +14,25 @@ public class UserDTO {
     private String email;
     private String role;
     private boolean isNewUser;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setIsNewUser(boolean isNewUser) {
+        this.isNewUser = isNewUser;
+    }
+
 }

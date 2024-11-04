@@ -9,9 +9,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.filter.GenericFilterBean;
-
 import java.io.IOException;
+import org.springframework.web.filter.GenericFilterBean;
 
 public class CustomLogoutFilter extends GenericFilterBean {
 
@@ -24,15 +23,17 @@ public class CustomLogoutFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
 
         doFilter((HttpServletRequest) request, (HttpServletResponse) response, filterChain);
     }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
 
         String requestUri = request.getRequestURI();
-        if (!requestUri.matches("^/api/v1/user/logout$")) {
+        if (!requestUri.matches("^/api/v1/users/logout$")) {
 
             filterChain.doFilter(request, response);
             return;
@@ -82,7 +83,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
         // Refresh 토큰 DB에서 제거
         refreshRepository.deleteByRefresh(refresh);
 
-        // Refresh 토큰 DB에서 제거
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");

@@ -92,7 +92,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/reissue").permitAll()
-                        .requestMatchers("/api/v1/users/reissue").permitAll()
+                        .requestMatchers("/api/v1/users/token/issue").permitAll()
                         .requestMatchers("/api/v1/users/login", "/api/v1/users/signup").permitAll()
                         .requestMatchers("/api/v1/recruiter/login", "/api/v1/recruiter/signup").permitAll()
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**")

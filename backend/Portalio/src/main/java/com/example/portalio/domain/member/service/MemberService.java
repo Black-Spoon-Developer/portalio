@@ -13,8 +13,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    // 회원정보 조회
-    public Member memberGet(String email) {
+    // 회원정보 토큰으로 조회
+    public Member memberTokenGet(String username) {
+        Member member = memberRepository.findByMemberUsername(username);
+        return member;
+    }
+
+    // 회원정보 이메일로 조회
+    public Member memberEmailGet(String email) {
         Member member = memberRepository.findByMemberEmail(email);
         return member;
     }
@@ -25,7 +31,7 @@ public class MemberService {
         Member member = memberRepository.findByMemberEmail(email);
 
         if (member == null) {
-            throw new IllegalArgumentException("Member not found with email" + email);
+            throw new IllegalArgumentException("회원을 조회할 수 없습니다.");
         }
 
         if (requestDTO.getMemberNickname() != null) {
