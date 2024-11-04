@@ -1,8 +1,5 @@
 package com.example.portalio.domain.portfolio.controller;
 
-import com.example.portalio.domain.board.dto.BoardListResponse;
-import com.example.portalio.domain.board.dto.BoardRequest;
-import com.example.portalio.domain.board.dto.BoardResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
@@ -32,8 +29,8 @@ public class PortfolioController {
     @Operation(summary = "[포트폴리오]글 검색", description = "jobId, boardTitle을 사용해 글 검색")
     @GetMapping
     public ResponseEntity<PortfolioListResponse> getPortfolioSearch(
-            @RequestParam(required = false) Integer portfolioJob,
-            @RequestParam(required = false) String portfolioTitle) {
+            @RequestParam Long portfolioJob,
+            @RequestParam String portfolioTitle) {
 
         PortfolioListResponse response = portfolioService.getPortfolioSearch(portfolioJob, portfolioTitle);
 
@@ -49,7 +46,7 @@ public class PortfolioController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "[포트폴리오]글 전체보기(리스트)", description = "무한스크롤, 사용시 skip을 10씩 증가해서 넣으세요, limit 10 고정")
+    @Operation(summary = "[포트폴리오]글 전체보기(리스트)", description = "무한스크롤, 사용시 skip을 10씩 증가해서 넣으세요, limit 10 고정, Post(게시)가 ture인 것만 반환")
     @GetMapping("/all")
     public ResponseEntity<PortfolioListResponse> getPortfoliosList(
             @RequestParam(defaultValue = "0") int skip,

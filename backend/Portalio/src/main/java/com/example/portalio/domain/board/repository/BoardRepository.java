@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @Query("SELECT b FROM Board b WHERE (:nickname IS NULL OR b.member.memberNickname = :nickname) AND (:boardTitle IS NULL OR b.boardTitle LIKE %:boardTitle%)")
-    List<Board> findByNicknameAndBoardTitle(@Param("nickname") String nickname,@Param("boardTitle") String boardTitle);
+    @Query("SELECT b FROM Board b WHERE (:boardTitle IS NULL OR LOWER(b.boardTitle) LIKE LOWER(concat('%', :boardTitle, '%')))")
+    List<Board> findByBoardTitle(@Param("boardTitle") String boardTitle);
 
     List<Board> findAllByOrderByCreatedDesc(Pageable pageable);
 

@@ -1,6 +1,7 @@
 package com.example.portalio.domain.portfolio.entity;
 
 import com.example.portalio.domain.common.entity.AuditableCreatedEntity;
+import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.portfoliocomment.entity.PortfolioComment;
 import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
@@ -37,9 +38,6 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_content", nullable = false, columnDefinition = "TEXT")
     private String portfolioContent;
 
-    @Column(name = "portfolio_job", nullable = false)
-    private Integer portfolioJob;
-
     @Column(name = "portfolio_img_key", nullable = false, columnDefinition = "TEXT")
     private String portfolioImgKey;
 
@@ -62,30 +60,32 @@ public class Portfolio extends AuditableCreatedEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id")
+    private JobSubCategory jobSubCategory;
+
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioComment> portfolioComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioRecom> portfolioRecoms = new ArrayList<>();
 
-    private Portfolio(String portfolioTitle, String portfolioContent, Integer portfolioJob, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg) {
+    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory) {
         this.portfolioTitle = portfolioTitle;
         this.portfolioContent = portfolioContent;
-        this.portfolioJob = portfolioJob;
         this.portfolioImgKey = portfolioImgKey;
         this.portfolioFileKey = portfolioFileKey;
         this.portfolioThumbnailImg = portfolioThumbnailImg;
+        this.jobSubCategory = jobSubCategory;
     }
 
-    public static Portfolio of(String portfolioTitle, String portfolioContent, Integer portfolioJob, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg) {
-        return new Portfolio(portfolioTitle, portfolioContent, portfolioJob, portfolioImgKey, portfolioFileKey, portfolioThumbnailImg);
+    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory) {
+        return new Portfolio(portfolioTitle, portfolioContent, portfolioImgKey, portfolioFileKey, portfolioThumbnailImg, jobSubCategory);
     }
 
     public void setPortfolioTitle(String portfolioTitle) { this.portfolioTitle = portfolioTitle; }
 
     public void setPortfolioContent(String portfolioContent) { this.portfolioContent = portfolioContent; }
-
-    public void setPortfolioJob(Integer portfolioJob) { this.portfolioJob = portfolioJob; }
 
     public void setPortfolioImgKey(String portfolioImgKey) { this.portfolioImgKey = portfolioImgKey; }
 
@@ -94,4 +94,6 @@ public class Portfolio extends AuditableCreatedEntity {
     public void setPortfolioThumbnailImg(String portfolioThumbnailImg) { this.portfolioThumbnailImg = portfolioThumbnailImg; }
 
     public void setPortfolioPost(Boolean portfolioPost) { this.portfolioPost = portfolioPost; }
+
+    public void setJobSubCategory(JobSubCategory jobSubCategory) { this.jobSubCategory = jobSubCategory; }
 }

@@ -52,14 +52,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// Jasypt
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+//	// Jasypt
+//	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-tasks.named('bootJar') {
-	archiveFileName = 'portAlio-0.0.1-SNAPSHOT.jar'
-}
+//tasks.named('test') {
+//	useJUnitPlatform()
+//}
+//
+//tasks.named('bootJar') {
+//	archiveFileName = 'portAlio-0.0.1-SNAPSHOT.jar'
+//}
