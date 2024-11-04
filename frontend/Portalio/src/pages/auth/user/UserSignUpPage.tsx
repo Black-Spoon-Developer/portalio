@@ -1,41 +1,55 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Logo from "../../../assets/Logo.png";
+import { fetchUserInfo } from "../../../api/auth/LoginAPI";
 
 const UserSignupPage: React.FC = () => {
-  const [mainCategories, setMainCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
+  // 중분류 및 소분류 데이터를 하드코딩합니다.
+  const mainCategories = [
+    { id: 1, name: "기획·전략" },
+    { id: 2, name: "마케팅·홍보·조사" },
+    { id: 3, name: "회계·세무·재무" },
+    { id: 4, name: "인사·노무·HRD" },
+    { id: 5, name: "총무·법무·사무" },
+    { id: 6, name: "IT개발·데이터" },
+    { id: 7, name: "디자인" },
+    { id: 8, name: "영업·판매·무역" },
+    { id: 9, name: "구매·자재·물류" },
+    { id: 10, name: "상품기획·MD" },
+    // 추가 중분류 항목들...
+  ];
+
+  const subCategories = [
+    { id: 1, name: "리스크 관리", parentId: 1 },
+    { id: 2, name: "경영관리", parentId: 1 },
+    { id: 3, name: "CSO", parentId: 1 },
+    { id: 4, name: "CIO", parentId: 1 },
+    { id: 5, name: "기획", parentId: 1 },
+    { id: 6, name: "게임기획", parentId: 1 },
+    // 추가 소분류 항목들...
+    { id: 71, name: "라이센싱", parentId: 2 },
+    { id: 72, name: "PPL", parentId: 2 },
+    { id: 130, name: "행정사", parentId: 3 },
+    // 전체 데이터를 추가합니다.
+  ];
+
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
 
   useEffect(() => {
-    // 메인 및 서브 카테고리 데이터 가져오기
-    const fetchCategories = async () => {
-      try {
-        const mainResponse = await axios.get(
-          "https://oapi.saramin.co.kr/guide/main-category-url"
-        );
-        const subResponse = await axios.get(
-          "https://oapi.saramin.co.kr/guide/sub-category-url"
-        );
+    // URL에서 access 토큰을 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("access");
+    if (accessToken) {
+      // access 토큰을 localStorage에 저장
+      localStorage.setItem("access", accessToken);
 
-        setMainCategories(mainResponse.data);
-        setSubCategories(subResponse.data);
-      } catch (error) {
-        console.error("카테고리 데이터 가져오기 오류:", error);
-      }
-    };
+      // URL에서 access 파라미터 제거
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
 
-    fetchCategories();
+    // 회원 정보 조회 및 저장
+    fetchUserInfo();
   }, []);
-
-  useEffect(() => {
-    // 선택된 중분류에 따라 소분류 필터링
-    const filtered = subCategories.filter(
-      (sub) => sub.parentId === selectedMainCategory
-    );
-    setFilteredSubCategories(filtered);
-  }, [selectedMainCategory, subCategories]);
 
   const handleMainCategoryChange = (
     e: React.ChangeEvent<HTMLSelectElement>
