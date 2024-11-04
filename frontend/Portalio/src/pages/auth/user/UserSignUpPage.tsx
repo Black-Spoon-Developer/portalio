@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
-import { fetchUserInfo } from "../../../api/auth/LoginAPI";
 
 const UserSignupPage: React.FC = () => {
   // 중분류 및 소분류 데이터를 하드코딩합니다.
@@ -46,9 +45,6 @@ const UserSignupPage: React.FC = () => {
       // URL에서 access 파라미터 제거
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-
-    // 회원 정보 조회 및 저장
-    fetchUserInfo();
   }, []);
 
   const handleMainCategoryChange = (

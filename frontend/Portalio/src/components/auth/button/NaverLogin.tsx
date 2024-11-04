@@ -1,28 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import naverLogo from "../../../assets/btnG_아이콘원형.png";
-import { fetchUserInfo } from "../../../api/auth/LoginAPI";
 
 const NaverLogin: React.FC = () => {
   const NaverLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
-  };
+    const isLogin = localStorage.getItem("isLogin");
 
-  useEffect(() => {
-    // URL 파라미터에서 토큰과 유저 정보 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("access");
-
-    if (accessToken) {
-      // localStorage에 저장
-      localStorage.setItem("access", accessToken);
-
-      // URL 파라미터 제거
-      window.history.replaceState({}, document.title, window.location.pathname);
+    if (isLogin) {
+      localStorage.removeItem("isLogin");
     }
 
-    // 회원 정보 조회 및 저장
-    fetchUserInfo();
-  }, []);
+    localStorage.setItem("isLogin", "true");
+    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+  };
 
   return (
     <>
