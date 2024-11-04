@@ -26,6 +26,7 @@ public class ActivityBoardResponse {
                 .activityBoardContent(activityBoard.getActivityBoardContent())
                 .activityBoardDate(activityBoard.getActivityBoardDate())
                 .activityBoardPost(activityBoard.getActivityBoardPost())
+                .activityBoardImageKey(activityBoard.getActivityBoardImgKey() != null ? activityBoard.getActivityBoardImgKey() : DEFAULT_IMAGE_URL)
                 .repositoryId(activityBoard.getRepository().getRepositoryId())
                 .build();
     }
