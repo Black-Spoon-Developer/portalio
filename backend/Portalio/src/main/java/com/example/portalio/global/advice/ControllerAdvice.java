@@ -3,6 +3,7 @@ package com.example.portalio.global.advice;
 import com.example.portalio.domain.activityboard.error.ActivityBoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
 import com.example.portalio.domain.repository.error.RepositoryNotFoundExcception;
 import com.example.portalio.global.error.ErrorCode;
@@ -44,6 +45,12 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleRepositoryNotFound(RepositoryNotFoundExcception e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.REPOSITORY_NOT_FOUND);
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.MEMBER_NOT_FOUND);
     }
 
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {

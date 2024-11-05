@@ -1,5 +1,6 @@
 package com.example.portalio.domain.board.service;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
@@ -7,6 +8,9 @@ import com.example.portalio.domain.board.dto.BoardSolveResponse;
 import com.example.portalio.domain.board.entity.Board;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.board.repository.BoardRepository;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.s3.service.AwsS3Service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final AwsS3Service awsS3Service;
+    private final MemberRepository memberRepository;
 
     // nickname, title을 사용한 게시글 검색
     public BoardListResponse getBoardsSearch(String boardTitle) {
@@ -53,13 +57,19 @@ public class BoardService {
 
     // 게시글 등록
     @Transactional
-    public BoardResponse registerBoard(BoardRequest request
-//            CustomOauth2User oauth2User
-            ) {
+    public BoardResponse registerBoard(BoardRequest request, CustomOAuth2User oauth2User) {
 
+        System.out.println(oauth2User);
+        System.out.println(oauth2User.getMemberId());
+        System.out.println(oauth2User.getEmail());
+        System.out.println(oauth2User.getName());
+//        System.out.println(oauth2User.get닉네임());
+
+
+        Member member = findMember(oauth2User.getMemberId());
         // BoardRequest를 Board 엔티티로 변환
         Board board = Board.of(request.getBoardCategory(), request.getBoardTitle(), request.getBoardContent(),
-                request.getBoardImgKey());
+                request.getBoardImgKey(), member);
 
         boardRepository.save(board);
 
@@ -115,5 +125,10 @@ public class BoardService {
         boardRepository.save(board);
 
         return BoardSolveResponse.from(board);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

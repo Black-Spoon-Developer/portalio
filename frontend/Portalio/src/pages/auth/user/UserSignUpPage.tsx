@@ -6,6 +6,10 @@ import {
   jobUpdate,
 } from "../../../api/MemberAPI";
 import { mainCategories, subCategories } from "../../../assets/JobCategory";
+import { issueAccessToken } from "../../../api/AuthAPI";
+import { userTokenFetchAPI } from "../../../api/MemberAPI";
+import { UserInfo } from "../../../type/UserType";
+import { useNavigate } from "react-router-dom";
 
 // Category 타입 정의
 type Category = {
@@ -15,7 +19,6 @@ type Category = {
 };
 
 const UserSignupPage: React.FC = () => {
-  // 중분류 및 소분류 데이터를 하드코딩합니다.
   const [nickname, setNickname] = useState("");
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
@@ -24,8 +27,54 @@ const UserSignupPage: React.FC = () => {
     Category[]
   >([]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     setFilteredSubCategories(subCategories);
+    const fetchData = async () => {
+      // access 토큰 저장
+      const fetchAccessToken = async () => {
+        const isLogin = localStorage.getItem("isLogin");
+        const accessToken = localStorage.getItem("access");
+
+        if (accessToken == null && isLogin == "true") {
+          const newAccessToken = await issueAccessToken();
+          if (newAccessToken) {
+            localStorage.setItem("access", newAccessToken);
+          }
+        }
+      };
+
+      // 엑세스 토큰으로 회원 정보 조회 후 localstorage에 저장
+      const userInfofetch = async () => {
+        const accessToken = localStorage.getItem("access");
+        const userInfo = localStorage.getItem("userInfo");
+        const isLogin = localStorage.getItem("isLogin");
+
+        if (
+          accessToken &&
+          !userInfo &&
+          !(isLogin == null || isLogin == "false")
+        ) {
+          const userInfo = await userTokenFetchAPI();
+          if (userInfo) {
+            const setUserInfo: UserInfo = {
+              memberId: userInfo.data.memberId,
+              memberName: userInfo.data.memberName,
+              memberEmail: userInfo.data.memberEmail,
+              memberPicture: userInfo.data.memberPicture,
+              memberRole: userInfo.data.memberRole,
+            };
+            localStorage.setItem("userInfo", JSON.stringify(setUserInfo));
+          }
+        }
+      };
+
+      await fetchAccessToken(); // access 토큰 가져오기
+      await userInfofetch(); // 토큰을 가져온 후 회원 정보 조회
+    };
+
+    fetchData(); // 비동기 함수 실행
   }, []);
 
   // 닉네임 입력
@@ -86,12 +135,10 @@ const UserSignupPage: React.FC = () => {
         }
 
         // 직무 저장 API 호출
-        const jobResponse = await jobUpdate(parseInt(selectedSubCategory));
-        if (jobResponse) {
-          console.log("직무 저장 성공:", jobResponse.data);
-        }
+        await jobUpdate(parseInt(selectedSubCategory));
 
         alert("닉네임과 직무가 성공적으로 저장되었습니다.");
+        navigate("/");
       } catch (error) {
         console.error("정보 업데이트 중 오류:", error);
       }
