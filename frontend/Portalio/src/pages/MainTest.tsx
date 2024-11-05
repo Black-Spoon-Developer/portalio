@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
 import { issueAccessToken } from "../api/AuthAPI";
 import { userTokenFetchAPI } from "../api/MemberAPI";
-
-interface UserInfo {
-  memberId: string;
-  memberName: string;
-  memberEmail: string;
-  memberPicture: string;
-  memberRole: string;
-}
+import { UserInfo } from "../type/UserType";
 
 const MainTest: React.FC = () => {
   useEffect(() => {
