@@ -5,6 +5,10 @@ import markdown
 from bs4 import BeautifulSoup
 import os
 from dotenv import load_dotenv
+from google.cloud import texttospeech
+import boto3
+from io import BytesIO
+import random
 
 # 환경 변수 로드
 load_dotenv()
@@ -12,6 +16,21 @@ load_dotenv()
 # OpenAI API 키 설정
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# AWS S3 클라이언트 설정
+s3_client = boto3.client(
+    "s3",
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+    region_name=os.getenv("AWS_REGION")
+)
+
+# Google Text-to-Speech 클라이언트 설정
+tts_client = texttospeech.TextToSpeechClient()
+
+# GOOGLE_APPLICATION_CREDENTIALS
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+# 라우터 설정
 router = APIRouter()
 
 # .md 파일에서 텍스트 추출 함수
@@ -30,12 +49,13 @@ def generate_topic_based_questions(md_content: str, category: str):
         "인성": f"Here is some content from a portfolio:\n\n{md_content}\n\nPlease create 1 insightful interview question to assess the candidate's personality traits.",
     }
     
-    questions = {"직무": [], "경험": [], "인성": []}
+    questions = {}
+    question_count = 1  # question 번호 초기화
     
     # 주제별 질문 생성
     for topic, prompt in prompts.items():
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an AI assistant that generates structured mock interview questions in Korean."},
                 {"role": "user", "content": prompt}
@@ -46,9 +66,42 @@ def generate_topic_based_questions(md_content: str, category: str):
         
         # 생성된 질문을 리스트로 저장
         question_text = response.choices[0].message['content'].strip().split("\n")
-        questions[topic].extend([q.strip() for q in question_text if q.strip()])
-        
+        for q in question_text:
+            if q.strip():
+                questions[f"question{question_count}"] = f"{topic}: {q.strip()}"
+                question_count += 1
+    
     return questions
+
+# TTS
+def generate_tts_audio(text: str) -> BytesIO:
+    input_text = texttospeech.SynthesisInput(text=text)
+
+    # 남 or 여
+    gender_choice = random.choice([texttospeech.SsmlVoiceGender.MALE, texttospeech.SsmlVoiceGender.FEMALE])
+
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="ko-KR",
+        ssml_gender=gender_choice
+    )
+
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+
+    response = tts_client.synthesize_speech(input=input_text, voice=voice, audio_config=audio_config)
+
+    audio_data = BytesIO(response.audio_content)
+    audio_data.seek(0)
+
+    return audio_data
+
+# S3 업로드 함수
+def upload_to_s3(file_data: BytesIO, file_name: str):
+    s3_bucket_name = os.getenv("S3_BUCKET_NAME")
+    s3_client.upload_fileobj(file_data, s3_bucket_name, file_name)
+    file_url = f"https://{s3_bucket_name}.s3.amazonaws.com/{file_name}"
+    return file_url
 
 # FastAPI 엔드포인트
 @router.post("/questions")
@@ -63,5 +116,13 @@ async def generate_questions(
     # GPT API를 통해 주제별 질문 생성
     questions = generate_topic_based_questions(md_content, category)
     
+    # TTS 변환 -> S3 업로드
+    audio_urls = {}
+    for question_key, question_text in questions.items():
+        audio_data = generate_tts_audio(question_text)
+        file_name = f"{question_key}.mp3"
+        audio_url = upload_to_s3(audio_data, file_name)
+        audio_urls[question_key] = audio_url
+
     # 질문을 JSON 형식으로 반환
-    return JSONResponse(content=questions)
+    return JSONResponse(content={"questions": questions, "audio_urls": audio_urls})

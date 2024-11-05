@@ -22,7 +22,7 @@ def evaluate_and_correct_answer(role: str, question: str, question_topic: str, a
     )
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a feedback assistant for mock interviews."},
             {"role": "user", "content": prompt}

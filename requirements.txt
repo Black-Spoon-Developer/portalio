@@ -13,6 +13,7 @@ google-api-core
 google-auth
 google-generativeai
 googleapis-common-protos
+google-cloud-texttospeech
 grpcio
 grpcio-status
 h11
@@ -51,3 +52,4 @@ torch
 torchvision
 mediapipe
 librosa
+boto3
