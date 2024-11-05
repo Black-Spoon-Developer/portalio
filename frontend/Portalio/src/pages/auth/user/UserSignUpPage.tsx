@@ -1,56 +1,103 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../../../assets/Logo.png";
+import {
+  memberNicknameDuplicateCheckAPI,
+  saveMemberNickname,
+  jobUpdate,
+} from "../../../api/MemberAPI";
+import { mainCategories, subCategories } from "../../../assets/JobCategory";
+
+// Category 타입 정의
+type Category = {
+  id: number;
+  name: string;
+  parentId?: number;
+};
 
 const UserSignupPage: React.FC = () => {
   // 중분류 및 소분류 데이터를 하드코딩합니다.
-  const mainCategories = [
-    { id: 1, name: "기획·전략" },
-    { id: 2, name: "마케팅·홍보·조사" },
-    { id: 3, name: "회계·세무·재무" },
-    { id: 4, name: "인사·노무·HRD" },
-    { id: 5, name: "총무·법무·사무" },
-    { id: 6, name: "IT개발·데이터" },
-    { id: 7, name: "디자인" },
-    { id: 8, name: "영업·판매·무역" },
-    { id: 9, name: "구매·자재·물류" },
-    { id: 10, name: "상품기획·MD" },
-    // 추가 중분류 항목들...
-  ];
-
-  const subCategories = [
-    { id: 1, name: "리스크 관리", parentId: 1 },
-    { id: 2, name: "경영관리", parentId: 1 },
-    { id: 3, name: "CSO", parentId: 1 },
-    { id: 4, name: "CIO", parentId: 1 },
-    { id: 5, name: "기획", parentId: 1 },
-    { id: 6, name: "게임기획", parentId: 1 },
-    // 추가 소분류 항목들...
-    { id: 71, name: "라이센싱", parentId: 2 },
-    { id: 72, name: "PPL", parentId: 2 },
-    { id: 130, name: "행정사", parentId: 3 },
-    // 전체 데이터를 추가합니다.
-  ];
-
+  const [nickname, setNickname] = useState("");
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
-  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [filteredSubCategories, setFilteredSubCategories] = useState<
+    Category[]
+  >([]);
 
   useEffect(() => {
-    // URL에서 access 토큰을 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("access");
-    if (accessToken) {
-      // access 토큰을 localStorage에 저장
-      localStorage.setItem("access", accessToken);
-
-      // URL에서 access 파라미터 제거
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
+    setFilteredSubCategories(subCategories);
   }, []);
 
+  // 닉네임 입력
+  const handleNicknameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  };
+
+  // 닉네임 중복 체크
+  const handleNicknameDuplicateCheck = async () => {
+    try {
+      const response = await memberNicknameDuplicateCheckAPI(nickname);
+      const isDuplicateResult = response?.data.isDuplicate;
+
+      setIsDuplicate(isDuplicateResult);
+      alert(
+        isDuplicate
+          ? "이미 사용 중인 닉네임입니다."
+          : "사용 가능한 닉네임입니다."
+      );
+    } catch (error) {
+      console.log("닉네임 중복 에러", error);
+    }
+  };
+
+  // 직무 대분류 선택
   const handleMainCategoryChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setSelectedMainCategory(e.target.value);
+    const mainCategoryId = e.target.value;
+    setSelectedMainCategory(mainCategoryId);
+
+    // 선택한 메인 카테고리에 해당하는 서브 카테고리만 필터링
+    const filteredSubs = subCategories.filter(
+      (sub) => sub.parentId === parseInt(mainCategoryId)
+    );
+    setFilteredSubCategories(filteredSubs);
+  };
+
+  // 직무 소분류 선택
+  const handleSubCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubCategory(e.target.value);
+  };
+
+  // 닉네임 설정 및 직무 저장
+  const infoUpdate = async () => {
+    // 닉네임 중복 체크가 완료되었고, 직무 선택이 모두 완료된 경우
+    if (
+      !isDuplicate &&
+      nickname &&
+      selectedMainCategory &&
+      selectedSubCategory
+    ) {
+      try {
+        // 닉네임 설정 API 호출
+        const nicknameResponse = await saveMemberNickname(nickname);
+        if (nicknameResponse) {
+          console.log("닉네임 설정 성공:", nicknameResponse.data);
+        }
+
+        // 직무 저장 API 호출
+        const jobResponse = await jobUpdate(parseInt(selectedSubCategory));
+        if (jobResponse) {
+          console.log("직무 저장 성공:", jobResponse.data);
+        }
+
+        alert("닉네임과 직무가 성공적으로 저장되었습니다.");
+      } catch (error) {
+        console.error("정보 업데이트 중 오류:", error);
+      }
+    } else {
+      alert("닉네임 중복 체크와 직무 선택을 완료해 주세요.");
+    }
   };
 
   return (
@@ -72,8 +119,13 @@ const UserSignupPage: React.FC = () => {
                 type="text"
                 placeholder="닉네임을 입력해주세요."
                 className="w-full h-14 p-3 text-lg rounded-xl border-2"
+                value={nickname}
+                onChange={handleNicknameInput}
               />
-              <button className="ml-3 px-4 h-14 text-lg font-bold text-white bg-conceptGreen hover:bg-hoverConceptGreen rounded-xl shadow-md">
+              <button
+                className="ml-3 px-4 h-14 text-lg font-bold text-white bg-conceptGreen hover:bg-hoverConceptGreen rounded-xl shadow-md"
+                onClick={handleNicknameDuplicateCheck}
+              >
                 중복 체크
               </button>
             </div>
@@ -81,10 +133,8 @@ const UserSignupPage: React.FC = () => {
               비속어를 사용한 닉네임은 불가합니다.
             </p>
           </section>
-          {/* 직무 선택 */}
           <section className="w-2/3 my-5">
             <header className="text-3xl font-bold my-4">직무</header>
-            {/* 중분류 선택 */}
             <select
               name="main-category"
               className="w-full h-14 p-3 mb-3 rounded-xl border-2"
@@ -98,11 +148,12 @@ const UserSignupPage: React.FC = () => {
                 </option>
               ))}
             </select>
-            {/* 소분류 선택 */}
             <select
               name="sub-category"
               className="w-full h-14 p-3 rounded-xl border-2"
               disabled={!selectedMainCategory}
+              value={selectedSubCategory}
+              onChange={handleSubCategoryChange}
             >
               <option value="">직무 소분류 선택</option>
               {filteredSubCategories.map((sub) => (
@@ -112,7 +163,10 @@ const UserSignupPage: React.FC = () => {
               ))}
             </select>
           </section>
-          <button className="w-3/6 h-14 text-lg font-bold rounded-3xl shadow-md text-white bg-conceptSkyBlue hover:bg-hoverConceptSkyBlue">
+          <button
+            className="w-3/6 h-14 text-lg font-bold rounded-3xl shadow-md text-white bg-conceptSkyBlue hover:bg-hoverConceptSkyBlue"
+            onClick={infoUpdate}
+          >
             입력 완료
           </button>
         </div>

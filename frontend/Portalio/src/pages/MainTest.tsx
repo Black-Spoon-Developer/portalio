@@ -3,10 +3,11 @@ import { issueAccessToken } from "../api/AuthAPI";
 import { userTokenFetchAPI } from "../api/MemberAPI";
 
 interface UserInfo {
-  memberName: String;
-  memberEmail: String;
-  memberPicture: String;
-  memberRole: String;
+  memberId: string;
+  memberName: string;
+  memberEmail: string;
+  memberPicture: string;
+  memberRole: string;
 }
 
 const MainTest: React.FC = () => {
@@ -39,6 +40,7 @@ const MainTest: React.FC = () => {
           const userInfo = await userTokenFetchAPI();
           if (userInfo) {
             const setUserInfo: UserInfo = {
+              memberId: userInfo.data.memberId,
               memberName: userInfo.data.memberName,
               memberEmail: userInfo.data.memberEmail,
               memberPicture: userInfo.data.memberPicture,
