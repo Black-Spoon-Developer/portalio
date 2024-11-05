@@ -1,5 +1,6 @@
 package com.example.portalio.domain.board.controller;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
@@ -7,9 +8,12 @@ import com.example.portalio.domain.board.dto.BoardSolveResponse;
 import com.example.portalio.domain.board.service.BoardService;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -57,13 +61,15 @@ public class BoardController {
     }
 
     @Operation(summary = "[자유/질문]글 작성", description = "글 작성")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<BoardResponse> registerBoard(
-            @RequestBody @Valid BoardRequest request
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
+            @RequestBody @Valid BoardRequest request,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        BoardResponse response = boardService.registerBoard(request);
+        System.out.println(oauth2User);
+        BoardResponse response = boardService.registerBoard(request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
