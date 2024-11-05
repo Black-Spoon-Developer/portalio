@@ -11,6 +11,7 @@ public enum ErrorCode {
     PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "Portfolio Not Found"),
     ACTIVITYBOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "ActivityBoard Not Found"),
     REPOSITORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Repository Not Found"),
+    JOB_SUB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "JobSubCategory Not Found"),
     MEMBER_NOT_FOUND(HttpStatus.FORBIDDEN, "Member Not Found");
 
     private final HttpStatus status;

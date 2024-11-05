@@ -14,7 +14,7 @@ public class PortfolioResponse {
     private Long portfolioId;
     private String portfolioTitle;
     private String portfolioContent;
-    private Integer portfolioJob;
+    private Long portfolioJob;
     private String portfolioImgKey;
     private String portfolioFileKey;
     private Integer portfolioViews;
@@ -29,7 +29,7 @@ public class PortfolioResponse {
                 .portfolioId(portfolio.getPortfolioId())
                 .portfolioTitle(portfolio.getPortfolioTitle())
                 .portfolioContent(portfolio.getPortfolioContent())
-                .portfolioJob(portfolio.getPortfolioJob())
+                .portfolioJob(portfolio.getJobSubCategory().getJobId())
                 .portfolioImgKey(portfolio.getPortfolioImgKey())
                 .portfolioFileKey(portfolio.getPortfolioFileKey())
                 .portfolioViews(portfolio.getPortfolioViews())

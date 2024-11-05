@@ -24,9 +24,9 @@ public class BoardService {
     private final AwsS3Service awsS3Service;
 
     // nickname, title을 사용한 게시글 검색
-    public BoardListResponse getBoardsSearch(String nickname, String boardTitle) {
+    public BoardListResponse getBoardsSearch(String boardTitle) {
 
-        List<Board> boards = boardRepository.findByNicknameAndBoardTitle(nickname, boardTitle);
+        List<Board> boards = boardRepository.findByBoardTitle(boardTitle);
 
         return BoardListResponse.from(boards);
     }

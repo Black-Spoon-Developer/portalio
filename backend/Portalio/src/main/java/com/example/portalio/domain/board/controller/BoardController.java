@@ -27,13 +27,11 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(summary = "[자유/질문]글 검색", description = "nickname, boardTitle을 사용해 글 검색")
+    @Operation(summary = "[자유/질문]글 검색", description = "boardTitle을 사용해 글 검색")
     @GetMapping
-    public ResponseEntity<BoardListResponse> getBoardsSearch(
-            @RequestParam(required = false) String nickname,
-            @RequestParam(required = false) String boardTitle) {
+    public ResponseEntity<BoardListResponse> getBoardsSearch(@RequestParam(required = false) String boardTitle) {
 
-        BoardListResponse response = boardService.getBoardsSearch(nickname, boardTitle);
+        BoardListResponse response = boardService.getBoardsSearch(boardTitle);
 
         return ResponseEntity.ok(response);
     }
