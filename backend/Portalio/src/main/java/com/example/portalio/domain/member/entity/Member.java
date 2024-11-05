@@ -110,6 +110,10 @@ public class Member extends AuditableCreatedEntity {
         this.memberName = memberName;
     }
 
+    public void setMemberNickname(String memberNickname) {
+        this.memberNickname = memberNickname;
+    }
+
     public void setMemberEmail(String memberEmail) {
         this.memberEmail = memberEmail;
     }
@@ -117,10 +121,7 @@ public class Member extends AuditableCreatedEntity {
     public void setMemberUsername(String memberUsername) {
         this.memberUsername = memberUsername;
     }
-
-    public void setMemberNickname(String memberNickname) {
-        this.memberNickname = memberNickname;
-    }
+    
 
     public void setMemberPicture(String memberPicture) {
         this.memberPicture = memberPicture;

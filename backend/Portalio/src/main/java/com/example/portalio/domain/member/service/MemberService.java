@@ -13,6 +13,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+
     // 회원정보 토큰으로 조회
     public Member memberTokenGet(String username) {
         Member member = memberRepository.findByMemberUsername(username);
@@ -41,6 +42,35 @@ public class MemberService {
         if (requestDTO.getMemberPicture() != null) {
             member.setMemberPicture(requestDTO.getMemberPicture());
         }
+
+        return member;
+    }
+
+    // 닉네임 중복 체크
+    public boolean nicknameDupliCheck(String nickname) {
+
+        Member member = memberRepository.findByMemberNickname(nickname);
+
+        boolean isDuplicate = false;
+
+        if (member != null) {
+            isDuplicate = true;
+        }
+
+        return isDuplicate;
+
+    }
+
+    // 회원 닉네임 설정 및 수정
+    public Member memberNicknameSave(String email, String nickname) {
+        // 이메일로 회원 정보 조회
+        Member member = memberRepository.findByMemberEmail(email);
+
+        // 닉네임 설정 및 수정
+        member.setMemberNickname(nickname);
+
+        // 멤버 객체 저장
+        memberRepository.save(member);
 
         return member;
     }

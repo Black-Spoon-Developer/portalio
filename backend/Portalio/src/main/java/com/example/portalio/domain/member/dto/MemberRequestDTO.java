@@ -1,11 +1,11 @@
 package com.example.portalio.domain.member.dto;
 
 import com.example.portalio.domain.member.enums.Role;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@Builder
 public class MemberRequestDTO {
 
     private String memberName;

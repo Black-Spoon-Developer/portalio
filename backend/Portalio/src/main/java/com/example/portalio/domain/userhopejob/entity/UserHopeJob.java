@@ -36,4 +36,30 @@ public class UserHopeJob {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
+
+    public static UserHopeJob of(JobSubCategory jobSubCategory, Member member) {
+        UserHopeJob userHopeJob = new UserHopeJob();
+        userHopeJob.jobId = jobSubCategory.getJobId();
+        userHopeJob.memberId = member.getMemberId();
+        userHopeJob.addRelation(jobSubCategory, member);
+        return userHopeJob;
+    }
+
+    // 연관관계 설정 메서드
+    public void addRelation(JobSubCategory jobSubCategory, Member member) {
+        if (this.jobSubCategory != null) {
+            this.jobSubCategory.getUserHopeJobs().remove(this);
+        }
+        this.jobSubCategory = jobSubCategory;
+        jobSubCategory.getUserHopeJobs().add(this);
+
+        if (this.member != null) {
+            this.member.getUserHopeJobs().remove(this);
+        }
+
+        this.member = member;
+        member.getUserHopeJobs().add(this);
+    }
+
+
 }
