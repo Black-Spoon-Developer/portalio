@@ -3,6 +3,13 @@ import googleIcon from "../../../assets/googleIcon.png";
 
 const GoogleLogin: React.FC = () => {
   const googleLogin = () => {
+    const isLogin = localStorage.getItem("isLogin");
+
+    if (isLogin) {
+      localStorage.removeItem("isLogin");
+    }
+
+    localStorage.setItem("isLogin", "true");
     window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 

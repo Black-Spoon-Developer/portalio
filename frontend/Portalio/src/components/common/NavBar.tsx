@@ -1,29 +1,32 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import Logo from "../../assets/Logo.png";
-import BasicProfile from "../../assets/BasicProfile.png";
+import React, { useState, useEffect } from "react";
+import UserNavbar from "./navBarComponent/userNavbar";
+import GuestNavbar from "./navBarComponent/guestNavbar";
+import RecruiterNavbar from "./navBarComponent/recruiterNavbar";
 
-// 로그인 여부에 따라 다르도록 해줘야함
 const NavBar: React.FC = () => {
-  const navigate = useNavigate();
+  const [role, setRole] = useState<string | null>(null);
 
-  // 메인 페이지로 이동하게 하는 메서드
-  const goToMainPage = () => {
-    navigate("/");
-  };
+  useEffect(() => {
+    // localStorage에서 userInfo 가져오기
+    const isLogin = localStorage.getItem("isLogin");
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (userInfo) {
+      // userInfo를 파싱하고 memberRole에 따라 상태 업데이트
+      const parsedInfo = JSON.parse(userInfo);
+      setRole(parsedInfo.memberRole);
+    } else {
+      // userInfo가 없으면 역할을 null로 설정 (Guest 상태)
+      setRole(null);
+    }
+  }, []);
 
   return (
-    <div className="flex justify-between">
-      <button onClick={goToMainPage}>
-        {/* 로고 이미지 */}
-        <img src={Logo} alt="no-image" className="p-3 w-48" />
-      </button>
-      {/* 프로필 */}
-      <div className="flex items-center p-3">
-        <div className="mx-3 font-bold">게스트</div>
-        <img src={BasicProfile} alt="" className="size-10 mx-3" />
-      </div>
-    </div>
+    <>
+      {role === "USER" && <UserNavbar />}
+      {role === "RECRUITER" && <RecruiterNavbar />}
+      {role === null && <GuestNavbar />}
+    </>
   );
 };
 
