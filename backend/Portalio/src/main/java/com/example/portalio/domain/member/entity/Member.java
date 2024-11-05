@@ -53,9 +53,6 @@ public class Member extends AuditableCreatedEntity {
     @Column(name = "member_username", nullable = false)
     private String memberUsername;
 
-    @Column(name = "member_email", nullable = false, length = 40, unique = true)
-    private String memberEmail;
-
     @Column(name = "member_picture", nullable = false)
     private String memberPicture;
 
@@ -65,7 +62,7 @@ public class Member extends AuditableCreatedEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id")
-    private RefreshEntity refreshEntity;
+    private RefreshEntity refreshToken;
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Subscribe> followers = new ArrayList<>();
@@ -121,7 +118,7 @@ public class Member extends AuditableCreatedEntity {
     public void setMemberUsername(String memberUsername) {
         this.memberUsername = memberUsername;
     }
-    
+
 
     public void setMemberPicture(String memberPicture) {
         this.memberPicture = memberPicture;
@@ -131,5 +128,8 @@ public class Member extends AuditableCreatedEntity {
         this.memberRole = memberRole;
     }
 
-
+    public void setRefreshEntity(RefreshEntity refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+    
 }

@@ -1,4 +1,4 @@
-package com.example.portalio.common.security.config;
+package com.example.portalio.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -1,4 +1,4 @@
-package com.example.portalio.common.security.config;
+package com.example.portalio.config;
 
 import com.example.portalio.common.jwt.filter.CustomLogoutFilter;
 import com.example.portalio.common.jwt.filter.JwtFilter;

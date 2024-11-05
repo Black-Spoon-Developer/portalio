@@ -3,11 +3,13 @@ package com.example.portalio.common.jwt.service;
 import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,12 @@ import org.springframework.stereotype.Service;
 public class JwtService {
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final MemberRepository memberRepository;
 
-    public JwtService(JwtUtil jwtUtil, RefreshRepository refreshRepository) {
+    public JwtService(JwtUtil jwtUtil, RefreshRepository refreshRepository, MemberRepository memberRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.memberRepository = memberRepository;
     }
 
     public ResponseEntity<?> issue(HttpServletRequest request, HttpServletResponse response) {
@@ -58,7 +62,7 @@ public class JwtService {
         }
 
         // DB에 refresh 토큰이 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshRepository.existsByValue(refresh);
 
         if (!isExist) {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
@@ -72,7 +76,7 @@ public class JwtService {
         String newResfresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 Refresh 토큰 저장
-        refreshRepository.deleteByRefresh(refresh);
+        refreshRepository.deleteByValue(refresh);
         addRefreshEntity(username, newResfresh, 86400000L);
 
         // 쿠키로 refresh 토큰 전달
@@ -98,14 +102,21 @@ public class JwtService {
     }
 
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
 
-        RefreshEntity refreshEntity = new RefreshEntity();
-        refreshEntity.setUsername(username);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
+        // username으로 회원정보 조회
+        Member member = memberRepository.findByMemberUsername(username);
 
+        LocalDateTime issuedAt = LocalDateTime.now();
+        LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
+//        Date expiresAt = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
+
+        // RefreshEntity 저장
         refreshRepository.save(refreshEntity);
+
+        // Member 저장하여 연관 관계 반영
+        memberRepository.save(member);
     }
 
 }

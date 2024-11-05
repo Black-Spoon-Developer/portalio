@@ -22,6 +22,9 @@ public class UserDetail {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(name = "user_email", nullable = false, length = 40, unique = true)
+    private String userEmail;
+
     @Column(name = "user_major", nullable = false, length = 20)
     private String userMajor;
 

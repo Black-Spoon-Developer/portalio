@@ -29,7 +29,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        System.out.println(oAuth2User);
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
@@ -50,7 +49,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String name = oAuth2Response.getName();
         String email = oAuth2Response.getEmail();
         String picture = oAuth2Response.getPicture();
-        System.out.println(username + " " + name + " " + email + " " + picture);
 
         Member existData = memberRepository.findByMemberEmail(email);
 
@@ -72,7 +70,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setRole("USER");
             userDTO.setIsNewUser(true);
 
-            System.out.println(userDTO);
             return new CustomOAuth2User(userDTO);
 
         } else {
@@ -84,7 +81,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setRole("USER");
             userDTO.setIsNewUser(false);
 
-            System.out.println(userDTO);
             return new CustomOAuth2User(userDTO);
         }
     }

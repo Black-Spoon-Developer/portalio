@@ -4,13 +4,15 @@ import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -23,10 +25,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final MemberRepository memberRepository;
 
-    public CustomSuccessHandler(JwtUtil jwtUtil, RefreshRepository refreshRepository) {
+    public CustomSuccessHandler(JwtUtil jwtUtil, RefreshRepository refreshRepository,
+                                MemberRepository memberRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.memberRepository = memberRepository;
     }
 
     // 인증 성공 시
@@ -45,14 +50,12 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         // 토큰 생성
-//        String access = jwtUtil.createJwt("access", username, role, 6000000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
         // Refresh 토큰 저장
         addRefreshEntity(username, refresh, 86400000L);
 
         // 응답 설정
-//        response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
 
@@ -69,7 +72,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60 * 60 * 60);
-        // cookie.setSecure(true); // https 설정시 작성해줘야함
+        cookie.setSecure(true); // https 설정시 작성해줘야함
         cookie.setPath("/"); // 쿠키가 보일 위치 전역으로 설정
         cookie.setHttpOnly(true); // 자바스크립트가 쿠키를 가져가지 못하도록 설정
 
@@ -78,14 +81,20 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
 
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
+        // username으로 회원정보 조회
+        Member member = memberRepository.findByMemberUsername(username);
 
-        RefreshEntity refreshEntity = new RefreshEntity();
-        refreshEntity.setUsername(username);
-        refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(date.toString());
+        LocalDateTime issuedAt = LocalDateTime.now();
+        LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
+//        Date expiresAt = new Date(System.currentTimeMillis() + expiredMs);
 
+        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
+
+        // RefreshEntity 저장
         refreshRepository.save(refreshEntity);
+
+        // Member 저장하여 연관 관계 반영
+        memberRepository.save(member);
     }
 
 }
