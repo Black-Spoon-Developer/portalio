@@ -6,7 +6,6 @@ import com.example.portalio.common.oauth.dto.NaverResponse;
 import com.example.portalio.common.oauth.dto.OAuth2Response;
 import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.entity.Member;
-import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -23,6 +22,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     public CustomOAuth2UserService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
+
     }
 
     @Override
@@ -44,30 +44,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬 oAuth2Response.getProvider() + " " +
+        // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProviderId();
         String name = oAuth2Response.getName();
         String email = oAuth2Response.getEmail();
         String picture = oAuth2Response.getPicture();
 
-        Member existData = memberRepository.findByMemberEmail(email);
+        Member existData = memberRepository.findByMemberUsername(username);
 
         if (existData == null) {
 
-            Member member = new Member();
-            member.setMemberName(name);
-            member.setMemberUsername(username);
-            member.setMemberEmail(email);
-            member.setMemberPicture(picture);
-            member.setMemberRole(Role.USER);
-
-            memberRepository.save(member);
+//            Member member = Member.of(name, username, picture, Role.USER);
+//            memberRepository.saveAndFlush(member);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setName(name);
             userDTO.setUsername(username);
             userDTO.setEmail(email);
             userDTO.setRole("USER");
+            userDTO.setPicture(picture);
             userDTO.setIsNewUser(true);
 
             return new CustomOAuth2User(userDTO);
@@ -77,8 +72,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             UserDTO userDTO = new UserDTO();
             userDTO.setName(name);
             userDTO.setUsername(existData.getMemberUsername());
-            userDTO.setEmail(existData.getMemberEmail());
             userDTO.setRole("USER");
+            userDTO.setPicture(picture);
             userDTO.setIsNewUser(false);
 
             return new CustomOAuth2User(userDTO);

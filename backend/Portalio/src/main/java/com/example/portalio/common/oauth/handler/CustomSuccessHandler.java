@@ -5,7 +5,10 @@ import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.repository.MemberRepository;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
+import com.example.portalio.domain.userdetail.repository.UserDetailRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,12 +29,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final MemberRepository memberRepository;
+    private final UserDetailRepository userDetailRepository;
 
     public CustomSuccessHandler(JwtUtil jwtUtil, RefreshRepository refreshRepository,
-                                MemberRepository memberRepository) {
+                                MemberRepository memberRepository, UserDetailRepository userDetailRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
         this.memberRepository = memberRepository;
+        this.userDetailRepository = userDetailRepository;
     }
 
     // 인증 성공 시
@@ -48,6 +53,28 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
+
+        boolean isNewUser = customUserDetails.isNewUser();
+
+        if (isNewUser) {
+
+            String name = customUserDetails.getName();
+            String picture = customUserDetails.getPicture();
+            String email = customUserDetails.getEmail();
+
+            // 멤버 객체 생성
+            Member member = Member.of(name, username, picture, Role.USER);
+            memberRepository.saveAndFlush(member);
+
+            // userDetail 생성
+            // userDetail 객체 생성 후 저장
+            UserDetail userDetail = UserDetail.of(email, member);
+            userDetailRepository.saveAndFlush(userDetail);
+        }
+
+//        // 멤버 조회
+//        Member member = memberRepository.findByMemberUsername(username);
+//        String email = customUserDetails.getEmail();
 
         // 토큰 생성
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
@@ -72,7 +99,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60 * 60 * 60);
-        cookie.setSecure(true); // https 설정시 작성해줘야함
+//        cookie.setSecure(true); // https 설정시 작성해줘야함
         cookie.setPath("/"); // 쿠키가 보일 위치 전역으로 설정
         cookie.setHttpOnly(true); // 자바스크립트가 쿠키를 가져가지 못하도록 설정
 
@@ -86,7 +113,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
-//        Date expiresAt = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
 

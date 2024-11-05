@@ -13,6 +13,7 @@ import com.example.portalio.domain.portfoliocomment.entity.PortfolioComment;
 import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
 import com.example.portalio.domain.repository.entity.Repository;
 import com.example.portalio.domain.subscribe.entity.Subscribe;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userhopejob.entity.UserHopeJob;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +29,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +37,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 public class Member extends AuditableCreatedEntity {
 
@@ -63,6 +65,9 @@ public class Member extends AuditableCreatedEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id")
     private RefreshEntity refreshToken;
+
+    @OneToOne(mappedBy = "member")
+    private UserDetail userDetail;
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Subscribe> followers = new ArrayList<>();
@@ -111,14 +116,9 @@ public class Member extends AuditableCreatedEntity {
         this.memberNickname = memberNickname;
     }
 
-    public void setMemberEmail(String memberEmail) {
-        this.memberEmail = memberEmail;
-    }
-
     public void setMemberUsername(String memberUsername) {
         this.memberUsername = memberUsername;
     }
-
 
     public void setMemberPicture(String memberPicture) {
         this.memberPicture = memberPicture;
@@ -131,5 +131,18 @@ public class Member extends AuditableCreatedEntity {
     public void setRefreshEntity(RefreshEntity refreshToken) {
         this.refreshToken = refreshToken;
     }
-    
+
+
+    private Member(String name, String username, String picture, Role role) {
+        this.memberName = name;
+        this.memberUsername = username;
+        this.memberPicture = picture;
+        this.memberRole = role;
+    }
+
+    public static Member of(String name, String username, String picture, Role role) {
+        return new Member(name, username, picture, role);
+    }
+
+
 }

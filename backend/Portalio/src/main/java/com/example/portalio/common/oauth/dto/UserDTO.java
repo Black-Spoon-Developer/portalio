@@ -14,6 +14,7 @@ public class UserDTO {
     private String username;
     private String email;
     private String role;
+    private String picture;
     private boolean isNewUser;
 
     public void setName(String name) {
@@ -30,6 +31,10 @@ public class UserDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public void setIsNewUser(boolean isNewUser) {

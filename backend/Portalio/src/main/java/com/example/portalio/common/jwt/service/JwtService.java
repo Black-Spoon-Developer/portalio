@@ -84,7 +84,6 @@ public class JwtService {
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("access", newAccess);
 
-//        response.setHeader("access", newAccess);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
 
     }
@@ -108,7 +107,6 @@ public class JwtService {
 
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
-//        Date expiresAt = new Date(System.currentTimeMillis() + expiredMs);
 
         RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
 
