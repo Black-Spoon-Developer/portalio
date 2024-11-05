@@ -53,3 +53,4 @@ torchvision
 mediapipe
 librosa
 boto3
+pyaudio

@@ -86,7 +86,7 @@ def generate_tts_audio(text: str) -> BytesIO:
     )
 
     audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3
+        audio_encoding=texttospeech.AudioEncoding.LINEAR16
     )
 
     response = tts_client.synthesize_speech(input=input_text, voice=voice, audio_config=audio_config)
@@ -120,7 +120,7 @@ async def generate_questions(
     audio_urls = {}
     for question_key, question_text in questions.items():
         audio_data = generate_tts_audio(question_text)
-        file_name = f"{question_key}.mp3"
+        file_name = f"{question_key}.wav"
         audio_url = upload_to_s3(audio_data, file_name)
         audio_urls[question_key] = audio_url
 
