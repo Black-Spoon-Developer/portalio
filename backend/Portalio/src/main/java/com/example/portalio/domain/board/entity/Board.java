@@ -61,15 +61,16 @@ public class Board extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
-    private Board(BoardRole boardCategory, String boardTitle, String boardContent, String boardImgKey) {
+    private Board(BoardRole boardCategory, String boardTitle, String boardContent, String boardImgKey, Member member) {
         this.boardCategory = boardCategory;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardImgKey = boardImgKey;
+        this.member = member;
     }
 
-    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent, String boardImgKey) {
-        return new Board(boardCategory, boardTitle, boardContent, boardImgKey);
+    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent, String boardImgKey, Member member) {
+        return new Board(boardCategory, boardTitle, boardContent, boardImgKey, member);
     }
 
     public void setBoardCategory(BoardRole boardCategory) {
@@ -87,4 +88,6 @@ public class Board extends AuditableCreatedEntity {
     public void setBoardImgKey(String boardImgKey) { this.boardImgKey = boardImgKey; }
 
     public void setBoardSolve(Boolean boardSolve) { this.boardSolve = boardSolve; }
+
+    public void setMember(Member member) { this.member = member; }
 }

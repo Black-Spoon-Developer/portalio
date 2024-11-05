@@ -21,7 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -90,15 +90,15 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/reissue").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/v1/users/token/issue").permitAll()
-                        .requestMatchers("/api/v1/users/login", "/api/v1/users/signup").permitAll()
-                        .requestMatchers("/api/v1/recruiter/login", "/api/v1/recruiter/signup").permitAll()
-                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**")
-                        .permitAll()
-                        .anyRequest().authenticated());
+//                        .requestMatchers("/").permitAll()
+//                        .requestMatchers("/reissue").permitAll()
+//                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+//                        .requestMatchers("/api/v1/users/token/issue").permitAll()
+//                        .requestMatchers("/api/v1/users/login", "/api/v1/users/signup").permitAll()
+//                        .requestMatchers("/api/v1/recruiter/login", "/api/v1/recruiter/signup").permitAll()
+//                        .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**")
+//                        .permitAll()
+                        .anyRequest().permitAll());
 
         // 세션 설정 : STATELESS
         http
