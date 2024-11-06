@@ -48,20 +48,6 @@ public class MemberService {
 //        return member;
 //    }
 
-    // 닉네임 중복 체크
-    public boolean nicknameDupliCheck(String nickname) {
-
-        Member member = memberRepository.findByMemberNickname(nickname);
-
-        boolean isDuplicate = false;
-
-        if (member != null) {
-            isDuplicate = true;
-        }
-
-        return isDuplicate;
-
-    }
 
 //    // 회원 닉네임 설정 및 수정
 //    public Member memberNicknameSave(String email, String nickname) {

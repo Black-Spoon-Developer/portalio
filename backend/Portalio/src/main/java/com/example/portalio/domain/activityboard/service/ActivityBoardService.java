@@ -62,7 +62,7 @@ public class ActivityBoardService {
 
         Pageable pageable = PageRequest.of(skip/limit, limit);
 
-        List<ActivityBoard> activityBoards = activityBoardRepository.findByMemberNickname(member.getMemberNickname(), pageable);
+        List<ActivityBoard> activityBoards = activityBoardRepository.findByMemberNickname(member.getMemberUsername(), pageable);
 
         return ActivityBoardListResponse.from(activityBoards);
     }

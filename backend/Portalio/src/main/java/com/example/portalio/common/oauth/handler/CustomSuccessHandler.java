@@ -55,7 +55,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        Member member = memberRepository.findByMemberUsername(username);
+        Member member = memberRepository.findByMemberUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
 
         // 회원 인증 여부
         boolean isAuth = false;

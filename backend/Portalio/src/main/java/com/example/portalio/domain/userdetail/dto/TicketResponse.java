@@ -12,7 +12,7 @@ public class TicketResponse {
 
     public static TicketResponse from(UserDetail userDetail) {
         return TicketResponse.builder()
-                .memberId(userDetail.getUserId())
+                .memberId(userDetail.getMemberId())
                 .userTicket(userDetail.getUserTicket())
                 .build();
     }
