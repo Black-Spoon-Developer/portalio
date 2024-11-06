@@ -13,7 +13,6 @@ import com.example.portalio.domain.portfoliocomment.entity.PortfolioComment;
 import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
 import com.example.portalio.domain.repository.entity.Repository;
 import com.example.portalio.domain.subscribe.entity.Subscribe;
-import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userhopejob.entity.UserHopeJob;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,9 +48,6 @@ public class Member extends AuditableCreatedEntity {
     @Column(name = "member_name", nullable = false, length = 20)
     private String memberName;
 
-    @Column(name = "member_nickname")
-    private String memberNickname;
-
     @Column(name = "member_username", nullable = false)
     private String memberUsername;
 
@@ -61,6 +57,9 @@ public class Member extends AuditableCreatedEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "member_role", nullable = false)
     private Role memberRole;
+
+    @Column(name = "member_auth", nullable = false)
+    private boolean memberAuth = false;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id")
@@ -109,10 +108,6 @@ public class Member extends AuditableCreatedEntity {
         this.memberName = memberName;
     }
 
-    public void setMemberNickname(String memberNickname) {
-        this.memberNickname = memberNickname;
-    }
-
     public void setMemberUsername(String memberUsername) {
         this.memberUsername = memberUsername;
     }
@@ -129,6 +124,7 @@ public class Member extends AuditableCreatedEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void setMemberAuth() {this.memberAuth = true;}
 
     private Member(String name, String username, String picture, Role role) {
         this.memberName = name;

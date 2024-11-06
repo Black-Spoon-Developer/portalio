@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class RecruiterDetail {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "member_id")
     private Long userId;
 
     @Column(name = "password", nullable = false, length = 20)
@@ -35,7 +35,7 @@ public class RecruiterDetail {
     private String recruiterPhoneNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
 
 }
