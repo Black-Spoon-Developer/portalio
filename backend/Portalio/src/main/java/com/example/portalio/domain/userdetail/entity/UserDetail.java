@@ -47,6 +47,8 @@ public class UserDetail {
         this.userEmail = email;
     }
 
+    public void setUserTicket(Integer ticket) { this.userTicket = ticket; }
+
 
     public static UserDetail of(String userEmail, Member member) {
         System.out.println(member.getMemberId());

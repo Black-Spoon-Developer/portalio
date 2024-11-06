@@ -8,6 +8,7 @@ import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
 import com.example.portalio.domain.repository.error.RepositoryNotFoundException;
 import com.example.portalio.domain.repository.error.RepositoryUnauthorizedAccessException;
+import com.example.portalio.domain.userdetail.error.NoTicketAvailableException;
 import com.example.portalio.global.error.ErrorCode;
 import com.example.portalio.global.error.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +66,12 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleBoardUnauthorizedAccess(BoardUnauthorizedAccessException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.BOARD_UNAUTHORIZED_ACCESS);
+    }
+
+    @ExceptionHandler(NoTicketAvailableException.class)
+    public ResponseEntity<ErrorResponseDto> handleNoTicketAvailable(NoTicketAvailableException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.NO_TICKET_AVAILABLE);
     }
 
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {
