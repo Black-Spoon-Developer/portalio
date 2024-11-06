@@ -1,15 +1,12 @@
 package com.example.portalio.domain.member.controller;
 
 import com.example.portalio.common.jwt.util.JwtUtil;
-import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,6 +43,21 @@ public class MemberController {
         }
     }
 
+    // 회원 직무 설정
+    @Operation(summary = "[회원] 직무 정보 저장", description = "memberId, JobsubcategoryId 값으로 저장")
+    @PostMapping("/job/save/{memberId}/{jobsubcategoryId}")
+    public ResponseEntity<?> jobInfoSave(@PathVariable("memberId") Long memberId,
+                                         @PathVariable("jobsubcategoryId") Long jobsubcategoryId) {
+
+        try {
+            Member member = memberService.jobInfoSave(memberId, jobsubcategoryId);
+            return ResponseEntity.ok(member);
+        } catch (Exception e) {
+            // 예상치 못한 예외가 발생한 경우
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("직무 정보 처리 중 에러가 발생했습니다.");
+        }
+    }
 
 //    // 멤버 정보 조회
 //    @Operation(summary = "[회원]회원 정보 조회", description = "email 값으로 조회하기")
@@ -75,7 +87,6 @@ public class MemberController {
 //
 //    }
     // 멤버 정보 삭제
-
 
 //    // 닉네임 설정 및 수정
 //    @Operation(summary = "[회원]회원 닉네임 설정 및 수정", description = "이메일로 사용자의 정보를 조회하고 사용자가 입력한 닉네임을 바탕으로 설정 및 수정")

@@ -1,14 +1,11 @@
 package com.example.portalio.common.jwt.entity;
 
 import com.example.portalio.domain.member.entity.Member;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -38,8 +35,8 @@ public class RefreshEntity {
     @Column(nullable = false)
     private Boolean revoked = false;
 
-    @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
-    private Member member;
+//    @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
+//    private Member member;
 
     public static RefreshEntity of(String tokenValue, LocalDateTime issuedAt, LocalDateTime expiresAt, Member member) {
         RefreshEntity refreshEntity = new RefreshEntity();
@@ -47,18 +44,18 @@ public class RefreshEntity {
         refreshEntity.issuedAt = issuedAt;
         refreshEntity.expiresAt = expiresAt;
         refreshEntity.revoked = false;
-        refreshEntity.addRelation(member);
+//        refreshEntity.addRelation(member);
 
         return refreshEntity;
     }
 
     // 연관관계 설정 메서드
-    public void addRelation(Member member) {
-        if (this.member != null) {
-            this.member.setRefreshEntity(null);
-        }
-        this.member = member;
-        member.setRefreshEntity(this);
-    }
+//    public void addRelation(Member member) {
+//        if (this.member != null) {
+//            this.member.setRefreshEntity(null);
+//        }
+//        this.member = member;
+//        member.setRefreshEntity(this);
+//    }
 
 }
