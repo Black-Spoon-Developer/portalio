@@ -20,7 +20,7 @@ public interface ActivityBoardRepository extends JpaRepository<ActivityBoard, Lo
     List<ActivityBoard> findAllByRepository_RepositoryId(Long repositoryId);
 
     @Query("SELECT ab FROM ActivityBoard ab JOIN ab.repository r JOIN r.member m WHERE m.memberUsername = :username")
-    List<ActivityBoard> findByMemberNickname(@Param("nickname") String nickname, Pageable pageable);
+    List<ActivityBoard> findByMemberUsername(@Param("username") String username, Pageable pageable);
 
     Optional<ActivityBoard> findByActivityBoardIdAndRepository_RepositoryId(Long activityBoardId, Long repositoryId);
 }
