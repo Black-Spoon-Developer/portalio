@@ -29,14 +29,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final MemberRepository memberRepository;
-    private final UserDetailRepository userDetailRepository;
+
 
     public CustomSuccessHandler(JwtUtil jwtUtil, RefreshRepository refreshRepository,
-                                MemberRepository memberRepository, UserDetailRepository userDetailRepository) {
+                                MemberRepository memberRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
         this.memberRepository = memberRepository;
-        this.userDetailRepository = userDetailRepository;
+
     }
 
     // 인증 성공 시
@@ -53,28 +53,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
-
-        boolean isNewUser = customUserDetails.isNewUser();
-
-        if (isNewUser) {
-
-            String name = customUserDetails.getName();
-            String picture = customUserDetails.getPicture();
-            String email = customUserDetails.getEmail();
-
-            // 멤버 객체 생성
-            Member member = Member.of(name, username, picture, Role.USER);
-            memberRepository.saveAndFlush(member);
-
-            // userDetail 생성
-            // userDetail 객체 생성 후 저장
-            UserDetail userDetail = UserDetail.of(email, member);
-            userDetailRepository.saveAndFlush(userDetail);
-        }
-
-//        // 멤버 조회
-//        Member member = memberRepository.findByMemberUsername(username);
-//        String email = customUserDetails.getEmail();
 
         // 토큰 생성
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);

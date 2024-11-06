@@ -6,7 +6,9 @@ import com.example.portalio.common.oauth.dto.NaverResponse;
 import com.example.portalio.common.oauth.dto.OAuth2Response;
 import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.repository.MemberRepository;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -54,8 +56,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (existData == null) {
 
-//            Member member = Member.of(name, username, picture, Role.USER);
-//            memberRepository.saveAndFlush(member);
+            // 멤버 객체 생성
+            Member member = Member.of(name, username, picture, Role.USER);
+            memberRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setName(name);
@@ -68,7 +71,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return new CustomOAuth2User(userDTO);
 
         } else {
-
             UserDTO userDTO = new UserDTO();
             userDTO.setName(name);
             userDTO.setUsername(existData.getMemberUsername());

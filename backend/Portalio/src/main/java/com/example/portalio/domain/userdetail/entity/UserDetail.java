@@ -36,7 +36,7 @@ public class UserDetail {
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private Member member;
 
     public void setMember(Member member) {

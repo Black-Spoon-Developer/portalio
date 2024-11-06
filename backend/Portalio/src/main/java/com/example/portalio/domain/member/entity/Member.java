@@ -66,9 +66,6 @@ public class Member extends AuditableCreatedEntity {
     @JoinColumn(name = "refresh_token_id")
     private RefreshEntity refreshToken;
 
-    @OneToOne(mappedBy = "member")
-    private UserDetail userDetail;
-
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Subscribe> followers = new ArrayList<>();
 
