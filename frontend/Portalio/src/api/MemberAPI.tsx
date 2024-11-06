@@ -1,4 +1,5 @@
 import axios from "axios";
+import { UserDetailInfo } from "../type/UserType";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -43,19 +44,25 @@ export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
   }
 };
 
-// 개인 회원 닉네임 설정 및 수정
-export const saveMemberNickname = async (nickname: string) => {
+// 개인 회원 세부 정보 저장 API
+export const saveUserDetail = async (nickname: string, email: string) => {
   try {
     const accessToken = localStorage.getItem("access");
-    const userInfo = JSON.stringify(localStorage.getItem("userInfo"));
+    const userInfo = localStorage.getItem("userInfo");
+
+    // JSON 문자열로 저장된 userInfo를 객체로 변환
     const parsedUserInfo = userInfo ? JSON.parse(userInfo) : null;
 
     if (accessToken && parsedUserInfo) {
-      const email = parsedUserInfo.memberEmail;
+      const request: UserDetailInfo = {
+        memberId: parsedUserInfo.memberId,
+        nickname,
+        email,
+      };
 
-      const response = await axios.put(
-        `${BASE_URL}/api/v1/users/${email}/nickname/${nickname}`,
-        {},
+      const response = await axios.post(
+        `${BASE_URL}/api/v1/users/`,
+        { request },
         {
           headers: { access: accessToken },
         }
@@ -87,5 +94,26 @@ export const jobUpdate = async (jobsubcategoryId: number) => {
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+// 회원 정보 입력 후 인증 처리 API
+export const authUser = async () => {
+  try {
+    const accessToken = localStorage.getItem("access");
+    await axios.post(
+      `${BASE_URL}/api/v1/users/auth`,
+      {},
+      {
+        headers: {
+          access: accessToken,
+        },
+      }
+    );
+
+    return "회원 인증 완료";
+  } catch (error) {
+    console.log(error);
+    alert(error);
   }
 };
