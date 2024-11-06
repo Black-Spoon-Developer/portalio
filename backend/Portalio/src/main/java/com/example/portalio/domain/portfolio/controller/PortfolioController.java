@@ -1,14 +1,19 @@
 package com.example.portalio.domain.portfolio.controller;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
 import com.example.portalio.domain.portfolio.dto.PortfolioResponse;
 import com.example.portalio.domain.portfolio.service.PortfolioService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/portfolio")
+@RequestMapping("/api/v1/portfolios")
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
@@ -57,49 +62,67 @@ public class PortfolioController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "[포트폴리오]글 전체보기(내가 쓴 글만)", description = "페이지네이션")
+    @GetMapping("/my/{username}")
+    public ResponseEntity<PortfolioListResponse> getMyPortfoliosList(
+            @RequestParam(defaultValue = "0") int skip,
+            @RequestParam(defaultValue = "10") int limit,
+            @PathVariable String username) {
+
+        PortfolioListResponse response = portfolioService.getMyPortfolioList(skip, limit, username);
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "[포트폴리오]글 작성", description = "글 작성")
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping
     public ResponseEntity<PortfolioResponse> registerPortfolio(
-            @RequestBody @Valid PortfolioRequest request
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
+            @RequestBody @Valid PortfolioRequest request,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        PortfolioResponse response = portfolioService.registerPortfolio(request);
+        PortfolioResponse response = portfolioService.registerPortfolio(request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[포트폴리오]글 수정", description = "글 수정")
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{portfoliosId}")
     public ResponseEntity<PortfolioResponse> updatePortfolio(
             @PathVariable Long portfoliosId,
-            @RequestBody @Valid PortfolioRequest request
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-        PortfolioResponse response = portfolioService.updatePortfolio(portfoliosId, request);
+            @RequestBody @Valid PortfolioRequest request,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+
+        PortfolioResponse response = portfolioService.updatePortfolio(portfoliosId, request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[포트폴리오]글 삭제", description = "글 삭제")
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{portfoliosId}")
     public ResponseEntity<PortfolioResponse> deletePortfolio(
-            @PathVariable Long portfoliosId
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-        PortfolioResponse response = portfolioService.deletePortfolio(portfoliosId);
+            @PathVariable Long portfoliosId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+
+        PortfolioResponse response = portfolioService.deletePortfolio(portfoliosId, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[포트폴리오] 게시하기", description = "포르폴리오 게시")
-    //    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{portfoliosId}/post")
     public ResponseEntity<PortfolioPostResponse> postPortfolio(
-            @PathVariable Long portfoliosId
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
+            @PathVariable Long portfoliosId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        PortfolioPostResponse response = portfolioService.postPortfolio(portfoliosId);
+        PortfolioPostResponse response = portfolioService.postPortfolio(portfoliosId, oauth2User);
 
         return ResponseEntity.ok(response);
     }

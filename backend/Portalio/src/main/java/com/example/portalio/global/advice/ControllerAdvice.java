@@ -2,10 +2,12 @@ package com.example.portalio.global.advice;
 
 import com.example.portalio.domain.activityboard.error.ActivityBoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
+import com.example.portalio.domain.board.error.BoardUnauthorizedAccessException;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
-import com.example.portalio.domain.repository.error.RepositoryNotFoundExcception;
+import com.example.portalio.domain.repository.error.RepositoryNotFoundException;
+import com.example.portalio.domain.repository.error.RepositoryUnauthorizedAccessException;
 import com.example.portalio.global.error.ErrorCode;
 import com.example.portalio.global.error.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +43,8 @@ public class ControllerAdvice {
         return getResponse(ErrorCode.JOB_SUB_CATEGORY_NOT_FOUND);
     }
 
-    @ExceptionHandler(RepositoryNotFoundExcception.class)
-    public ResponseEntity<ErrorResponseDto> handleRepositoryNotFound(RepositoryNotFoundExcception e) {
+    @ExceptionHandler(RepositoryNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleRepositoryNotFound(RepositoryNotFoundException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.REPOSITORY_NOT_FOUND);
     }
@@ -51,6 +53,18 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleMemberNotFound(MemberNotFoundException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.MEMBER_NOT_FOUND);
+    }
+
+    @ExceptionHandler(RepositoryUnauthorizedAccessException.class)
+    public ResponseEntity<ErrorResponseDto> handleRepositoryUnauthorizedAccess(RepositoryUnauthorizedAccessException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.REPOSITORY_UNAUTHORIZED_ACCESS);
+    }
+
+    @ExceptionHandler(BoardUnauthorizedAccessException.class)
+    public ResponseEntity<ErrorResponseDto> handleBoardUnauthorizedAccess(BoardUnauthorizedAccessException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.BOARD_UNAUTHORIZED_ACCESS);
     }
 
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {

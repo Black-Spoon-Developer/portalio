@@ -12,10 +12,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
 
-    @Query("SELECT p FROM Portfolio p WHERE p.jobSubCategory.jobId = :jobId AND p.portfolioTitle LIKE %:portfolioTitle%")
+    @Query("SELECT p FROM Portfolio p WHERE p.jobSubCategory.jobId = :jobId AND p.portfolioTitle LIKE %:portfolioTitle% AND p.portfolioPost = true")
     List<Portfolio> findByJobSubCategoryJobIdAndPortfolioTitle(@Param("jobId") Long jobId, @Param("portfolioTitle") String portfolioTitle);
 
     List<Portfolio> findAllByPortfolioPostTrueOrderByCreatedDesc(Pageable pageable);
 
-    Optional<Portfolio> findByPortfolioId(Long portfolioId);
+    List<Portfolio> findAllByMember_MemberIdOrderByCreatedDesc(Long memberId, Pageable pageable);
+
+    Optional<Portfolio> findByPortfolioIdAndMember_MemberId(Long portfolioId, Long memberId);
 }

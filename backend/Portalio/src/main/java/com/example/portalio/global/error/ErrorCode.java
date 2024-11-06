@@ -12,7 +12,9 @@ public enum ErrorCode {
     ACTIVITYBOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "ActivityBoard Not Found"),
     REPOSITORY_NOT_FOUND(HttpStatus.NOT_FOUND, "Repository Not Found"),
     JOB_SUB_CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "JobSubCategory Not Found"),
-    MEMBER_NOT_FOUND(HttpStatus.FORBIDDEN, "Member Not Found");
+    MEMBER_NOT_FOUND(HttpStatus.FORBIDDEN, "Member Not Found"),
+    REPOSITORY_UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "Repository Unauthorized Access"),
+    BOARD_UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "Board Unauthorized Access");
 
     private final HttpStatus status;
     private final String message;
