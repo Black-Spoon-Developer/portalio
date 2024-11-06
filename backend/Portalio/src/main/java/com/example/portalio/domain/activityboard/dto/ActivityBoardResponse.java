@@ -15,7 +15,6 @@ public class ActivityBoardResponse {
     private String activityBoardTitle;
     private String activityBoardContent;
     private LocalDate activityBoardDate;
-    private Boolean activityBoardPost;
     private String activityBoardImageKey;
     private Long repositoryId;
 
@@ -25,7 +24,6 @@ public class ActivityBoardResponse {
                 .activityBoardTitle(activityBoard.getActivityBoardTitle())
                 .activityBoardContent(activityBoard.getActivityBoardContent())
                 .activityBoardDate(activityBoard.getActivityBoardDate())
-                .activityBoardPost(activityBoard.getActivityBoardPost())
                 .activityBoardImageKey(activityBoard.getActivityBoardImgKey() != null ? activityBoard.getActivityBoardImgKey() : DEFAULT_IMAGE_URL)
                 .repositoryId(activityBoard.getRepository().getRepositoryId())
                 .build();

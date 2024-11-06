@@ -1,6 +1,7 @@
 package com.example.portalio.domain.member.service;
 
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,8 @@ public class MemberService {
 
     // 회원정보 토큰으로 조회
     public Member memberTokenGet(String username) {
-        Member member = memberRepository.findByMemberUsername(username);
+        Member member = memberRepository.findByMemberUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
         return member;
     }
 

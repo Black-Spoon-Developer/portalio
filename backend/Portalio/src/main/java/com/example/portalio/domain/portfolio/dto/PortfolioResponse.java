@@ -22,7 +22,7 @@ public class PortfolioResponse {
     private Integer portfolioRecommendationCount;
     private Boolean portfolioPost;
     private LocalDateTime created;
-//    private Long memberId;
+    private Long memberId;
 
     public static PortfolioResponse from(Portfolio portfolio) {
         return PortfolioResponse.builder()
@@ -37,7 +37,7 @@ public class PortfolioResponse {
                 .portfolioRecommendationCount(portfolio.getPortfolioRecommendationCount())
                 .portfolioPost(portfolio.getPortfolioPost())
                 .created(portfolio.getCreated())
-//                .memberId(portfolio.getMember().getMemberId())
+                .memberId(portfolio.getMember().getMemberId())
                 .build();
     }
 }

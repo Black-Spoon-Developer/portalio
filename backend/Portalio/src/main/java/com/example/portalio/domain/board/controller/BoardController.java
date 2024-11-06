@@ -60,6 +60,18 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "[자유/질문]글 전체보기(내가 쓴 글만)", description = "페이지네이션")
+    @GetMapping("/my/{username}")
+    public ResponseEntity<BoardListResponse> getMyBoardsList(
+            @RequestParam(defaultValue = "0") int skip,
+            @RequestParam(defaultValue = "10") int limit,
+            @PathVariable String username) {
+
+        BoardListResponse response = boardService.getMyBoardList(skip, limit, username);
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "[자유/질문]글 작성", description = "글 작성")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
@@ -68,43 +80,45 @@ public class BoardController {
             @RequestBody @Valid BoardRequest request,
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        System.out.println(oauth2User);
         BoardResponse response = boardService.registerBoard(request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[자유/질문]글 수정", description = "글 수정")
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(
             @PathVariable Long boardId,
-            @RequestBody @Valid BoardRequest request
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-        BoardResponse response = boardService.updateBoard(boardId, request);
+            @RequestBody @Valid BoardRequest request,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+        BoardResponse response = boardService.updateBoard(boardId, request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[자유/질문]글 삭제", description = "글 삭제")
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @DeleteMapping("/{boardId}")
     public ResponseEntity<BoardResponse> deleteBoard(
-            @PathVariable Long boardId
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-        BoardResponse response = boardService.deleteBoard(boardId);
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+        BoardResponse response = boardService.deleteBoard(boardId, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[자유/질문] 질문 해결 변경하기", description = "무조건 200, 한번 해결하면 변경 불가")
-    //    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/{boardId}/solve")
     public ResponseEntity<BoardSolveResponse> solveBoard(
-            @PathVariable Long boardId
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        BoardSolveResponse response = boardService.solveBoard(boardId);
+        BoardSolveResponse response = boardService.solveBoard(boardId, oauth2User);
 
         return ResponseEntity.ok(response);
     }

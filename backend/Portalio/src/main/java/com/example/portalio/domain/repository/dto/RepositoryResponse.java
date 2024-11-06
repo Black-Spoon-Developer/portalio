@@ -18,7 +18,8 @@ public class RepositoryResponse {
     private LocalDate endDate;
     private String repositoryImgKey;
     private String repositoryFileKey;
-//    private Long memberId;
+    private Boolean repositoryPost;
+    private Long memberId;
 
     public static RepositoryResponse from(Repository repository) {
         return RepositoryResponse.builder()
@@ -29,7 +30,8 @@ public class RepositoryResponse {
                 .endDate(repository.getEndDate())
                 .repositoryImgKey(repository.getRepositoryImgKey())
                 .repositoryFileKey(repository.getRepositoryFileKey())
-//                .memberId(repository.getMember().getMemberId())
+                .repositoryPost(repository.getRepositoryPost())
+                .memberId(repository.getMember().getMemberId())
                 .build();
     }
 }
