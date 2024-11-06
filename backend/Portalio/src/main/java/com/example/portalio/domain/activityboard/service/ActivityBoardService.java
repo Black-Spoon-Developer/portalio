@@ -1,14 +1,20 @@
 package com.example.portalio.domain.activityboard.service;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.activityboard.dto.ActivityBoardListResponse;
-import com.example.portalio.domain.activityboard.dto.ActivityBoardPostResponse;
 import com.example.portalio.domain.activityboard.dto.ActivityBoardRequest;
 import com.example.portalio.domain.activityboard.dto.ActivityBoardResponse;
 import com.example.portalio.domain.activityboard.entity.ActivityBoard;
 import com.example.portalio.domain.activityboard.error.ActivityBoardNotFoundException;
 import com.example.portalio.domain.activityboard.repisotory.ActivityBoardRepository;
+import com.example.portalio.domain.board.dto.BoardListResponse;
+import com.example.portalio.domain.board.entity.Board;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.repository.entity.Repository;
-import com.example.portalio.domain.repository.error.RepositoryNotFoundExcception;
+import com.example.portalio.domain.repository.error.RepositoryNotFoundException;
+import com.example.portalio.domain.repository.error.RepositoryUnauthorizedAccessException;
 import com.example.portalio.domain.repository.repository.RepositoryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +29,7 @@ public class ActivityBoardService {
 
     private final ActivityBoardRepository activityBoardRepository;
     private final RepositoryRepository repositoryRepository;
+    private final MemberRepository memberRepository;
 
     // 활동게시판 검색
     public ActivityBoardListResponse getActivityBoardSearch(String searchTerm) {
@@ -33,7 +40,7 @@ public class ActivityBoardService {
     // 게시글 상세보기, params : activityId
     public ActivityBoardResponse getActivityBoardDetails(Long activityId) {
 
-        ActivityBoard activityBoard = activityBoardRepository.findByActivityBoardId(activityId)
+        ActivityBoard activityBoard = activityBoardRepository.findById(activityId)
                 .orElseThrow(ActivityBoardNotFoundException::new);
 
         return ActivityBoardResponse.from(activityBoard);
@@ -43,7 +50,19 @@ public class ActivityBoardService {
 
         Pageable pageable = PageRequest.of(skip/limit, limit);
 
-        List<ActivityBoard> activityBoards = activityBoardRepository.findAllByActivityBoardPostTrueOrderByCreatedDesc(pageable);
+        List<ActivityBoard> activityBoards = activityBoardRepository.findAllByOrderByCreatedDesc(pageable);
+
+        return ActivityBoardListResponse.from(activityBoards);
+    }
+
+    public ActivityBoardListResponse getMyActivityBoardList(int skip, int limit, String username) {
+
+        Member member = memberRepository.findByMemberUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Pageable pageable = PageRequest.of(skip/limit, limit);
+
+        List<ActivityBoard> activityBoards = activityBoardRepository.findByMemberNickname(member.getMemberNickname(), pageable);
 
         return ActivityBoardListResponse.from(activityBoards);
     }
@@ -52,16 +71,20 @@ public class ActivityBoardService {
 
         Repository repository = findRepository(repositoryId);
 
-        return ActivityBoardListResponse.from(repository.getActivityBoards());
+        List<ActivityBoard> activityBoards = activityBoardRepository.findAllByRepository_RepositoryId(repository.getRepositoryId());
+
+        return ActivityBoardListResponse.from(activityBoards);
     }
 
     // 활동게시판 게시글 등록
     @Transactional
-    public ActivityBoardResponse registerActivityBoard(ActivityBoardRequest request, Long repositoryId) {
+    public ActivityBoardResponse registerActivityBoard(ActivityBoardRequest request, Long repositoryId, CustomOAuth2User oauth2User) {
 
-        Repository repository = findRepository(repositoryId);
+        Member member = findMember(oauth2User.getMemberId());
 
-        ActivityBoard activityBoard = ActivityBoard.of(request.getActivityBoardTitle(), request.getActivityBoardContent(), request.getActivityBoardDate(), request.getActivityBoardImgKey(), request.getActivityBoardPost());
+        Repository repository = findMyRepository(repositoryId, member.getMemberId());
+
+        ActivityBoard activityBoard = ActivityBoard.of(request.getActivityBoardTitle(), request.getActivityBoardContent(), request.getActivityBoardDate(), request.getActivityBoardImgKey());
 
         activityBoard.setRepository(repository);
 
@@ -71,9 +94,13 @@ public class ActivityBoardService {
     }
 
     @Transactional
-    public ActivityBoardResponse updateActivityBoard(Long activityId, ActivityBoardRequest request) {
+    public ActivityBoardResponse updateActivityBoard(Long repositoryId, Long activityId, ActivityBoardRequest request, CustomOAuth2User oauth2User) {
 
-        ActivityBoard activityBoard = activityBoardRepository.findByActivityBoardId(activityId)
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = findMyRepository(repositoryId, member.getMemberId());
+
+        ActivityBoard activityBoard = activityBoardRepository.findByActivityBoardIdAndRepository_RepositoryId(activityId, repository.getRepositoryId())
                 .orElseThrow(ActivityBoardNotFoundException::new);
 
         if(request.getActivityBoardTitle() != null) {
@@ -88,9 +115,6 @@ public class ActivityBoardService {
         if(request.getActivityBoardImgKey() != null) {
             activityBoard.setActivityBoardImgKey(request.getActivityBoardImgKey());
         }
-        if(request.getActivityBoardPost() != null) {
-            activityBoard.setActivityBoardPost(request.getActivityBoardPost());
-        }
 
         activityBoardRepository.save(activityBoard);
 
@@ -99,9 +123,13 @@ public class ActivityBoardService {
 
     // 활동 게시글 삭제
     @Transactional
-    public ActivityBoardResponse deleteActivityBoard(Long activityId) {
+    public ActivityBoardResponse deleteActivityBoard(Long repositoryId, Long activityId, CustomOAuth2User oauth2User) {
 
-        ActivityBoard activityBoard = activityBoardRepository.findByActivityBoardId(activityId)
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = findMyRepository(repositoryId, member.getMemberId());
+
+        ActivityBoard activityBoard = activityBoardRepository.findByActivityBoardIdAndRepository_RepositoryId(activityId, repository.getRepositoryId())
                 .orElseThrow(ActivityBoardNotFoundException::new);
 
         activityBoardRepository.delete(activityBoard);
@@ -109,22 +137,20 @@ public class ActivityBoardService {
         return ActivityBoardResponse.from(activityBoard);
     }
 
-    @Transactional
-    public ActivityBoardPostResponse postActivityBoard(Long activityId) {
-
-        ActivityBoard activityBoard = activityBoardRepository.findByActivityBoardId(activityId)
-                .orElseThrow(ActivityBoardNotFoundException::new);
-
-        activityBoard.setActivityBoardPost(!activityBoard.getActivityBoardPost());
-
-        activityBoardRepository.save(activityBoard);
-
-        return ActivityBoardPostResponse.from(activityBoard);
-    }
-
     private Repository findRepository(Long repositoryId) {
 
-        return repositoryRepository.findByRepositoryId(repositoryId)
-                .orElseThrow(RepositoryNotFoundExcception::new);
+        return repositoryRepository.findById(repositoryId)
+                .orElseThrow(RepositoryNotFoundException::new);
+    }
+
+    private Repository findMyRepository(Long repositoryId, Long memberId) {
+
+        return repositoryRepository.findByRepositoryIdAndMember_MemberId(repositoryId, memberId)
+                .orElseThrow(RepositoryUnauthorizedAccessException::new);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

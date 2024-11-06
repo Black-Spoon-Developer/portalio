@@ -1,6 +1,7 @@
 package com.example.portalio.domain.member.service;
 
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class MemberService {
     // 회원 정보 입력 후 인증 해주는 로직
     public Member authMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
         member.setMemberAuth();
 
@@ -47,6 +48,20 @@ public class MemberService {
 //        return member;
 //    }
 
+    // 닉네임 중복 체크
+    public boolean nicknameDupliCheck(String nickname) {
+
+        Member member = memberRepository.findByMemberNickname(nickname);
+
+        boolean isDuplicate = false;
+
+        if (member != null) {
+            isDuplicate = true;
+        }
+
+        return isDuplicate;
+
+    }
 
 //    // 회원 닉네임 설정 및 수정
 //    public Member memberNicknameSave(String email, String nickname) {

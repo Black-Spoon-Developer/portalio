@@ -1,14 +1,17 @@
 package com.example.portalio.domain.activityboard.controller;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.activityboard.dto.ActivityBoardListResponse;
-import com.example.portalio.domain.activityboard.dto.ActivityBoardPostResponse;
 import com.example.portalio.domain.activityboard.dto.ActivityBoardRequest;
 import com.example.portalio.domain.activityboard.dto.ActivityBoardResponse;
 import com.example.portalio.domain.activityboard.service.ActivityBoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -56,58 +59,67 @@ public class ActivityBoardController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "[활동게시판]글 전체보기(내가 쓴 글만)", description = "페이지네이션")
+    @GetMapping("/my/{username}")
+    public ResponseEntity<ActivityBoardListResponse> getMyActivityList(
+            @RequestParam(defaultValue = "0") int skip,
+            @RequestParam(defaultValue = "10") int limit,
+            @PathVariable String username) {
+
+        ActivityBoardListResponse response = activityBoardService.getMyActivityBoardList(skip, limit, username);
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "[활동게시판]특정 레포지토리에 포함된 활동게시글만 불러오기", description = "레포지토리 id값을 보내 해당 활동게시글만 가져오기")
     @GetMapping("/{repositoryId}")
     public ResponseEntity<ActivityBoardListResponse> getActivityBoardListDetail(
             @PathVariable Long repositoryId) {
+
         ActivityBoardListResponse response = activityBoardService.getActivityBoardListDetail(repositoryId);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[활동게시판]글 작성", description = "글 작성")
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PostMapping("/{repositoryId}")
     public ResponseEntity<ActivityBoardResponse> registerActivityBoard(
             @RequestBody @Valid ActivityBoardRequest request,
-            @PathVariable Long repositoryId
-            /** @AuthenticationPrincipal CustomOauth2User oauth2User **/) {
-        ActivityBoardResponse response = activityBoardService.registerActivityBoard(request, repositoryId);
+            @PathVariable Long repositoryId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+
+        ActivityBoardResponse response = activityBoardService.registerActivityBoard(request, repositoryId, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[활동게시판]글 수정", description = "글 수정")
-    //    @PreAuthorize("isAuthenticated()")
-    @PatchMapping("/{activityId}")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/{repositoryId}/{activityId}")
     public ResponseEntity<ActivityBoardResponse> updateActivityBoard(
+            @PathVariable Long repositoryId,
             @PathVariable Long activityId,
-            @RequestBody @Valid ActivityBoardRequest request
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-        ActivityBoardResponse response = activityBoardService.updateActivityBoard(activityId, request);
+            @RequestBody @Valid ActivityBoardRequest request,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+
+        ActivityBoardResponse response = activityBoardService.updateActivityBoard(repositoryId, activityId, request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[활동게시판]글 삭제", description = "글 삭제")
-    //    @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/{activityId}")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{repositoryId}/{activityId}")
     public ResponseEntity<ActivityBoardResponse> deleteActivityBoard(
-            @PathVariable Long activityId
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-        ActivityBoardResponse response = activityBoardService.deleteActivityBoard(activityId);
+            @PathVariable Long repositoryId,
+            @PathVariable Long activityId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        return ResponseEntity.ok(response);
-    }
-
-    @Operation(summary = "[활동게시판]글 게시", description = "유저가 자신의 활동글을 게시 여부 결정 Boolean으로 결정함")
-    //    @PreAuthorize("isAuthenticated()")
-    @PatchMapping("/{activityId}/post")
-    public ResponseEntity<ActivityBoardPostResponse> postActivityBoard(
-            @PathVariable Long activityId
-            /**@AuthenticationPrincipal CustomOauth2User oauth2User 로그인 구현 후 주석 해제 **/) {
-
-        ActivityBoardPostResponse response = activityBoardService.postActivityBoard(activityId);
+        ActivityBoardResponse response = activityBoardService.deleteActivityBoard(repositoryId, activityId, oauth2User);
 
         return ResponseEntity.ok(response);
     }

@@ -70,17 +70,18 @@ public class Portfolio extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioRecom> portfolioRecoms = new ArrayList<>();
 
-    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory) {
+    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory, Member member) {
         this.portfolioTitle = portfolioTitle;
         this.portfolioContent = portfolioContent;
         this.portfolioImgKey = portfolioImgKey;
         this.portfolioFileKey = portfolioFileKey;
         this.portfolioThumbnailImg = portfolioThumbnailImg;
         this.jobSubCategory = jobSubCategory;
+        this.member = member;
     }
 
-    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory) {
-        return new Portfolio(portfolioTitle, portfolioContent, portfolioImgKey, portfolioFileKey, portfolioThumbnailImg, jobSubCategory);
+    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory, Member member) {
+        return new Portfolio(portfolioTitle, portfolioContent, portfolioImgKey, portfolioFileKey, portfolioThumbnailImg, jobSubCategory, member);
     }
 
     public void setPortfolioTitle(String portfolioTitle) { this.portfolioTitle = portfolioTitle; }
@@ -96,4 +97,6 @@ public class Portfolio extends AuditableCreatedEntity {
     public void setPortfolioPost(Boolean portfolioPost) { this.portfolioPost = portfolioPost; }
 
     public void setJobSubCategory(JobSubCategory jobSubCategory) { this.jobSubCategory = jobSubCategory; }
+
+    public void setMember(Member member) { this.member = member; }
 }

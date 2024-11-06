@@ -12,10 +12,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ActivityBoardRepository extends JpaRepository<ActivityBoard, Long> {
 
-    @Query("SELECT a FROM ActivityBoard a WHERE ( :activityBoardTitle IS NULL OR LOWER(a.activityBoardTitle) LIKE LOWER(concat('%', :activityBoardTitle, '%'))) AND a.activityBoardPost = true")
+    @Query("SELECT a FROM ActivityBoard a WHERE ( :activityBoardTitle IS NULL OR LOWER(a.activityBoardTitle) LIKE LOWER(concat('%', :activityBoardTitle, '%')))")
     List<ActivityBoard> findByActivityBoardTitle(@Param("activityBoardTitle") String activityBoardTitle);
 
-    List<ActivityBoard> findAllByActivityBoardPostTrueOrderByCreatedDesc(Pageable pageable);
+    List<ActivityBoard> findAllByOrderByCreatedDesc(Pageable pageable);
 
-    Optional<ActivityBoard> findByActivityBoardId(Long activityBoardId);
+    List<ActivityBoard> findAllByRepository_RepositoryId(Long repositoryId);
+
+    @Query("SELECT ab FROM ActivityBoard ab JOIN ab.repository r JOIN r.member m WHERE m.memberNickname = :nickname")
+    List<ActivityBoard> findByMemberNickname(@Param("nickname") String nickname, Pageable pageable);
+
+    Optional<ActivityBoard> findByActivityBoardIdAndRepository_RepositoryId(Long activityBoardId, Long repositoryId);
 }

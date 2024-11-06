@@ -39,23 +39,19 @@ public class ActivityBoard extends AuditableCreatedEntity {
     @Column(name = "activity_board_img_key", nullable = false, columnDefinition = "TEXT")
     private String activityBoardImgKey;
 
-    @Column(name = "activity_board_post", nullable = false)
-    private Boolean activityBoardPost = false;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "repository_id")
     private Repository repository;
 
-    private ActivityBoard(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate, String activityBoardImgKey, Boolean activityBoardPost) {
+    private ActivityBoard(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate, String activityBoardImgKey) {
         this.activityBoardTitle = activityBoardTitle;
         this.activityBoardContent = activityBoardContent;
         this.activityBoardDate = activityBoardDate;
         this.activityBoardImgKey = activityBoardImgKey;
-        this.activityBoardPost = activityBoardPost;
     }
 
-    public static ActivityBoard of(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate, String activityBoardImgKey, Boolean activityBoardPost) {
-        return new ActivityBoard(activityBoardTitle, activityBoardContent, activityBoardDate, activityBoardImgKey, activityBoardPost);
+    public static ActivityBoard of(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate, String activityBoardImgKey) {
+        return new ActivityBoard(activityBoardTitle, activityBoardContent, activityBoardDate, activityBoardImgKey);
     }
 
     public void setActivityBoardTitle(String activityBoardTitle) {
@@ -72,10 +68,6 @@ public class ActivityBoard extends AuditableCreatedEntity {
 
     public void setActivityBoardImgKey(String activityBoardImgKey) {
         this.activityBoardImgKey = activityBoardImgKey;
-    }
-
-    public void setActivityBoardPost(Boolean activityBoardPost) {
-        this.activityBoardPost = activityBoardPost;
     }
 
     public void setRepository(Repository repository) {

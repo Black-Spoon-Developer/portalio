@@ -19,7 +19,7 @@ public class BoardResponse {
     private Integer boardViews;
     private Integer boardRecommendationCount;
     private LocalDateTime created;
-//    private String nickname;
+    private String nickname;
     private Long memberId;
 
     public static BoardResponse from(Board board) {
@@ -33,7 +33,7 @@ public class BoardResponse {
                 .boardViews(board.getBoardViews())
                 .boardRecommendationCount(board.getBoardRecommendationCount())
                 .created(board.getCreated())
-//                .nickname(board.getMember().getMemberNickname())
+                .nickname(board.getMember().getMemberNickname())
                 .memberId(board.getMember().getMemberId())
                 .build();
     }

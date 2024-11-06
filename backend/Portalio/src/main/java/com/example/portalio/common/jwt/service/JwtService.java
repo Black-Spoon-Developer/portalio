@@ -5,6 +5,7 @@ import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.UserResponseDTO;
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -122,7 +123,8 @@ public class JwtService {
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
 
         // username으로 회원정보 조회
-        Member member = memberRepository.findByMemberUsername(username);
+        Member member = memberRepository.findByMemberUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
 
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);

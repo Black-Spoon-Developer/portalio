@@ -7,6 +7,7 @@ import com.example.portalio.common.oauth.dto.OAuth2Response;
 import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.enums.Role;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2Response.getEmail();
         String picture = oAuth2Response.getPicture();
 
-        Member existData = memberRepository.findByMemberUsername(username);
+        Member existData = memberRepository.findByMemberUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
 
         if (existData == null) {
 

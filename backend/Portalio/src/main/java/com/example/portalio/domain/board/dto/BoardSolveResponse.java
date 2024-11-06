@@ -8,13 +8,13 @@ import lombok.Getter;
 @Builder
 public class BoardSolveResponse {
     private Long boardId;
-//    private Long memberId;
+    private Long memberId;
     private Boolean boardSolve;
 
     public static BoardSolveResponse from(Board board) {
         return BoardSolveResponse.builder()
                 .boardId(board.getBoardId())
-//                .memberId(board.getMember().getMemberId())
+                .memberId(board.getMember().getMemberId())
                 .boardSolve(board.getBoardSolve())
                 .build();
     }
