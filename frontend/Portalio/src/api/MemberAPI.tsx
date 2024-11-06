@@ -29,7 +29,7 @@ export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
 
     if (accessToken) {
       const response = await axios.get(
-        `${BASE_URL}/api/v1/users/duplicate/nickname/${nickname}`,
+        `${BASE_URL}/api/v1/users/duplicate/${nickname}`,
         {
           headers: {
             access: accessToken,
@@ -61,8 +61,8 @@ export const saveUserDetail = async (nickname: string, email: string) => {
       };
 
       const response = await axios.post(
-        `${BASE_URL}/api/v1/users/`,
-        { request },
+        `${BASE_URL}/api/v1/users/detail`,
+        request,
         {
           headers: { access: accessToken },
         }
@@ -71,6 +71,8 @@ export const saveUserDetail = async (nickname: string, email: string) => {
     }
   } catch (error) {
     console.log(error);
+
+    return null;
   }
 };
 

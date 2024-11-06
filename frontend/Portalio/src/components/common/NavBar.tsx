@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import UserNavbar from "./navBarComponent/userNavbar";
-import GuestNavbar from "./navBarComponent/guestNavbar";
-import RecruiterNavbar from "./navBarComponent/recruiterNavbar";
+import UserNavbar from "./navBarComponent/UserNavbar";
+import GuestNavbar from "./navBarComponent/GuestNavbar";
+import RecruiterNavbar from "./navBarComponent/RecruiterNavbar";
 
 const NavBar: React.FC = () => {
   const [role, setRole] = useState<string | null>(null);

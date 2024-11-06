@@ -130,8 +130,9 @@ const UserSignupPage: React.FC = () => {
       try {
         // 닉네임과 이메일을 함께 설정하는 API 호출
         const userInfoResponse = await saveUserDetail(nickname, email);
-        if (userInfoResponse) {
-          console.log("개인 회원 세부 정보 설정 성공:", userInfoResponse.data);
+        if (!userInfoResponse) {
+          alert("에러가 발생했습니다.");
+          return;
         }
 
         // 직무 저장 API 호출
