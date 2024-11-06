@@ -3,10 +3,12 @@ package com.example.portalio.common.jwt.util;
 import io.jsonwebtoken.Jwts;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.SimpleTimeZone;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @Component
 public class JwtUtil {
@@ -20,12 +22,37 @@ public class JwtUtil {
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    // jwt 토큰에서 유저 정보를 가져오는 메서드
+    // memberId를 가져오는 메서드
+    public Long getMemberId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("memberId", Long.class);
+    }
+
+    // 이름을 가져오는 메서드
+    public String getName(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("name", String.class);
+    }
+
+    //username을 가져오는 메서드
     public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
                 .get("username", String.class);
     }
 
+    // 이메일 정보 추출
+    public String getEmail(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("email", String.class);
+    }
+
+    // 유저 프로필 사진 추출
+    public String getPicture(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("picture", String.class);
+    }
+
+    // 유저 역할 추출
     public String getRole(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
                 .get("role", String.class);
@@ -37,30 +64,27 @@ public class JwtUtil {
                 .get("category", String.class);
     }
 
-
     // jwt 토큰 검증 메서드
     public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration()
                 .before(new Date());
     }
 
-    // 이메일 정보 추출
-    public String getEmail(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                .get("email", String.class);
-    }
-
     // jwt 생성 메서드
-    public String createJwt(String category, String username, String role, Long expiredMs) {
-
+    public String createJwt(Long memberId, String name, String username, String picture, String category, String role, Long expiredMs) {
+        // 카테고리, memeberId, username, picture 등을 저장
         return Jwts.builder()
-                .claim("category", category)
+                .claim("memberId", memberId)
+                .claim("name", name)
                 .claim("username", username)
+                .claim("picture", picture)
+                .claim("category", category)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
     }
+
 
 }

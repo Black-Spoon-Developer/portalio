@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -48,8 +49,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         // 리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
-        String username = oAuth2Response.getProviderId();
         String name = oAuth2Response.getName();
+        String username = oAuth2Response.getProviderId();
         String email = oAuth2Response.getEmail();
         String picture = oAuth2Response.getPicture();
 
@@ -63,22 +64,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
+            userDTO.setMemberId(member.getMemberId());
             userDTO.setName(name);
             userDTO.setUsername(username);
             userDTO.setEmail(email);
             userDTO.setRole("USER");
             userDTO.setPicture(picture);
-            userDTO.setIsNewUser(true);
 
             return new CustomOAuth2User(userDTO);
 
         } else {
             UserDTO userDTO = new UserDTO();
+            userDTO.setMemberId(existData.getMemberId());
             userDTO.setName(name);
             userDTO.setUsername(existData.getMemberUsername());
             userDTO.setRole("USER");
             userDTO.setPicture(picture);
-            userDTO.setIsNewUser(false);
 
             return new CustomOAuth2User(userDTO);
         }

@@ -12,12 +12,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-
-    // 회원정보 토큰으로 조회
-    public Member memberTokenGet(String username) {
-        Member member = memberRepository.findByMemberUsername(username)
+    // 회원 정보 입력 후 인증 해주는 로직
+    public Member authMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
-        return member;
+
+        member.setMemberAuth();
+
+        return memberRepository.save(member);
     }
 
 //    // 회원정보 이메일로 조회
@@ -46,20 +48,6 @@ public class MemberService {
 //        return member;
 //    }
 
-    // 닉네임 중복 체크
-    public boolean nicknameDupliCheck(String nickname) {
-
-        Member member = memberRepository.findByMemberNickname(nickname);
-
-        boolean isDuplicate = false;
-
-        if (member != null) {
-            isDuplicate = true;
-        }
-
-        return isDuplicate;
-
-    }
 
 //    // 회원 닉네임 설정 및 수정
 //    public Member memberNicknameSave(String email, String nickname) {

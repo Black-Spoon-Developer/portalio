@@ -1,6 +1,7 @@
 package com.example.portalio.common.jwt.entity;
 
 import com.example.portalio.domain.member.entity.Member;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,8 +23,8 @@ public class RefreshEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long refreshId;
+    @Column(name = "refresh_token_id")
+    private Long refreshTokenId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String value;

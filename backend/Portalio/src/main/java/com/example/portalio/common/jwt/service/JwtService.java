@@ -3,10 +3,10 @@ package com.example.portalio.common.jwt.service;
 import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
+import com.example.portalio.common.oauth.dto.UserResponseDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +30,7 @@ public class JwtService {
     }
 
     public ResponseEntity<?> issue(HttpServletRequest request, HttpServletResponse response) {
+
         // 리프레시 토큰 얻기
         String refresh = null;
         Cookie[] cookies = request.getCookies();
@@ -46,14 +47,6 @@ public class JwtService {
             return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
         }
 
-        // 만료기간 체크
-        try {
-            jwtUtil.isExpired(refresh);
-        } catch (ExpiredJwtException e) {
-
-            return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
-        }
-
         // 토큰이 리프레시 토큰인지 확인
         String category = jwtUtil.getCategory(refresh);
 
@@ -62,6 +55,9 @@ public class JwtService {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
+        // 만료기간 체크
+        boolean isRefreshExpired = jwtUtil.isExpired(refresh);
+
         // DB에 refresh 토큰이 저장되어 있는지 확인
         Boolean isExist = refreshRepository.existsByValue(refresh);
 
@@ -69,21 +65,44 @@ public class JwtService {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
+        // 토큰에서 정보 추출
+        Long memberId = jwtUtil.getMemberId(refresh);
+        String name = jwtUtil.getName(refresh);
         String username = jwtUtil.getUsername(refresh);
+        String picture = jwtUtil.getPicture(refresh);
         String role = jwtUtil.getRole(refresh);
 
-        // 새로운 토큰 만들기
-        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
-        String newResfresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        // 리프레시 토큰이 만료된 경우 새로운 리프레시 토큰도 생성
+        if (isRefreshExpired) {
+            String newRefresh = jwtUtil.createJwt(memberId, name, username, picture, "refresh", role, 86400000L);
 
-        // Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 Refresh 토큰 저장
-        refreshRepository.deleteByValue(refresh);
-        addRefreshEntity(username, newResfresh, 86400000L);
+            // 기존 리프레시 토큰 삭제 후 새로 저장
+            refreshRepository.deleteByValue(refresh);
+            addRefreshEntity(username, newRefresh, 86400000L);
 
-        // 쿠키로 refresh 토큰 전달
-        response.addCookie(createCookie("refresh", newResfresh));
+
+            // 새 리프레시 토큰을 쿠키로 추가
+            response.addCookie(createCookie("refresh", newRefresh));
+        }
+        
+        // access 토큰 발급
+        String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", role, 600000L);
+
+        // access 토큰 및 유저 정보도 같이 반환
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setMemberId(memberId);
+        userResponseDTO.setName(name);
+        userResponseDTO.setUsername(username);
+        userResponseDTO.setPicture(picture);
+        userResponseDTO.setRole(role);
+
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("access", newAccess);
+        responseBody.put("memberId", String.valueOf(memberId));
+        responseBody.put("name", name);
+        responseBody.put("username", username);
+        responseBody.put("picture", picture);
+        responseBody.put("role", role);
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
 

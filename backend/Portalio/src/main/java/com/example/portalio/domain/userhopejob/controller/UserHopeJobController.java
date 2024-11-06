@@ -22,7 +22,7 @@ public class UserHopeJobController {
     @PostMapping("/save/{memberId}/{jobsubcategoryId}")
     public ResponseEntity<?> jobInfoSave(@PathVariable("memberId") Long memberId,
                                          @PathVariable("jobsubcategoryId") Long jobsubcategoryId) {
-
+                      
         try {
             UserHopeJob userHopeJob = userhopejobService.saveUserHopeJob(jobsubcategoryId, memberId);
             return ResponseEntity.ok(userHopeJob);
