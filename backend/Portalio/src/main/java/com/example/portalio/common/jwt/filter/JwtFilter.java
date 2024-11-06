@@ -44,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             // response body
             PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
+            writer.print("엑세스 토큰이 만료 되었습니다.");
 
             // response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -75,11 +75,6 @@ public class JwtFilter extends OncePerRequestFilter {
         userDTO.setUsername(username);
         userDTO.setEmail(email);
         userDTO.setRole(role);
-//        UserDTO userDTO = UserDTO.builder()
-//                .username(username)
-//                .role(role)
-//                .email(email)
-//                .build();
 
         // UserDetails 회원 정보 객체 담기
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(userDTO);

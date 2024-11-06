@@ -75,7 +75,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         // DB에 저장되어 있는지 확인
-        Boolean isExist = refreshRepository.existsByRefresh(refresh);
+        Boolean isExist = refreshRepository.existsByValue(refresh);
         if (!isExist) {
 
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -84,7 +84,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         // 로그아웃 진행
         // Refresh 토큰 DB에서 제거
-        refreshRepository.deleteByRefresh(refresh);
+        refreshRepository.deleteByValue(refresh);
 
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);

@@ -55,5 +55,9 @@ public class CustomOAuth2User implements OAuth2User {
     public String getEmail() {
         return userDTO.getEmail();
     }
-    
+
+    public String getPicture() {
+        return userDTO.getPicture();
+    }
+
 }
