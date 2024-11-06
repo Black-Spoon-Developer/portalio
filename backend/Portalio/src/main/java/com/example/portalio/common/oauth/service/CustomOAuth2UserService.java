@@ -55,7 +55,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String picture = oAuth2Response.getPicture();
 
         Member existData = memberRepository.findByMemberUsername(username)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElse(null);
 
         if (existData == null) {
 
