@@ -8,7 +8,6 @@ const NavBar: React.FC = () => {
 
   useEffect(() => {
     // localStorage에서 userInfo 가져오기
-    const isLogin = localStorage.getItem("isLogin");
     const userInfo = localStorage.getItem("userInfo");
 
     if (userInfo) {
