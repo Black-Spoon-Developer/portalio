@@ -55,3 +55,6 @@ mediapipe
 librosa
 boto3
 pyaudio
+python-jose
+itsdangerous
+aiomysql

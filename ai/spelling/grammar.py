@@ -20,7 +20,7 @@ def check_spelling_and_grammar(text: str):
     )
 
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an assistant that checks and corrects spelling and grammar."},
             {"role": "user", "content": prompt}

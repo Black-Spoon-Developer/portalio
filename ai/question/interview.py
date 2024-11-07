@@ -34,6 +34,11 @@ def extract_text_from_md(file_content: str) -> str:
     text = soup.get_text()
     return text
 
+def upload_to_s3(file_data: BytesIO, file_name: str):
+    s3_bucket_name = os.getenv("S3_BUCKET_NAME")
+    s3_client.upload_fileobj(file_data, s3_bucket_name, file_name)
+    return f"https://{s3_bucket_name}.s3.amazonaws.com/{file_name}"
+
 def generate_topic_based_questions(md_content: str, category: str):
     prompts = {
         "직무": f"Here is some content from a portfolio:\n\n{md_content}\n\nPlease create 2 interview questions for '{category}'.",
@@ -67,11 +72,6 @@ def generate_tts_audio(text: str) -> BytesIO:
     audio_data = BytesIO(response.audio_content)
     audio_data.seek(0)
     return audio_data
-
-def upload_to_s3(file_data: BytesIO, file_name: str):
-    s3_bucket_name = os.getenv("S3_BUCKET_NAME")
-    s3_client.upload_fileobj(file_data, s3_bucket_name, file_name)
-    return f"https://{s3_bucket_name}.s3.amazonaws.com/{file_name}"
 
 def transcribe_audio(file: UploadFile) -> str:
     audio_content = file.file.read()
