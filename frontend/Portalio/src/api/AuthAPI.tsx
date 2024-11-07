@@ -10,9 +10,8 @@ export const issueAccessToken = async () => {
       {},
       { withCredentials: true }
     );
-    const newAccessToken = response.data.access;
-    console.log(newAccessToken); // access 토큰 확인
-    return newAccessToken; // 필요에 따라 반환
+
+    return response; // 필요에 따라 반환
   } catch (error) {
     console.error("Failed to issue access token:", error);
     return null; // 오류 시 null 반환

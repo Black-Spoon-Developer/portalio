@@ -1,7 +1,13 @@
 export type UserInfo = {
   memberId: string;
-  memberName: string;
-  memberEmail: string;
-  memberPicture: string;
-  memberRole: string;
+  name: string;
+  username: string;
+  picture: string;
+  role: string;
+};
+
+export type UserDetailInfo = {
+  memberId: string;
+  nickname: string;
+  email: string;
 };
