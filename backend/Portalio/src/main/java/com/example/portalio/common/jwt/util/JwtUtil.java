@@ -71,7 +71,7 @@ public class JwtUtil {
     }
 
     // jwt 생성 메서드
-    public String createJwt(Long memberId, String name, String username, String picture, String category, String role, Long expiredMs) {
+    public String createJwt(Long memberId, String name, String username, String picture, String category, String email, String role, Long expiredMs) {
         // 카테고리, memeberId, username, picture 등을 저장
         return Jwts.builder()
                 .claim("memberId", memberId)
@@ -79,6 +79,7 @@ public class JwtUtil {
                 .claim("username", username)
                 .claim("picture", picture)
                 .claim("category", category)
+                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
