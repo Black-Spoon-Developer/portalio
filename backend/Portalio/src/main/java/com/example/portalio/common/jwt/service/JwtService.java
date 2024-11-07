@@ -71,13 +71,14 @@ public class JwtService {
         String username = jwtUtil.getUsername(refresh);
         String picture = jwtUtil.getPicture(refresh);
         String role = jwtUtil.getRole(refresh);
-
+        
         // 리프레시 토큰이 만료된 경우 새로운 리프레시 토큰도 생성
         if (isRefreshExpired) {
             String newRefresh = jwtUtil.createJwt(memberId, name, username, picture, "refresh", role, 86400000L);
 
             // 기존 리프레시 토큰 삭제 후 새로 저장
             refreshRepository.deleteByValue(refresh);
+            System.out.println("삭제가 되는지");
             addRefreshEntity(username, newRefresh, 86400000L);
 
             // 새 리프레시 토큰을 쿠키로 추가

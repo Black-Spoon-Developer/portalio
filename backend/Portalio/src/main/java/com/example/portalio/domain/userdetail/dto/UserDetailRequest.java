@@ -8,6 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class UserDetailRequest {
     private String memberId;
     private String nickname;
-    private String email;
 
 }

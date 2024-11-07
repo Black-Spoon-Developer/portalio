@@ -52,10 +52,9 @@ public class UserDetailController {
         return ResponseEntity.ok(response);
     }
 
-
-    // userDetail 정보 저장 - 닉네임, 이메일, 멤버Id
-    @Operation(summary = "[개인회원] 회원 세부 정보 저장", description = "닉네임, 이메일, memberId의 값을 보내주어 저장")
-    @PostMapping("/detail")
+    // userDetail 정보 저장 - 닉네임
+    @Operation(summary = "[개인회원] 회원 닉네임 설정", description = "닉네임, memberId의 값을 보내주어 닉네임 설정")
+    @PatchMapping("/nickname")
     public ResponseEntity<?> saveUserDetail(@RequestBody UserDetailRequest request) {
         UserDetailDTO savedUserDetailDTO = userDetailService.saveUserDetail(request);
 
