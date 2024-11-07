@@ -1,5 +1,14 @@
 package com.example.portalio.domain.portfolio.service;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.board.dto.BoardListResponse;
+import com.example.portalio.domain.board.entity.Board;
+import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
+import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
+import com.example.portalio.domain.jobsubcategory.repository.JobSubCategoryRepository;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
@@ -19,11 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
+    private final JobSubCategoryRepository jobSubCategoryRepository;
+    private final MemberRepository memberRepository;
 
     // jobId, title을 사용한 게시글 검색
-    public PortfolioListResponse getPortfolioSearch(Integer portfolioJob, String portfolioTitle) {
+    public PortfolioListResponse getPortfolioSearch(Long portfolioJobId, String portfolioTitle) {
 
-        List<Portfolio> portfolios = portfolioRepository.findByPortfolioJobAndPortfolioTitle(portfolioJob, portfolioTitle);
+        List<Portfolio> portfolios = portfolioRepository.findByJobSubCategoryJobIdAndPortfolioTitle(portfolioJobId, portfolioTitle);
 
         return PortfolioListResponse.from(portfolios);
     }
@@ -31,7 +42,7 @@ public class PortfolioService {
     // 게시글 상세보기, params : portfolioId
     public PortfolioResponse getPortfolioDetails(Long portfolioId) {
 
-        Portfolio portfolio = portfolioRepository.findByPortfolioId(portfolioId)
+        Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(PortfolioNotFoundException::new);
 
         return PortfolioResponse.from(portfolio);
@@ -43,19 +54,33 @@ public class PortfolioService {
 
         Pageable pageable = PageRequest.of(skip/limit, limit);
 
-        List<Portfolio> portfolios = portfolioRepository.findAllByOrderByCreatedDesc(pageable);
+        List<Portfolio> portfolios = portfolioRepository.findAllByPortfolioPostTrueOrderByCreatedDesc(pageable);
+
+        return PortfolioListResponse.from(portfolios);
+    }
+
+    public PortfolioListResponse getMyPortfolioList(int skip, int limit, String username) {
+
+        Member member = memberRepository.findByMemberUsername(username)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Pageable pageable = PageRequest.of(skip/limit, limit);
+
+        List<Portfolio> portfolios = portfolioRepository.findAllByMember_MemberIdOrderByCreatedDesc(member.getMemberId(), pageable);
 
         return PortfolioListResponse.from(portfolios);
     }
 
     // 게시글 등록
     @Transactional
-    public PortfolioResponse registerPortfolio(PortfolioRequest request
-//            CustomOauth2User oauth2User
-    ) {
+    public PortfolioResponse registerPortfolio(PortfolioRequest request, CustomOAuth2User oauth2User) {
+
+        Member member = findMember(oauth2User.getMemberId());
+
+        JobSubCategory jobSubCategory = findJobSubCategory(request.getJobSubCategoryId());
 
         // PortfolioRequest를 Portfolio 엔티티로 변환
-        Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(), request.getPortfolioContent(), request.getPortfolioJob(), request.getPortfolioImgKey(), request.getPortfolioFileKey(), request.getPortfolioThumbnailImg());
+        Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(), request.getPortfolioContent(), request.getPortfolioImgKey(), request.getPortfolioFileKey(), request.getPortfolioThumbnailImg(), jobSubCategory, member);
 
         portfolioRepository.save(portfolio);
 
@@ -64,9 +89,11 @@ public class PortfolioService {
     }
 
     @Transactional
-    public PortfolioResponse updatePortfolio(Long portfoliosId, PortfolioRequest request) {
+    public PortfolioResponse updatePortfolio(Long portfoliosId, PortfolioRequest request, CustomOAuth2User oauth2User) {
 
-        Portfolio portfolio = portfolioRepository.findByPortfolioId(portfoliosId)
+        Member member = findMember(oauth2User.getMemberId());
+
+        Portfolio portfolio = portfolioRepository.findByPortfolioIdAndMember_MemberId(portfoliosId, member.getMemberId())
                 .orElseThrow(PortfolioNotFoundException::new);
 
         if (request.getPortfolioTitle() != null) {
@@ -75,8 +102,9 @@ public class PortfolioService {
         if (request.getPortfolioContent() != null) {
             portfolio.setPortfolioContent(request.getPortfolioContent());
         }
-        if (request.getPortfolioJob() != null) {
-            portfolio.setPortfolioJob(request.getPortfolioJob());
+        if (request.getJobSubCategoryId() != null) {
+            JobSubCategory jobSubCategory = findJobSubCategory(request.getJobSubCategoryId());
+            portfolio.setJobSubCategory(jobSubCategory);
         }
         if (request.getPortfolioImgKey() != null) {
             portfolio.setPortfolioImgKey(request.getPortfolioImgKey());
@@ -94,9 +122,11 @@ public class PortfolioService {
     }
 
     @Transactional
-    public PortfolioResponse deletePortfolio(Long portfoliosId) {
+    public PortfolioResponse deletePortfolio(Long portfoliosId, CustomOAuth2User oauth2User) {
 
-        Portfolio portfolio = portfolioRepository.findByPortfolioId(portfoliosId)
+        Member member = findMember(oauth2User.getMemberId());
+
+        Portfolio portfolio = portfolioRepository.findByPortfolioIdAndMember_MemberId(portfoliosId, member.getMemberId())
                 .orElseThrow(PortfolioNotFoundException::new);
 
         portfolioRepository.delete(portfolio);
@@ -105,9 +135,11 @@ public class PortfolioService {
     }
 
     @Transactional
-    public PortfolioPostResponse postPortfolio(Long portfoliosId) {
+    public PortfolioPostResponse postPortfolio(Long portfoliosId, CustomOAuth2User oauth2User) {
 
-        Portfolio portfolio = portfolioRepository.findByPortfolioId(portfoliosId)
+        Member member = findMember(oauth2User.getMemberId());
+
+        Portfolio portfolio = portfolioRepository.findByPortfolioIdAndMember_MemberId(portfoliosId, member.getMemberId())
                 .orElseThrow(PortfolioNotFoundException::new);
 
         portfolio.setPortfolioPost(!portfolio.getPortfolioPost());
@@ -115,5 +147,15 @@ public class PortfolioService {
         portfolioRepository.save(portfolio);
 
         return PortfolioPostResponse.from(portfolio);
+    }
+
+    private JobSubCategory findJobSubCategory(Long jobId) {
+        return jobSubCategoryRepository.findById(jobId)
+                .orElseThrow(JobSubCategoryNotFoundException::new);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
     }
 }

@@ -1,4 +1,0 @@
-jasypt:
-  encryptor:
-    bean: jasyptStringEncryptor
-    key: J4sypt!_Aut0nom0us#D102*Key_BlackBSD=11th&Floor_Dev4_Spoon$Term

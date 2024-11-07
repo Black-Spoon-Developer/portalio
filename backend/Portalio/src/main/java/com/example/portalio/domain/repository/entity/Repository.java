@@ -1,6 +1,7 @@
 package com.example.portalio.domain.repository.entity;
 
 import com.example.portalio.domain.activityboard.entity.ActivityBoard;
+import com.example.portalio.domain.common.entity.AuditableCreatedEntity;
 import com.example.portalio.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "repository")
-public class Repository {
+public class Repository extends AuditableCreatedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +49,9 @@ public class Repository {
     @Column(name = "repository_file_key", nullable = false, columnDefinition = "TEXT")
     private String repositoryFileKey;
 
+    @Column(name = "repository_post", nullable = false)
+    private Boolean repositoryPost = false;
+
     @OneToMany(mappedBy = "repository")
     private List<ActivityBoard> activityBoards = new ArrayList<>();
 
@@ -55,17 +59,19 @@ public class Repository {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Repository(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryImgKey, String repositoryFileKey) {
+    private Repository(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryImgKey, String repositoryFileKey, Boolean repositoryPost, Member member) {
         this.repositoryTitle = repositoryTitle;
         this.repositoryContent = repositoryContent;
         this.startDate = startDate;
         this.endDate = endDate;
         this.repositoryImgKey = repositoryImgKey;
         this.repositoryFileKey = repositoryFileKey;
+        this.repositoryPost = repositoryPost;
+        this.member = member;
     }
 
-    public static Repository of(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryImgKey, String repositoryFileKey) {
-        return new Repository(repositoryTitle, repositoryContent, startDate, endDate, repositoryImgKey, repositoryFileKey);
+    public static Repository of(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryImgKey, String repositoryFileKey, Boolean repositoryPost, Member member) {
+        return new Repository(repositoryTitle, repositoryContent, startDate, endDate, repositoryImgKey, repositoryFileKey, repositoryPost, member);
     }
 
     public void setRepositoryTitle(String repositoryTitle) { this.repositoryTitle = repositoryTitle; }
@@ -80,5 +86,5 @@ public class Repository {
 
     public void setRepositoryFileKey(String repositoryFileKey) { this.repositoryFileKey = repositoryFileKey; }
 
-
+    public void setRepositoryPost(Boolean repositoryPost) { this.repositoryPost = repositoryPost; }
 }

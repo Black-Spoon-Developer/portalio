@@ -24,8 +24,4 @@ public class BoardRequest {
     private String boardContent;
 
     private String boardImgKey;
-
-//    @NotNull(message = "empty member id")
-//    private Long memberId;
-
 }

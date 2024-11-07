@@ -27,10 +27,10 @@ public class RepositoryRequest {
     @NotNull(message = "empty repository end_date")
     private LocalDate endDate;
 
-    private String portfolioImgKey;
+    private String repositoryImgKey;
 
-    private String portfolioFileKey;
+    private String repositoryFileKey;
 
-//    @NotNull(message = "empty member id")
-//    private Long memberId;
+    @NotNull(message = "empty repository post")
+    private Boolean repositoryPost;
 }

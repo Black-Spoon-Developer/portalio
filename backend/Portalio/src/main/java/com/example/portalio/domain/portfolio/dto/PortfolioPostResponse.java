@@ -8,13 +8,13 @@ import lombok.Getter;
 @Builder
 public class PortfolioPostResponse {
     private Long portfolioId;
-//    private Long memberId;
+    private Long memberId;
     private Boolean portfolioPost;
 
     public static PortfolioPostResponse from(Portfolio portfolio) {
         return PortfolioPostResponse.builder()
                 .portfolioId(portfolio.getPortfolioId())
-//                .memberId(portfolio.getMember().getMemberId())
+                .memberId(portfolio.getMember().getMemberId())
                 .portfolioPost(portfolio.getPortfolioPost())
                 .build();
     }
