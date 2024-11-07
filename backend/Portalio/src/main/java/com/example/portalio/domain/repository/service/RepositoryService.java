@@ -1,13 +1,20 @@
 package com.example.portalio.domain.repository.service;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.error.MemberNotFoundException;
+import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.repository.dto.RepositoryListResponse;
+import com.example.portalio.domain.repository.dto.RepositoryPostResponse;
 import com.example.portalio.domain.repository.dto.RepositoryRequest;
 import com.example.portalio.domain.repository.dto.RepositoryResponse;
 import com.example.portalio.domain.repository.entity.Repository;
-import com.example.portalio.domain.repository.error.RepositoryNotFoundExcception;
+import com.example.portalio.domain.repository.error.RepositoryNotFoundException;
 import com.example.portalio.domain.repository.repository.RepositoryRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,28 +23,41 @@ import org.springframework.transaction.annotation.Transactional;
 public class RepositoryService {
 
     private final RepositoryRepository repositoryRepository;
+    private final MemberRepository memberRepository;
 
     public RepositoryResponse getRepositoryDetail(Long repositoryId) {
 
-        Repository repository = repositoryRepository.findByRepositoryId(repositoryId)
-                .orElseThrow(RepositoryNotFoundExcception::new);
+        Repository repository = repositoryRepository.findById(repositoryId)
+                .orElseThrow(RepositoryNotFoundException::new);
 
         return RepositoryResponse.from(repository);
     }
 
-    public RepositoryListResponse getRepositoryList() {
+    public RepositoryListResponse getRepositoryList(int skip, int limit) {
 
-        // 유저 생기면 해당 부분 바꿔야함
-        List<Repository> repository = repositoryRepository.findAll();
+        Pageable pageable = PageRequest.of(skip/limit, limit);
+
+        List<Repository> repository = repositoryRepository.findAllByRepositoryPostTrueOrderByCreatedDesc(pageable);
+
+        return RepositoryListResponse.from(repository);
+    }
+
+    public RepositoryListResponse getMyRepositoryList(CustomOAuth2User oauth2User) {
+
+        Member member = findMember(oauth2User.getMemberId());
+
+        List<Repository> repository = repositoryRepository.findAllByMember_MemberId(member.getMemberId());
 
         return RepositoryListResponse.from(repository);
     }
 
     @Transactional
-    public RepositoryResponse registerRepository(RepositoryRequest request) {
+    public RepositoryResponse registerRepository(RepositoryRequest request, CustomOAuth2User oauth2User) {
 
-        Repository repository = Repository.of(request.getRepositoryTitle(), request.getRepositoryContent(), request.getStartDate(), request.getEndDate(), request.getPortfolioImgKey(),
-                request.getPortfolioFileKey());
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = Repository.of(request.getRepositoryTitle(), request.getRepositoryContent(), request.getStartDate(), request.getEndDate(), request.getRepositoryImgKey(),
+                request.getRepositoryFileKey(), request.getRepositoryPost(), member);
 
         repositoryRepository.save(repository);
 
@@ -45,10 +65,12 @@ public class RepositoryService {
     }
 
     @Transactional
-    public RepositoryResponse updateRepository(Long repositoryId, RepositoryRequest request) {
+    public RepositoryResponse updateRepository(Long repositoryId, RepositoryRequest request, CustomOAuth2User oauth2User) {
 
-        Repository repository = repositoryRepository.findByRepositoryId(repositoryId)
-                .orElseThrow(RepositoryNotFoundExcception::new);
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = repositoryRepository.findByRepositoryIdAndMember_MemberId(repositoryId, member.getMemberId())
+                .orElseThrow(RepositoryNotFoundException::new);
 
         if (request.getRepositoryTitle() != null) {
             repository.setRepositoryTitle(request.getRepositoryTitle());
@@ -62,11 +84,14 @@ public class RepositoryService {
         if (request.getEndDate() != null) {
             repository.setEndDate(request.getEndDate());
         }
-        if (request.getPortfolioImgKey() != null) {
-            repository.setRepositoryImgKey(request.getPortfolioImgKey());
+        if (request.getRepositoryImgKey() != null) {
+            repository.setRepositoryImgKey(request.getRepositoryImgKey());
         }
-        if (request.getPortfolioFileKey() != null) {
-            repository.setRepositoryFileKey(request.getPortfolioFileKey());
+        if (request.getRepositoryFileKey() != null) {
+            repository.setRepositoryFileKey(request.getRepositoryFileKey());
+        }
+        if (request.getRepositoryPost() != null) {
+            repository.setRepositoryPost(request.getRepositoryPost());
         }
 
         repositoryRepository.save(repository);
@@ -75,14 +100,36 @@ public class RepositoryService {
     }
 
     @Transactional
-    public RepositoryResponse deleteRepository(Long repositoryId) {
+    public RepositoryResponse deleteRepository(Long repositoryId, CustomOAuth2User oauth2User) {
 
-        Repository repository = repositoryRepository.findByRepositoryId(repositoryId)
-                .orElseThrow(RepositoryNotFoundExcception::new);
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = repositoryRepository.findByRepositoryIdAndMember_MemberId(repositoryId, member.getMemberId())
+                .orElseThrow(RepositoryNotFoundException::new);
 
         repositoryRepository.delete(repository);
 
         return RepositoryResponse.from(repository);
     }
 
+
+    @Transactional
+    public RepositoryPostResponse postRepository(Long repositoryId, CustomOAuth2User oauth2User) {
+
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = repositoryRepository.findByRepositoryIdAndMember_MemberId(repositoryId, member.getMemberId())
+                        .orElseThrow(RepositoryNotFoundException::new);
+
+        repository.setRepositoryPost(!repository.getRepositoryPost());
+
+        repositoryRepository.save(repository);
+
+        return RepositoryPostResponse.from(repository);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
 }
