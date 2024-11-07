@@ -52,7 +52,6 @@ public class UserDetail {
         UserDetail userDetail = new UserDetail();
         userDetail.userEmail = userEmail;
         userDetail.userNickname = userNickname;
-//        userDetail.userId = member.getMemberId();
         userDetail.member = member;
         return userDetail;
     }

@@ -4,13 +4,13 @@ import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
+import com.example.portalio.domain.userdetail.dto.UserDetailDTO;
 import com.example.portalio.domain.userdetail.dto.UserDetailRequest;
 import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
 import com.example.portalio.domain.userdetail.dto.TicketResponse;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.error.NoTicketAvailableException;
 import com.example.portalio.domain.userdetail.repository.UserDetailRepository;
-import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class UserDetailService {
     private final MemberRepository memberRepository;
 
     // userDetail 정보 저장 - 닉네임, 이메일
-    public UserDetail saveUserDetail(UserDetailRequest request) {
+    public UserDetailDTO saveUserDetail(UserDetailRequest request) {
         String nickname = request.getNickname();
         String email = request.getEmail();
         String memberId = request.getMemberId();
@@ -35,8 +35,9 @@ public class UserDetailService {
                 .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
 
         UserDetail userDetail = UserDetail.of(email, nickname, member);
+        UserDetail savedUserDetail = userDetailRepository.save(userDetail);
 
-        return userDetailRepository.save(userDetail);
+        return UserDetailDTO.from(savedUserDetail);
     }
 
     // 닉네임 중복 검사 API
@@ -68,7 +69,9 @@ public class UserDetailService {
 
         return userDetailRepository.findAllByOrderByUserTicketDesc(pageRequest)
                 .stream()
-                .map(user -> new TicketRankingResponse(user.getMember().getMemberId(), user.getUserTicket()))
+                .map(user -> {
+                    UserDetailDTO userDetailDTO = UserDetailDTO.from(user);
+                    return new TicketRankingResponse(userDetailDTO.getMemberId(), userDetailDTO.getUserTicket());})
                 .collect(Collectors.toList());
     }
 

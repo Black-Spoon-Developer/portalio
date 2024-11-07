@@ -80,11 +80,10 @@ public class JwtService {
             refreshRepository.deleteByValue(refresh);
             addRefreshEntity(username, newRefresh, 86400000L);
 
-
             // 새 리프레시 토큰을 쿠키로 추가
             response.addCookie(createCookie("refresh", newRefresh));
         }
-        
+
         // access 토큰 발급
         String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", role, 600000L);
 
@@ -129,12 +128,13 @@ public class JwtService {
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
 
-        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
+        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt);
 
         // RefreshEntity 저장
         refreshRepository.save(refreshEntity);
 
         // Member 저장하여 연관 관계 반영
+        member.setRefreshEntity(refreshEntity);
         memberRepository.save(member);
     }
 
