@@ -70,7 +70,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if (userDetail == null) {
             userDetailRepository.save(UserDetail.of(customUserDetails.getEmail(), "no nickname", member));
-            System.out.println("유저 디테일 저장 완료");
         }
 
         // 회원 인증 여부

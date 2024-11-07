@@ -78,7 +78,6 @@ public class JwtService {
 
             // 기존 리프레시 토큰 삭제 후 새로 저장
             refreshRepository.deleteByValue(refresh);
-            System.out.println("삭제가 되는지");
             addRefreshEntity(username, newRefresh, 86400000L);
 
             // 새 리프레시 토큰을 쿠키로 추가
