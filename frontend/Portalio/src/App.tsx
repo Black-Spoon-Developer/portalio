@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "./components/common/NavBar.tsx";
+import NavBar from "./components/common/UpNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage.tsx";
