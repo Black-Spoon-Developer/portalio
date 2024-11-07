@@ -66,6 +66,8 @@ public class UserDetailService {
         }
         userDetail.setUserTicket(userDetail.getUserTicket() + ticketCount);
 
+        userDetailRepository.save(userDetail);
+
         return TicketResponse.from(userDetail);
     }
 
