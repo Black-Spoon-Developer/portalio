@@ -58,15 +58,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             // 멤버 객체 생성
             Member member = Member.of(name, username, picture, Role.USER);
-            memberRepository.save(member);
+            Member savedMember = memberRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setMemberId(member.getMemberId());
+            userDTO.setMemberId(savedMember.getMemberId());
             userDTO.setName(name);
             userDTO.setUsername(username);
             userDTO.setEmail(email);
             userDTO.setRole("USER");
             userDTO.setPicture(picture);
+
 
             return new CustomOAuth2User(userDTO);
 
