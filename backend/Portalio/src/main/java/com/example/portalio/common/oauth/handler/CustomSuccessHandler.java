@@ -51,10 +51,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
-        String username = customUserDetails.getUsername();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+        String email = customUserDetails.getEmail();
+        String username = customUserDetails.getUsername();
         String role = auth.getAuthority();
 
         Member member = memberRepository.findByMemberUsername(username)
@@ -70,7 +71,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         if (userDetail == null) {
             userDetailRepository.save(UserDetail.of(customUserDetails.getEmail(), "no nickname", member));
-            System.out.println("유저 디테일 저장 완료");
         }
 
         // 회원 인증 여부
@@ -100,7 +100,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 String memberPicture = member.getMemberPicture();
 
                 // 토큰 생성
-                String refresh = jwtUtil.createJwt(memberId, memberName, memberUsername, memberPicture, "refresh",
+                String refresh = jwtUtil.createJwt(memberId, memberName, memberUsername, memberPicture, "refresh", email,
                         role, 86400000L);
 
                 // Refresh 토큰 저장
@@ -120,7 +120,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             String memberPicture = member.getMemberPicture();
 
             // 토큰 생성
-            String refresh = jwtUtil.createJwt(memberId, memberName, memberUsername, memberPicture, "refresh", role,
+            String refresh = jwtUtil.createJwt(memberId, memberName, memberUsername, memberPicture, "refresh", email, role,
                     86400000L);
 
             // Refresh 토큰 저장
@@ -144,7 +144,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(60 * 60 * 60);
-//        cookie.setSecure(true); // https 설정시 작성해줘야함
+        cookie.setSecure(true); // https 설정시 작성해줘야함
         cookie.setPath("/"); // 쿠키가 보일 위치 전역으로 설정
         cookie.setHttpOnly(true); // 자바스크립트가 쿠키를 가져가지 못하도록 설정
 

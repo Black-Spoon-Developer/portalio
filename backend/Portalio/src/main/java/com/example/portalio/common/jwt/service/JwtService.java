@@ -70,15 +70,15 @@ public class JwtService {
         String name = jwtUtil.getName(refresh);
         String username = jwtUtil.getUsername(refresh);
         String picture = jwtUtil.getPicture(refresh);
+        String email = jwtUtil.getEmail(refresh);
         String role = jwtUtil.getRole(refresh);
         
         // 리프레시 토큰이 만료된 경우 새로운 리프레시 토큰도 생성
         if (isRefreshExpired) {
-            String newRefresh = jwtUtil.createJwt(memberId, name, username, picture, "refresh", role, 86400000L);
+            String newRefresh = jwtUtil.createJwt(memberId, name, username, picture, "refresh", email, role, 86400000L);
 
             // 기존 리프레시 토큰 삭제 후 새로 저장
             refreshRepository.deleteByValue(refresh);
-            System.out.println("삭제가 되는지");
             addRefreshEntity(username, newRefresh, 86400000L);
 
             // 새 리프레시 토큰을 쿠키로 추가
@@ -86,7 +86,7 @@ public class JwtService {
         }
 
         // access 토큰 발급
-        String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", role, 600000L);
+        String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", email, role, 600000L);
 
         // access 토큰 및 유저 정보도 같이 반환
         UserResponseDTO userResponseDTO = new UserResponseDTO();
@@ -113,7 +113,7 @@ public class JwtService {
 
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24 * 60 * 60);
-        //cookie.setSecure(true);
+        cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 
