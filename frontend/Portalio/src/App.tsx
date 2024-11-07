@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import NavBar from "./components/common/NavBar.tsx";
+import React from "react";
+// import React, { useState } from "react";
+// import NavBar from "./components/common/NavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Route, Routes } from "react-router-dom";
 import MainTestPage from "./pages/MainTest.tsx";
