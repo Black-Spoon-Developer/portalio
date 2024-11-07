@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Logo from "../../../assets/Logo.png";
 import {
   memberNicknameDuplicateCheckAPI,
@@ -9,7 +10,9 @@ import {
 import { mainCategories, subCategories } from "../../../assets/JobCategory";
 import { issueAccessToken } from "../../../api/AuthAPI";
 import { UserInfo } from "../../../type/UserType";
+import { authActions } from "../../../store/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../store";
 
 // Category 타입 정의
 type Category = {
@@ -27,43 +30,44 @@ const UserSignupPage: React.FC = () => {
     Category[]
   >([]);
 
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setFilteredSubCategories(subCategories);
     const fetchData = async () => {
-      // access 토큰 저장
+      // access 토큰 발급 후
       const fetchAccessToken = async () => {
-        const isUserInfo = localStorage.getItem("userInfo");
-        const accessToken = localStorage.getItem("access");
-
-        if (!accessToken && !isUserInfo) {
+        if (accessToken == null) {
           const response = await issueAccessToken();
 
           if (response) {
             const newAccessToken = response.data.access;
-            localStorage.setItem("access", newAccessToken);
 
-            // 유저 정보 저장
-            const memberId = response.data.memberId.toString();
-            const name = response.data.name;
-            const username = response.data.username;
-            const picture = response.data.picture;
-            const role = response.data.role;
+            // accessToken을 발급받았을 경우
+            if (newAccessToken) {
+              // 유저 정보 저장
+              const memberId = response.data.memberId.toString();
+              const name = response.data.name;
+              const username = response.data.username;
+              const picture = response.data.picture;
+              const role = response.data.role;
 
-            const userInfo: UserInfo = {
-              memberId,
-              name,
-              username,
-              picture,
-              role,
-            };
+              const userInfo: UserInfo = {
+                accessToken: newAccessToken,
+                memberId,
+                name,
+                username,
+                picture,
+                role,
+              };
 
-            localStorage.setItem("userInfo", JSON.stringify(userInfo));
+              dispatch(authActions.login(userInfo));
+            }
           }
         }
       };
-
+      setFilteredSubCategories(subCategories);
       await fetchAccessToken(); // access 토큰 가져오기
     };
 
@@ -111,7 +115,7 @@ const UserSignupPage: React.FC = () => {
     setSelectedSubCategory(e.target.value);
   };
 
-  // 닉네임, 이메일, 직무 저장
+  // 닉네임, 직무 저장
   const infoUpdate = async () => {
     // 닉네임 중복 체크가 완료되었고, 직무 선택이 모두 완료된 경우
     if (

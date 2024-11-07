@@ -1,9 +1,10 @@
 export type UserInfo = {
-  memberId: string;
-  name: string;
-  username: string;
-  picture: string;
-  role: string;
+  accessToken: string | null;
+  memberId: string | null;
+  name: string | null;
+  username: string | null;
+  picture: string | null;
+  role: string | null;
 };
 
 export type UserDetailInfo = {

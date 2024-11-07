@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import UserNavbar from "./navBarComponent/UserNavbar";
 import GuestNavbar from "./navBarComponent/GuestNavbar";
 import RecruiterNavbar from "./navBarComponent/RecruiterNavbar";
+import { RootState } from "../../store";
 
 const NavBar: React.FC = () => {
-  const [role, setRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    // localStorage에서 userInfo 가져오기
-    const userInfo = localStorage.getItem("userInfo");
-
-    if (userInfo) {
-      // userInfo를 파싱하고 memberRole에 따라 상태 업데이트
-      const parsedInfo = JSON.parse(userInfo);
-      setRole(parsedInfo.memberRole);
-    } else {
-      // userInfo가 없으면 역할을 null로 설정 (Guest 상태)
-      setRole(null);
-    }
-  }, []);
+  // authSlice에서 role 값 가져오기
+  const role = useSelector((state: RootState) => state.auth.role);
 
   return (
     <>
