@@ -99,4 +99,6 @@ public class Portfolio extends AuditableCreatedEntity {
     public void setJobSubCategory(JobSubCategory jobSubCategory) { this.jobSubCategory = jobSubCategory; }
 
     public void setMember(Member member) { this.member = member; }
+
+    public void setPortfolioRecommendationCount(Integer portfolioRecommendationCount) { this.portfolioRecommendationCount = portfolioRecommendationCount; }
 }
