@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
 import store, { RootState } from "../store";
 
 const BASE_URL = "http://localhost:8080";
