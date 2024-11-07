@@ -36,27 +36,14 @@ public class RefreshEntity {
     @Column(nullable = false)
     private Boolean revoked = false;
 
-//    @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
-//    private Member member;
-//    , MemberDTO member
     public static RefreshEntity of(String tokenValue, LocalDateTime issuedAt, LocalDateTime expiresAt) {
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.value = tokenValue;
         refreshEntity.issuedAt = issuedAt;
         refreshEntity.expiresAt = expiresAt;
         refreshEntity.revoked = false;
-//        refreshEntity.addRelation(member);
 
         return refreshEntity;
     }
-
-    // 연관관계 설정 메서드
-//    public void addRelation(Member member) {
-//        if (this.member != null) {
-//            this.member.setRefreshEntity(null);
-//        }
-//        this.member = member;
-//        member.setRefreshEntity(this);
-//    }
 
 }
