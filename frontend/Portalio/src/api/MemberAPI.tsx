@@ -13,7 +13,7 @@ export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
         `${BASE_URL}/api/v1/users/duplicate/${nickname}`,
         {
           headers: {
-            access: accessToken,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -26,7 +26,7 @@ export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
 };
 
 // 개인 회원 세부 정보 저장 API
-export const saveUserDetail = async (nickname: string, email: string) => {
+export const saveUserDetail = async (nickname: string) => {
   try {
     const accessToken = localStorage.getItem("access");
     const userInfo = localStorage.getItem("userInfo");
@@ -38,22 +38,19 @@ export const saveUserDetail = async (nickname: string, email: string) => {
       const request: UserDetailInfo = {
         memberId: parsedUserInfo.memberId,
         nickname,
-        email,
       };
 
-      const response = await axios.post(
-        `${BASE_URL}/api/v1/users/detail`,
+      const response = await axios.patch(
+        `${BASE_URL}/api/v1/users/nickname`,
         request,
         {
-          headers: { access: accessToken },
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
       return response;
     }
   } catch (error) {
     console.log(error);
-
-    return null;
   }
 };
 
@@ -68,9 +65,9 @@ export const jobUpdate = async (jobsubcategoryId: number) => {
       const memberId = BigInt(parseMemberData.memberId);
 
       const response = await axios.post(
-        `${BASE_URL}/api/v1/job/save/${memberId}/${jobsubcategoryId}`,
+        `${BASE_URL}/api/v1/users/job/save/${memberId}/${jobsubcategoryId}`,
         {},
-        { headers: { access: accessToken } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       return response;
@@ -89,7 +86,7 @@ export const authUser = async () => {
       {},
       {
         headers: {
-          access: accessToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );

@@ -1,7 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Logo from "../../../assets/Logo.png";
 import BasicProfile from "../../../assets/BasicProfile.png";
+import { useNavigate } from "react-router-dom";
 import { logoutApi } from "../../../api/AuthAPI";
 
 const UserNavbar: React.FC = () => {
