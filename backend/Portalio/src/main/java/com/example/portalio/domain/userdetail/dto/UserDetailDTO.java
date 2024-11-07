@@ -1,5 +1,6 @@
 package com.example.portalio.domain.userdetail.dto;
 
+import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

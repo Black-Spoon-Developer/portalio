@@ -8,6 +8,9 @@ import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
+import com.example.portalio.domain.userdetail.error.NoUserDetailException;
+import com.example.portalio.domain.userdetail.repository.UserDetailRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,12 +32,14 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final MemberRepository memberRepository;
+    private final UserDetailRepository userDetailRepository;
 
     public CustomSuccessHandler(JwtUtil jwtUtil, RefreshRepository refreshRepository,
-                                MemberRepository memberRepository) {
+                                MemberRepository memberRepository, UserDetailRepository userDetailRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
         this.memberRepository = memberRepository;
+        this.userDetailRepository = userDetailRepository;
 
     }
 
@@ -54,8 +59,19 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
+        
+
 
         MemberDTO memberDTO = MemberDTO.from(member);
+
+        // 유저 디테일 정보에 email, default 닉네임, 외래키 저장
+        UserDetail userDetail = userDetailRepository.findById(memberDTO.getMemberId())
+                .orElse(null);
+
+        if (userDetail == null) {
+            userDetailRepository.save(UserDetail.of(customUserDetails.getEmail(), "no nickname", member));
+            System.out.println("유저 디테일 저장 완료");
+        }
 
         // 회원 인증 여부
         boolean isAuth = false;

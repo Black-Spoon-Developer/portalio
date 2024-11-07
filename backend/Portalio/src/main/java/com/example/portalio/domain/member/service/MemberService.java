@@ -25,8 +25,6 @@ public class MemberService {
         member.setMemberAuth();
 
         MemberDTO memberDTO = MemberDTO.from(memberRepository.save(member));
-
-
         return memberDTO;
     }
 

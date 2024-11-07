@@ -24,12 +24,16 @@ public class MemberController {
     private final JwtUtil jwtUtil;
 
     // 회원 정보 입력 후 인증
-    @Operation(summary = "[회원]회원 인증 처리", description = "access 토큰에서 ")
+    @Operation(summary = "[회원]회원 인증 처리", description = "accessToken으로 인증 처리")
     @PostMapping("/auth")
-    public ResponseEntity<?> authMember(@RequestHeader("access") String accessToken) {
+    public ResponseEntity<?> authMember(@RequestHeader("Authorization") String authorizationHeader) {
         try {
+            // Bearer 제거
+            String accessToken = authorizationHeader.replace("Bearer ", "");
+
             // access 토큰에서 memberId 추출
             Long memberId = jwtUtil.getMemberId(accessToken);
+
             MemberDTO memberDTO = memberService.authMember(memberId);
 
             if (memberDTO != null) {
