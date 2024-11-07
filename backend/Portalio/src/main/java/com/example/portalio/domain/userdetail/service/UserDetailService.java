@@ -10,6 +10,7 @@ import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
 import com.example.portalio.domain.userdetail.dto.TicketResponse;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.error.NoTicketAvailableException;
+import com.example.portalio.domain.userdetail.error.NoUserDetailException;
 import com.example.portalio.domain.userdetail.repository.UserDetailRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,17 +25,21 @@ public class UserDetailService {
     private final UserDetailRepository userDetailRepository;
     private final MemberRepository memberRepository;
 
-    // userDetail 정보 저장 - 닉네임, 이메일
+    // userDetail 정보 저장 - 닉네임
     public UserDetailDTO saveUserDetail(UserDetailRequest request) {
         String nickname = request.getNickname();
-        String email = request.getEmail();
         String memberId = request.getMemberId();
         Long parseMemberId = Long.parseLong(memberId);
 
         Member member = memberRepository.findById(parseMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found with id: " + memberId));
+                .orElseThrow(MemberNotFoundException::new);
 
-        UserDetail userDetail = UserDetail.of(email, nickname, member);
+        UserDetail userDetail = userDetailRepository.findByMemberId(parseMemberId)
+                .orElseThrow(NoUserDetailException::new);
+
+        // 닉네임 설정
+        userDetail.setUserNickname(nickname);
+
         UserDetail savedUserDetail = userDetailRepository.save(userDetail);
 
         return UserDetailDTO.from(savedUserDetail);

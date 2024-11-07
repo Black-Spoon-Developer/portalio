@@ -10,8 +10,10 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @Entity
 @Getter
@@ -36,6 +38,8 @@ public class UserDetail {
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
 
+    public void setUserNickname(String userNickname) { this.userNickname = userNickname; }
+
     public void setMember(Member member) {
         this.member = member;
     }
@@ -48,7 +52,6 @@ public class UserDetail {
 
 
     public static UserDetail of(String userEmail, String userNickname, Member member) {
-        System.out.println(member.getMemberId());
         UserDetail userDetail = new UserDetail();
         userDetail.userEmail = userEmail;
         userDetail.userNickname = userNickname;
