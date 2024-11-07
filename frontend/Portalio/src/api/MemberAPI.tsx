@@ -3,25 +3,6 @@ import { UserDetailInfo } from "../type/UserType";
 
 const BASE_URL = "http://localhost:8080";
 
-// access 토큰으로 회원 정보 요청 API
-export const userTokenFetchAPI = async () => {
-  try {
-    const accessToken = localStorage.getItem("access");
-
-    if (accessToken) {
-      const response = await axios.get(`${BASE_URL}/api/v1/users/info`, {
-        headers: {
-          access: accessToken,
-        },
-      });
-
-      return response;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 // 회원 닉네임 중복 검사 API
 export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
   try {
