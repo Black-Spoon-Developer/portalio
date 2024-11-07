@@ -3,9 +3,11 @@ package com.example.portalio.global.advice;
 import com.example.portalio.domain.activityboard.error.ActivityBoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardUnauthorizedAccessException;
+import com.example.portalio.domain.boardrecom.error.AlreadyBoardRecomException;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
+import com.example.portalio.domain.portfoliorecom.error.AlreadyPortfolioRecomException;
 import com.example.portalio.domain.repository.error.RepositoryNotFoundException;
 import com.example.portalio.domain.repository.error.RepositoryUnauthorizedAccessException;
 import com.example.portalio.domain.userdetail.error.NoTicketAvailableException;
@@ -72,6 +74,18 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleNoTicketAvailable(NoTicketAvailableException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.NO_TICKET_AVAILABLE);
+    }
+
+    @ExceptionHandler(AlreadyBoardRecomException.class)
+    public ResponseEntity<ErrorResponseDto> handleAlreadyBoardRecom(AlreadyBoardRecomException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.ALREADY_RECOM_BOARD);
+    }
+
+    @ExceptionHandler(AlreadyPortfolioRecomException.class)
+    public ResponseEntity<ErrorResponseDto> handleAlreadyPortfolioRecom(AlreadyPortfolioRecomException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.ALREADY_RECOM_PORTFOLIO);
     }
 
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {

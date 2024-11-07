@@ -33,4 +33,13 @@ public class BoardRecom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    private BoardRecom(Member member, Board board) {
+        this.member = member;
+        this.board = board;
+    }
+
+    public static BoardRecom of(Member member, Board board) {
+        return new BoardRecom(member, board);
+    }
 }

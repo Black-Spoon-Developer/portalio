@@ -28,9 +28,6 @@ public class JobSubCategory {
     @Column(name = "job_name", nullable = false, length = 50)
     private String jobName;
 
-//    @OneToMany(mappedBy = "jobSubCategory", fetch = FetchType.LAZY)
-//    private List<UserHopeJob> userHopeJobs = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "industry_id")
     private JobMajorCategory jobMajorCategory;
