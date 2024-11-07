@@ -7,9 +7,9 @@ import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 
 const App: React.FC = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(
-    !!localStorage.getItem("isLogin")
-  );
+  // const [isLogin, setIsLogin] = useState<boolean>(
+  //   !!localStorage.getItem("isLogin")
+  // );
 
   return (
     <>
