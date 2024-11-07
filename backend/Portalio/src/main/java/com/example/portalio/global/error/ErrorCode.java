@@ -17,7 +17,9 @@ public enum ErrorCode {
     BOARD_UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "Board Unauthorized Access"),
     NO_TICKET_AVAILABLE(HttpStatus.BAD_REQUEST, "No Ticket Available"),
     ALREADY_RECOM_BOARD(HttpStatus.CONFLICT, "Already recom board"),
-    ALREADY_RECOM_PORTFOLIO(HttpStatus.CONFLICT, "Already recom portfolio");
+    ALREADY_RECOM_PORTFOLIO(HttpStatus.CONFLICT, "Already recom portfolio"),
+    BOARD_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Board Comment Not Found"),
+    PORTFOLIO_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Portfolio Comment Not Found");
 
     private final HttpStatus status;
     private final String message;

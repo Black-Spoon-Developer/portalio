@@ -27,10 +27,6 @@ public class BoardComment extends AuditableCreatedEntity {
     @Column(name = "board_comment_id")
     private Long boardCommentId;
 
-    @Id
-    @Column(name = "member_id")
-    private Long memberId;
-
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -42,4 +38,29 @@ public class BoardComment extends AuditableCreatedEntity {
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
 
+    private BoardComment(String content) {
+        this.content = content;
+    }
+
+    public static BoardComment from(String content) {
+        return new BoardComment(content);
+    }
+
+    public void addRelation(Board board, Member member) {
+        if (this.board != null) {
+            this.board.getBoardComments().remove(this);
+        }
+        this.board = board;
+        board.getBoardComments().add(this);
+
+        if (this.member != null) {
+            this.member.getBoardComments().remove(this);
+        }
+        this.member = member;
+        member.getBoardComments().add(this);
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
