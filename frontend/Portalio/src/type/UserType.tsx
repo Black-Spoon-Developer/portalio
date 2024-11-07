@@ -9,5 +9,4 @@ export type UserInfo = {
 export type UserDetailInfo = {
   memberId: string;
   nickname: string;
-  email: string;
 };

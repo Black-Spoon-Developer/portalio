@@ -20,7 +20,6 @@ type Category = {
 
 const UserSignupPage: React.FC = () => {
   const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState(""); // 이메일 상태 추가
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
@@ -76,11 +75,6 @@ const UserSignupPage: React.FC = () => {
     setNickname(e.target.value);
   };
 
-  // 이메일 입력 핸들러
-  const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
   // 닉네임 중복 체크
   const handleNicknameDuplicateCheck = async () => {
     try {
@@ -123,13 +117,12 @@ const UserSignupPage: React.FC = () => {
     if (
       !isDuplicate &&
       nickname &&
-      email && // 이메일이 입력되었는지 확인
       selectedMainCategory &&
       selectedSubCategory
     ) {
       try {
         // 닉네임과 이메일을 함께 설정하는 API 호출
-        const userInfoResponse = await saveUserDetail(nickname, email);
+        const userInfoResponse = await saveUserDetail(nickname);
         if (!userInfoResponse) {
           alert("에러가 발생했습니다.");
           return;
@@ -183,18 +176,6 @@ const UserSignupPage: React.FC = () => {
             <p className="mt-2 text-sm text-blue-500">
               비속어를 사용한 닉네임은 불가합니다.
             </p>
-          </section>
-
-          {/* 이메일 입력 */}
-          <section className="w-2/3">
-            <header className="text-3xl font-bold my-4">이메일</header>
-            <input
-              type="email"
-              placeholder="이메일을 입력해주세요."
-              className="w-full h-14 p-3 text-lg rounded-xl border-2"
-              value={email}
-              onChange={handleEmailInput}
-            />
           </section>
 
           <section className="w-2/3 my-5">

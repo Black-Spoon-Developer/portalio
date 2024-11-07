@@ -30,7 +30,7 @@ export const logoutApi = async () => {
       {},
       {
         headers: {
-          access: accessToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
