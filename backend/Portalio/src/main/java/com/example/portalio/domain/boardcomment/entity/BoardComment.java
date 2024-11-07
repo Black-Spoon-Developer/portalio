@@ -35,7 +35,7 @@ public class BoardComment extends AuditableCreatedEntity {
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private BoardComment(String content) {
