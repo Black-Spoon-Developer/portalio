@@ -34,7 +34,7 @@ public class PortfolioComment {
     private Portfolio portfolio;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private PortfolioComment(String content) {
