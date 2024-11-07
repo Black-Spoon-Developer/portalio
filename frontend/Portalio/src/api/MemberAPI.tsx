@@ -1,12 +1,15 @@
 import axios from "axios";
 import { UserDetailInfo } from "../type/UserType";
+import { useSelector } from "react-redux";
+import store, { RootState } from "../store";
 
 const BASE_URL = "http://localhost:8080";
 
 // 회원 닉네임 중복 검사 API
 export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
   try {
-    const accessToken = localStorage.getItem("access");
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
 
     if (accessToken) {
       const response = await axios.get(
@@ -28,15 +31,13 @@ export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
 // 개인 회원 세부 정보 저장 API
 export const saveUserDetail = async (nickname: string) => {
   try {
-    const accessToken = localStorage.getItem("access");
-    const userInfo = localStorage.getItem("userInfo");
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+    const memberId = state.auth.memberId;
 
-    // JSON 문자열로 저장된 userInfo를 객체로 변환
-    const parsedUserInfo = userInfo ? JSON.parse(userInfo) : null;
-
-    if (accessToken && parsedUserInfo) {
+    if (accessToken && memberId) {
       const request: UserDetailInfo = {
-        memberId: parsedUserInfo.memberId,
+        memberId,
         nickname,
       };
 
@@ -57,15 +58,15 @@ export const saveUserDetail = async (nickname: string) => {
 // 직무 저장 API
 export const jobUpdate = async (jobsubcategoryId: number) => {
   try {
-    const accessToken = localStorage.getItem("access");
-    const memberData = localStorage.getItem("userInfo");
-    const parseMemberData = memberData ? JSON.parse(memberData) : null;
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+    const memberId = state.auth.memberId;
 
-    if (accessToken && parseMemberData) {
-      const memberId = BigInt(parseMemberData.memberId);
+    if (accessToken && memberId) {
+      const parseMemberId = BigInt(memberId);
 
       const response = await axios.post(
-        `${BASE_URL}/api/v1/users/job/save/${memberId}/${jobsubcategoryId}`,
+        `${BASE_URL}/api/v1/users/job/save/${parseMemberId}/${jobsubcategoryId}`,
         {},
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -80,7 +81,9 @@ export const jobUpdate = async (jobsubcategoryId: number) => {
 // 회원 정보 입력 후 인증 처리 API
 export const authUser = async () => {
   try {
-    const accessToken = localStorage.getItem("access");
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+
     await axios.post(
       `${BASE_URL}/api/v1/users/auth`,
       {},
