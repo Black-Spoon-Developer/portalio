@@ -33,4 +33,13 @@ public class PortfolioRecom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "portfolio_id")
     private Portfolio portfolio;
+
+    private PortfolioRecom(Member member, Portfolio portfolio) {
+        this.member = member;
+        this.portfolio = portfolio;
+    }
+
+    public static PortfolioRecom of(Member member, Portfolio portfolio) {
+        return new PortfolioRecom(member, portfolio);
+    }
 }
