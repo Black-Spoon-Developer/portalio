@@ -1,6 +1,7 @@
 package com.example.portalio.domain.member.controller;
 
 import com.example.portalio.common.jwt.util.JwtUtil;
+import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,11 +30,11 @@ public class MemberController {
         try {
             // access 토큰에서 memberId 추출
             Long memberId = jwtUtil.getMemberId(accessToken);
-            Member member = memberService.authMember(memberId);
+            MemberDTO memberDTO = memberService.authMember(memberId);
 
-            if (member != null) {
+            if (memberDTO != null) {
                 // 인증 성공 시 회원 정보를 응답
-                return ResponseEntity.ok(member);
+                return ResponseEntity.ok(memberDTO);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("회원을 찾을 수 없습니다.");
             }
@@ -50,7 +51,7 @@ public class MemberController {
                                          @PathVariable("jobsubcategoryId") Long jobsubcategoryId) {
 
         try {
-            Member member = memberService.jobInfoSave(memberId, jobsubcategoryId);
+            MemberDTO member = memberService.jobInfoSave(memberId, jobsubcategoryId);
             return ResponseEntity.ok(member);
         } catch (Exception e) {
             // 예상치 못한 예외가 발생한 경우

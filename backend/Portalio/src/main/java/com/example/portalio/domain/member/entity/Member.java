@@ -88,9 +88,6 @@ public class Member extends AuditableCreatedEntity {
             inverseJoinColumns = @JoinColumn(name = "job_id", referencedColumnName = "job_id"))
     private List<JobSubCategory> jobSubCategories = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "member")
-//    private List<UserHopeJob> userHopeJobs = new ArrayList<>();
-
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
 

@@ -3,6 +3,7 @@ package com.example.portalio.domain.userdetail.controller;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
 import com.example.portalio.domain.userdetail.dto.TicketResponse;
+import com.example.portalio.domain.userdetail.dto.UserDetailDTO;
 import com.example.portalio.domain.userdetail.dto.UserDetailRequest;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.service.UserDetailService;
@@ -56,10 +57,9 @@ public class UserDetailController {
     @Operation(summary = "[개인회원] 회원 세부 정보 저장", description = "닉네임, 이메일, memberId의 값을 보내주어 저장")
     @PostMapping("/detail")
     public ResponseEntity<?> saveUserDetail(@RequestBody UserDetailRequest request) {
-        System.out.println(request);
-        UserDetail savedUserDetail = userDetailService.saveUserDetail(request);
+        UserDetailDTO savedUserDetailDTO = userDetailService.saveUserDetail(request);
 
-        return ResponseEntity.ok(savedUserDetail);
+        return ResponseEntity.ok(savedUserDetailDTO);
     }
 
     // usernickname 중복 체크

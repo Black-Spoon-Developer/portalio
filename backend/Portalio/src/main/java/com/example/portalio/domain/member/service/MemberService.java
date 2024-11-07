@@ -3,6 +3,7 @@ package com.example.portalio.domain.member.service;
 import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.jobsubcategory.repository.JobSubCategoryRepository;
+import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
@@ -17,17 +18,21 @@ public class MemberService {
     private final JobSubCategoryRepository jobSubCategoryRepository;
 
     // 회원 정보 입력 후 인증 해주는 로직
-    public Member authMember(Long memberId) {
+    public MemberDTO authMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         member.setMemberAuth();
 
-        return memberRepository.save(member);
+        MemberDTO memberDTO = MemberDTO.from(memberRepository.save(member));
+
+
+        return memberDTO;
     }
 
     // 회원 직무 정보 저장
-    public Member jobInfoSave(Long memberId, Long subCategoryId) {
+    public MemberDTO jobInfoSave(Long memberId, Long subCategoryId) {
+
         // 회원 정보 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
@@ -38,7 +43,9 @@ public class MemberService {
 
         member.addJobSubCategory(jobSubCategory);
 
-        return memberRepository.save(member);
+        MemberDTO memberDTO = MemberDTO.from(memberRepository.save(member));
+
+        return memberDTO;
     }
 
 //    // 회원정보 이메일로 조회

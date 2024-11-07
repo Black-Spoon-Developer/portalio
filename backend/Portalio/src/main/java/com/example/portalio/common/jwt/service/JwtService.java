@@ -4,6 +4,7 @@ import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.UserResponseDTO;
+import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
@@ -125,10 +126,14 @@ public class JwtService {
         Member member = memberRepository.findByMemberUsername(username)
                 .orElseThrow(MemberNotFoundException::new);
 
+        MemberDTO memberDTO = MemberDTO.from(member);
+
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
 
-        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
+        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt);
+
+//        , memberDTO
 
         // RefreshEntity 저장
         refreshRepository.save(refreshEntity);

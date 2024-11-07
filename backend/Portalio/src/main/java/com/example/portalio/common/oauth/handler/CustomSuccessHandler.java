@@ -4,6 +4,7 @@ import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
@@ -54,24 +55,25 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
 
+        MemberDTO memberDTO = MemberDTO.from(member);
+
         // 회원 인증 여부
         boolean isAuth = false;
 
         // 로그인 중에 만약 발급된 refresh 토큰이 있다면 DB에서 찾아서 검증 후 토큰이 만료 되었으면 새로운 토큰 발급하고 아니면
         // 토큰 값을 조회해서 그대로 쿠키에 담아서 그냥 보내주기
-        RefreshEntity refreshToken = member.getRefreshToken();
+        String refreshToken = memberDTO.getRefreshToken();
 
         // 회원인증 정보 체크
         isAuth = member.isMemberAuth();
 
         if (refreshToken != null) {
-            String refreshTokenValue = refreshToken.getValue();
-            boolean isExired = jwtUtil.isExpired(refreshTokenValue);
+            boolean isExired = jwtUtil.isExpired(refreshToken);
 
             // 유효기간이 만료되지 않았으면
             if (!isExired) {
                 // 응답 설정
-                response.addCookie(createCookie("refresh", refreshTokenValue));
+                response.addCookie(createCookie("refresh", refreshToken));
                 response.setStatus(HttpStatus.OK.value());
 
             } else {
@@ -142,7 +144,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusNanos(expiredMs * 1_000_000);
 
-        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt, member);
+        RefreshEntity refreshEntity = RefreshEntity.of(refresh, issuedAt, expiresAt);
 
         // RefreshEntity 저장
         refreshRepository.save(refreshEntity);

@@ -1,5 +1,6 @@
 package com.example.portalio.common.jwt.entity;
 
+import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,8 +38,8 @@ public class RefreshEntity {
 
 //    @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
 //    private Member member;
-
-    public static RefreshEntity of(String tokenValue, LocalDateTime issuedAt, LocalDateTime expiresAt, Member member) {
+//    , MemberDTO member
+    public static RefreshEntity of(String tokenValue, LocalDateTime issuedAt, LocalDateTime expiresAt) {
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.value = tokenValue;
         refreshEntity.issuedAt = issuedAt;
