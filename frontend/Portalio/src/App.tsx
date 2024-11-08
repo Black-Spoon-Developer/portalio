@@ -33,6 +33,7 @@ import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 const App: React.FC = () => {
   return (
     <>
+      <NavBar />
       <Routes>
         {/* Main */}
         {/* <Route path="/" element={<MainTestPage />} /> */}
