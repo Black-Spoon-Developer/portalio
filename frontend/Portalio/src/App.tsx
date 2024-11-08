@@ -1,11 +1,11 @@
 import React from "react";
-import NavBar from "./components/common/UpNavBar.tsx";
+import NavBar from "./components/common/navBarComponent/navBar/UpNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 import PortfolioPage from "./pages/board/PortfolioPage.tsx";
-import SideNavBar from "./components/common/SideNavBar.tsx";
+import SideNavBar from "./components/common/navBarComponent/navBar/SideNavBar.tsx";
 
 const App: React.FC = () => {
   return (
