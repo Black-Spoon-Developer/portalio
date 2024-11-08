@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Logo from "../../../assets/Logo.png";
 import {
   memberNicknameDuplicateCheckAPI,
-  saveMemberNickname,
+  saveUserDetail,
   jobUpdate,
+  authUser,
 } from "../../../api/MemberAPI";
 import { mainCategories, subCategories } from "../../../assets/JobCategory";
 import { issueAccessToken } from "../../../api/AuthAPI";
-import { userTokenFetchAPI } from "../../../api/MemberAPI";
 import { UserInfo } from "../../../type/UserType";
+import { authActions } from "../../../store/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../store";
 
 // Category 타입 정의
 type Category = {
@@ -27,51 +30,45 @@ const UserSignupPage: React.FC = () => {
     Category[]
   >([]);
 
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setFilteredSubCategories(subCategories);
     const fetchData = async () => {
-      // access 토큰 저장
+      // access 토큰 발급 후
       const fetchAccessToken = async () => {
-        const isLogin = localStorage.getItem("isLogin");
-        const accessToken = localStorage.getItem("access");
+        if (accessToken == null) {
+          const response = await issueAccessToken();
 
-        if (accessToken == null && isLogin == "true") {
-          const newAccessToken = await issueAccessToken();
-          if (newAccessToken) {
-            localStorage.setItem("access", newAccessToken);
+          if (response) {
+            const newAccessToken = response.data.access;
+
+            // accessToken을 발급받았을 경우
+            if (newAccessToken) {
+              // 유저 정보 저장
+              const memberId = response.data.memberId.toString();
+              const name = response.data.name;
+              const username = response.data.username;
+              const picture = response.data.picture;
+              const role = response.data.role;
+
+              const userInfo: UserInfo = {
+                accessToken: newAccessToken,
+                memberId,
+                name,
+                username,
+                picture,
+                role,
+              };
+
+              dispatch(authActions.login(userInfo));
+            }
           }
         }
       };
-
-      // 엑세스 토큰으로 회원 정보 조회 후 localstorage에 저장
-      const userInfofetch = async () => {
-        const accessToken = localStorage.getItem("access");
-        const userInfo = localStorage.getItem("userInfo");
-        const isLogin = localStorage.getItem("isLogin");
-
-        if (
-          accessToken &&
-          !userInfo &&
-          !(isLogin == null || isLogin == "false")
-        ) {
-          const userInfo = await userTokenFetchAPI();
-          if (userInfo) {
-            const setUserInfo: UserInfo = {
-              memberId: userInfo.data.memberId,
-              memberName: userInfo.data.memberName,
-              memberEmail: userInfo.data.memberEmail,
-              memberPicture: userInfo.data.memberPicture,
-              memberRole: userInfo.data.memberRole,
-            };
-            localStorage.setItem("userInfo", JSON.stringify(setUserInfo));
-          }
-        }
-      };
-
+      setFilteredSubCategories(subCategories);
       await fetchAccessToken(); // access 토큰 가져오기
-      await userInfofetch(); // 토큰을 가져온 후 회원 정보 조회
     };
 
     fetchData(); // 비동기 함수 실행
@@ -118,7 +115,7 @@ const UserSignupPage: React.FC = () => {
     setSelectedSubCategory(e.target.value);
   };
 
-  // 닉네임 설정 및 직무 저장
+  // 닉네임, 직무 저장
   const infoUpdate = async () => {
     // 닉네임 중복 체크가 완료되었고, 직무 선택이 모두 완료된 경우
     if (
@@ -128,16 +125,20 @@ const UserSignupPage: React.FC = () => {
       selectedSubCategory
     ) {
       try {
-        // 닉네임 설정 API 호출
-        const nicknameResponse = await saveMemberNickname(nickname);
-        if (nicknameResponse) {
-          console.log("닉네임 설정 성공:", nicknameResponse.data);
+        // 닉네임과 이메일을 함께 설정하는 API 호출
+        const userInfoResponse = await saveUserDetail(nickname);
+        if (!userInfoResponse) {
+          alert("에러가 발생했습니다.");
+          return;
         }
 
         // 직무 저장 API 호출
         await jobUpdate(parseInt(selectedSubCategory));
 
-        alert("닉네임과 직무가 성공적으로 저장되었습니다.");
+        // 저장이 성공적으로 되면 user 인증 처리
+        await authUser();
+
+        alert("닉네임, 이메일과 직무가 성공적으로 저장되었습니다.");
         navigate("/");
       } catch (error) {
         console.error("정보 업데이트 중 오류:", error);
@@ -180,6 +181,7 @@ const UserSignupPage: React.FC = () => {
               비속어를 사용한 닉네임은 불가합니다.
             </p>
           </section>
+
           <section className="w-2/3 my-5">
             <header className="text-3xl font-bold my-4">직무</header>
             <select

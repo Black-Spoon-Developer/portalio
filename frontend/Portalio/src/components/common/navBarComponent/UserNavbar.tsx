@@ -1,13 +1,15 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import Logo from "../../../assets/Logo.png";
 import BasicProfile from "../../../assets/BasicProfile.png";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { authActions } from "../../../store/auth/AuthSlice";
 import { logoutApi } from "../../../api/AuthAPI";
 
 const UserNavbar: React.FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 메인 페이지로 이동하는 메서드
   const goToMainPage = () => {
     navigate("/");
   };
@@ -15,13 +17,11 @@ const UserNavbar: React.FC = () => {
   // 로그아웃 메서드
   const handleLogout = async () => {
     // 로그아웃 요청
-    await logoutApi();
+    dispatch(authActions.logout());
+    logoutApi();
 
     // 로그아웃 후 메인 페이지로 이동
     navigate("/");
-
-    // 필요 시 상태 업데이트 또는 리렌더링을 위해 페이지를 새로고침할 수도 있음
-    window.location.reload();
   };
 
   return (

@@ -1,4 +1,5 @@
 import axios from "axios";
+import store, { RootState } from "../store";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -10,9 +11,8 @@ export const issueAccessToken = async () => {
       {},
       { withCredentials: true }
     );
-    const newAccessToken = response.data.access;
-    console.log(newAccessToken); // access 토큰 확인
-    return newAccessToken; // 필요에 따라 반환
+
+    return response; // 필요에 따라 반환
   } catch (error) {
     console.error("Failed to issue access token:", error);
     return null; // 오류 시 null 반환
@@ -22,8 +22,10 @@ export const issueAccessToken = async () => {
 // 로그아웃 API
 export const logoutApi = async () => {
   try {
-    // access 토큰 조회
-    const accessToken = localStorage.getItem("access");
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+
+    localStorage.setItem("isLogin", "false");
 
     // refreshToken 삭제 요청
     axios.post(
@@ -31,16 +33,10 @@ export const logoutApi = async () => {
       {},
       {
         headers: {
-          access: accessToken,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
-
-    // localStorage에서 accessToken 및 userInfo 삭제
-    localStorage.removeItem("access");
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("isLogin");
-    localStorage.setItem("isLogin", "false");
   } catch (error) {
     console.log(error);
   }

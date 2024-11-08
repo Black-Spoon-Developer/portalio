@@ -1,37 +1,21 @@
 import axios from "axios";
+import { UserDetailInfo } from "../type/UserType";
+import store, { RootState } from "../store";
 
 const BASE_URL = "http://localhost:8080";
-
-// access 토큰으로 회원 정보 요청 API
-export const userTokenFetchAPI = async () => {
-  try {
-    const accessToken = localStorage.getItem("access");
-
-    if (accessToken) {
-      const response = await axios.get(`${BASE_URL}/api/v1/users/info`, {
-        headers: {
-          access: accessToken,
-        },
-      });
-
-      return response;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 // 회원 닉네임 중복 검사 API
 export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
   try {
-    const accessToken = localStorage.getItem("access");
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
 
     if (accessToken) {
       const response = await axios.get(
-        `${BASE_URL}/api/v1/users/duplicate/nickname/${nickname}`,
+        `${BASE_URL}/api/v1/users/duplicate/${nickname}`,
         {
           headers: {
-            access: accessToken,
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -43,21 +27,24 @@ export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
   }
 };
 
-// 개인 회원 닉네임 설정 및 수정
-export const saveMemberNickname = async (nickname: string) => {
+// 개인 회원 세부 정보 저장 API
+export const saveUserDetail = async (nickname: string) => {
   try {
-    const accessToken = localStorage.getItem("access");
-    const userInfo = JSON.stringify(localStorage.getItem("userInfo"));
-    const parsedUserInfo = userInfo ? JSON.parse(userInfo) : null;
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+    const memberId = state.auth.memberId;
 
-    if (accessToken && parsedUserInfo) {
-      const email = parsedUserInfo.memberEmail;
+    if (accessToken && memberId) {
+      const request: UserDetailInfo = {
+        memberId,
+        nickname,
+      };
 
-      const response = await axios.put(
-        `${BASE_URL}/api/v1/users/${email}/nickname/${nickname}`,
-        {},
+      const response = await axios.patch(
+        `${BASE_URL}/api/v1/users/nickname`,
+        request,
         {
-          headers: { access: accessToken },
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
       return response;
@@ -70,22 +57,45 @@ export const saveMemberNickname = async (nickname: string) => {
 // 직무 저장 API
 export const jobUpdate = async (jobsubcategoryId: number) => {
   try {
-    const accessToken = localStorage.getItem("access");
-    const memberData = localStorage.getItem("userInfo");
-    const parseMemberData = memberData ? JSON.parse(memberData) : null;
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+    const memberId = state.auth.memberId;
 
-    if (accessToken && parseMemberData) {
-      const memberId = BigInt(parseMemberData.memberId);
+    if (accessToken && memberId) {
+      const parseMemberId = BigInt(memberId);
 
       const response = await axios.post(
-        `${BASE_URL}/api/v1/job/save/${memberId}/${jobsubcategoryId}`,
+        `${BASE_URL}/api/v1/users/job/save/${parseMemberId}/${jobsubcategoryId}`,
         {},
-        { headers: { access: accessToken } }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       return response;
     }
   } catch (error) {
     console.log(error);
+  }
+};
+
+// 회원 정보 입력 후 인증 처리 API
+export const authUser = async () => {
+  try {
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+
+    await axios.post(
+      `${BASE_URL}/api/v1/users/auth`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return "회원 인증 완료";
+  } catch (error) {
+    console.log(error);
+    alert(error);
   }
 };
