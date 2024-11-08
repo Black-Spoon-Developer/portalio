@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "./components/common/UpNavBar.tsx";
+// import NavBar from "./components/common/UpNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Outlet, Route, Routes } from "react-router-dom";
 // import MainTestPage from "./pages/MainTest.tsx";
