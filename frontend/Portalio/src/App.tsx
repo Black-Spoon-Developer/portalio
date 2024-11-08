@@ -90,6 +90,9 @@ const App: React.FC = () => {
           <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
           <Route path="record/:record_id" element={<AIRecordPage />} />
         </Route> */}
+
+        {/* Exception handling */}
+        <Route path="*" element={<NotFoundPage />}></Route>
       </Routes>
       <Footer />
     </>
