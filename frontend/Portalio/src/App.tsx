@@ -19,6 +19,7 @@ import PortfolioEditPage from "./pages/auth/portfolio/PortfolioEditPage.tsx";
 import RepositoryEditPage from "./pages/auth/repository/RepositoryEditPage.tsx";
 import RepositoryDetailPage from "./pages/auth/repository/RepositoryDetailPage.tsx";
 import RepositoryCreatePage from "./pages/auth/repository/RepositoryCreatePage.tsx";
+import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
