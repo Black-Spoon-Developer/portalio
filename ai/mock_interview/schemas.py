@@ -59,3 +59,31 @@ class ReportDTO(BaseModel):
     answer_edit: Optional[List[str]] = []
     report_title: Optional[str] = None
     report_content: Optional[str] = None
+
+
+# 수정 schemas
+
+class PortfolioDTO(BaseModel):
+    portfolio_id: int
+    portfolio_title: str
+    portfolio_content: str
+    summary_text: Optional[str] = None
+
+class RepositoryDTO(BaseModel):
+    repository_id: int
+    repository_title: str
+    repository_content: str
+    summary_text: Optional[str] = None
+
+class MemberJobDTO(BaseModel):
+    job_id: int
+    job_name: str
+
+class MemberInfoDTO(BaseModel):
+    member_id: int
+    portfolios: List[PortfolioDTO] = []
+    repositories: List[RepositoryDTO] = []
+    hope_jobs: List[MemberJobDTO] = []
+
+    class Config:
+        from_attributes = True

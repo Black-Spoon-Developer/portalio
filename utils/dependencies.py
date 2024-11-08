@@ -1,12 +1,11 @@
 from fastapi import Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from database import get_db
-from models import Member
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from utils.config import security_settings
-from jose import JWTError, jwt
+from models import Member
+from jose import jwt, JWTError
 
-
-def get_current_member(token: str, db: Session = Depends(get_db)):
+async def get_current_member(token: str, db: AsyncSession):
     try:
         payload = jwt.decode(
             token,
@@ -16,21 +15,28 @@ def get_current_member(token: str, db: Session = Depends(get_db)):
         member_id = payload.get("member_id")
         
         if member_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token - member_id not found")
-        member = get_member_by_id(member_id, db)
-        return member
-
+            raise HTTPException(status_code=401, detail="멤버가 없습니다.")
+    
     except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="토큰 검증 오류"
+        )
+    
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="서버 오류"
         )
+    
+    result = await db.execute(select(Member).filter(Member.member_id == member_id))
+    member = result.scalars().first()
 
-def get_member_by_id(member_id: int, db: Session):
-    member = db.query(Member).filter(Member.member_id == member_id).first()
     if member is None:
-        raise HTTPException(status_code=401, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="멤버 없음"
+        )
+    
     return member
+    
