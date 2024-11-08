@@ -3,7 +3,7 @@ import React from "react";
 // import NavBar from "./components/common/NavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Outlet, Route, Routes } from "react-router-dom";
-import MainTestPage from "./pages/MainTest.tsx";
+// import MainTestPage from "./pages/MainTest.tsx";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 import UserProfilePage from "./pages/auth/user/UserProfilePage.tsx";
