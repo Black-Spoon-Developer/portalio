@@ -4,8 +4,9 @@ import { issueAccessToken } from "../../api/AuthAPI";
 import { UserInfo } from "../../type/UserType";
 import { RootState } from "../../store";
 import { authActions } from "../../store/auth/AuthSlice";
+import SideNavBar from "../../components/common/navBarComponent/navBar/SideNavBar";
 
-const PortfolioPage: React.FC = () => {
+const BoardPage: React.FC = () => {
   const dispatch = useDispatch();
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
 
@@ -42,7 +43,13 @@ const PortfolioPage: React.FC = () => {
 
     fetchAccessToken();
   }, []);
-  return <></>;
+  return (
+    <div className="grid-cols-4 min-h-screen">
+      <section className="">
+        <SideNavBar />
+      </section>
+    </div>
+  );
 };
 
-export default PortfolioPage;
+export default BoardPage;
