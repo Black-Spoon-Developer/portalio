@@ -3,10 +3,12 @@ package com.example.portalio.global.advice;
 import com.example.portalio.domain.activityboard.error.ActivityBoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardNotFoundException;
 import com.example.portalio.domain.board.error.BoardUnauthorizedAccessException;
+import com.example.portalio.domain.boardcomment.error.BoardCommentNotFoundException;
 import com.example.portalio.domain.boardrecom.error.AlreadyBoardRecomException;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
+import com.example.portalio.domain.portfoliocomment.error.PortfolioCommentNotFoundException;
 import com.example.portalio.domain.portfoliorecom.error.AlreadyPortfolioRecomException;
 import com.example.portalio.domain.repository.error.RepositoryNotFoundException;
 import com.example.portalio.domain.repository.error.RepositoryUnauthorizedAccessException;
@@ -86,6 +88,18 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponseDto> handleAlreadyPortfolioRecom(AlreadyPortfolioRecomException e) {
         log.info(e.getMessage());
         return getResponse(ErrorCode.ALREADY_RECOM_PORTFOLIO);
+    }
+
+    @ExceptionHandler(BoardCommentNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleBoardCommentNotFound(BoardCommentNotFoundException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.BOARD_COMMENT_NOT_FOUND);
+    }
+
+    @ExceptionHandler(PortfolioCommentNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handlePortfolioCommentNotFound(PortfolioCommentNotFoundException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.PORTFOLIO_COMMENT_NOT_FOUND);
     }
 
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {
