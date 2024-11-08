@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import UserNavbar from "./navBarComponent/UserNavbar";
-import GuestNavbar from "./navBarComponent/GuestNavbar";
-import RecruiterNavbar from "./navBarComponent/RecruiterNavbar";
-import { RootState } from "../../store";
+import UserNavbar from "../UserNavbar";
+import GuestNavbar from "../GuestNavbar";
+import RecruiterNavbar from "../RecruiterNavbar";
+import { RootState } from "../../../../store";
 
 const NavBar: React.FC = () => {
   // authSlice에서 role 값 가져오기

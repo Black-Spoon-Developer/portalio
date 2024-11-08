@@ -5,7 +5,9 @@ const Footer: React.FC = () => {
     <footer className="mt-auto h-30 py-2.5 bg-[#282c34] text-white  w-full">
       <section className="ml-5 my-3">
         <section className="flex items-center">
-          <div className="my-2 text-3xl font-semibold">(주) PortAlio</div>
+          <div className="my-2 text-3xl font-semibold">
+            (주) 흑수저 개발자들
+          </div>
           <div className="pl-2 font-semibold">| 개인정보처리방침</div>
           <div className="pl-2 font-semibold">| 이용약관</div>
         </section>
