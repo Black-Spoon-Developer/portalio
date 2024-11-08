@@ -7,16 +7,13 @@ import com.example.portalio.common.oauth.dto.OAuth2Response;
 import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.enums.Role;
-import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
-import com.example.portalio.domain.userdetail.entity.UserDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -55,21 +52,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String picture = oAuth2Response.getPicture();
 
         Member existData = memberRepository.findByMemberUsername(username)
-                .orElseThrow(MemberNotFoundException::new);
+                .orElse(null);
 
         if (existData == null) {
 
             // 멤버 객체 생성
             Member member = Member.of(name, username, picture, Role.USER);
-            memberRepository.save(member);
+            Member savedMember = memberRepository.save(member);
 
             UserDTO userDTO = new UserDTO();
-            userDTO.setMemberId(member.getMemberId());
+            userDTO.setMemberId(savedMember.getMemberId());
             userDTO.setName(name);
             userDTO.setUsername(username);
             userDTO.setEmail(email);
             userDTO.setRole("USER");
             userDTO.setPicture(picture);
+
 
             return new CustomOAuth2User(userDTO);
 
@@ -78,6 +76,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setMemberId(existData.getMemberId());
             userDTO.setName(name);
             userDTO.setUsername(existData.getMemberUsername());
+            userDTO.setEmail(email);
             userDTO.setRole("USER");
             userDTO.setPicture(picture);
 

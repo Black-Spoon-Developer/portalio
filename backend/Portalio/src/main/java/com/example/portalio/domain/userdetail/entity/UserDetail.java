@@ -10,8 +10,10 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
 
 @Entity
 @Getter
@@ -22,10 +24,11 @@ public class UserDetail {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(name = "user_nickname", unique = true)
+    // 추후 unique true로 다시 바꾼후 프론트에서 조회를 해서 요청을 안보내도록 하기
+    @Column(name = "user_nickname")
     private String userNickname;
 
-    @Column(name = "user_email", length = 40, unique = true)
+    @Column(name = "user_email", length = 40)
     private String userEmail;
 
     @Column(name = "user_ticket")
@@ -35,6 +38,8 @@ public class UserDetail {
     @MapsId
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member;
+
+    public void setUserNickname(String userNickname) { this.userNickname = userNickname; }
 
     public void setMember(Member member) {
         this.member = member;
@@ -48,11 +53,9 @@ public class UserDetail {
 
 
     public static UserDetail of(String userEmail, String userNickname, Member member) {
-        System.out.println(member.getMemberId());
         UserDetail userDetail = new UserDetail();
         userDetail.userEmail = userEmail;
         userDetail.userNickname = userNickname;
-//        userDetail.userId = member.getMemberId();
         userDetail.member = member;
         return userDetail;
     }

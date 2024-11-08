@@ -12,5 +12,7 @@ public interface UserDetailRepository extends JpaRepository<UserDetail, Long> {
 
     UserDetail findByUserNickname(String nickname);
 
+    Optional<UserDetail> findByMemberId(Long memberId);
+
     Page<UserDetail> findAllByOrderByUserTicketDesc(Pageable pageable);
 }

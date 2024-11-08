@@ -90,4 +90,6 @@ public class Board extends AuditableCreatedEntity {
     public void setBoardSolve(Boolean boardSolve) { this.boardSolve = boardSolve; }
 
     public void setMember(Member member) { this.member = member; }
+
+    public void setBoardRecommendationCount(Integer boardRecommendationCount) { this.boardRecommendationCount = boardRecommendationCount; }
 }
