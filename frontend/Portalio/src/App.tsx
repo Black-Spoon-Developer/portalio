@@ -1,11 +1,12 @@
 import React from "react";
 import NavBar from "./components/common/navBarComponent/navBar/UpNavBar.tsx";
+import SideNavBar from "./components/common/navBarComponent/navBar/SideNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 import PortfolioPage from "./pages/board/PortfolioPage.tsx";
-import SideNavBar from "./components/common/navBarComponent/navBar/SideNavBar.tsx";
+import BoardTab from "./components/common/tab/BoardTab.tsx";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Route path="/" element={<PortfolioPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
+        <Route path="/test/tab" element={<BoardTab />}></Route>
       </Routes>
       <Footer />
     </>
