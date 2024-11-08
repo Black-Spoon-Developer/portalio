@@ -1,5 +1,5 @@
 import React from "react";
-// import NavBar from "./components/common/UpNavBar.tsx";
+import NavBar from "./components/common/navBarComponent/navBar/UpNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
 import { Outlet, Route, Routes } from "react-router-dom";
 // import MainTestPage from "./pages/MainTest.tsx";
@@ -33,6 +33,7 @@ import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 const App: React.FC = () => {
   return (
     <>
+      <NavBar />
       <Routes>
         {/* Main */}
         {/* <Route path="/" element={<MainTestPage />} /> */}
