@@ -22,9 +22,17 @@ public class PortfolioResponse {
     private Integer portfolioRecommendationCount;
     private Boolean portfolioPost;
     private LocalDateTime created;
+    private Integer portfolioCommentCount;
+
+    // 작성자 정보
     private Long memberId;
+    private String authorNickname;
+    private String authorPicture;
+
+
 
     public static PortfolioResponse from(Portfolio portfolio) {
+
         return PortfolioResponse.builder()
                 .portfolioId(portfolio.getPortfolioId())
                 .portfolioTitle(portfolio.getPortfolioTitle())
@@ -34,10 +42,13 @@ public class PortfolioResponse {
                 .portfolioFileKey(portfolio.getPortfolioFileKey())
                 .portfolioViews(portfolio.getPortfolioViews())
                 .portfolioThumbnailImg(portfolio.getPortfolioThumbnailImg() != null ? portfolio.getPortfolioThumbnailImg() : DEFAULT_IMAGE_URL)
+                .portfolioCommentCount(portfolio.getPortfolioComments().size())
                 .portfolioRecommendationCount(portfolio.getPortfolioRecommendationCount())
                 .portfolioPost(portfolio.getPortfolioPost())
                 .created(portfolio.getCreated())
                 .memberId(portfolio.getMember().getMemberId())
+                .authorNickname(portfolio.getMember().getUserDetail().getUserNickname())
+                .authorPicture(portfolio.getMember().getMemberPicture())
                 .build();
     }
 }
