@@ -57,7 +57,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #bfbfbf;
+  border: 2px solid #bfbfbf;
 }
 
 .repository-content {
@@ -106,6 +106,10 @@
 }
 
 /* ========== 활동 내역 (잔디) ========== */
+.activity-section{
+  border: 2px solid #bfbfbf;
+}
+
 .months {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
