@@ -10,15 +10,15 @@ import UserSettingPage from "./pages/auth/user/UserSettingPage.tsx";
 import UserPortfolioPage from "./pages/auth/user/UserPortfolioPage.tsx";
 import UserBoardListPage from "./pages/auth/user/UserBoardListPage.tsx";
 import UserRepositoryPage from "./pages/auth/user/UserRepositoryPage.tsx";
-import BoardEditPage from "./pages/auth/board/BoardEditPage.tsx";
-import BoardDetailPage from "./pages/auth/board/BoardDetailPage.tsx";
-import BoardCreatePage from "./pages/auth/board/BoardCreatePage.tsx";
-import PortfolioCreatePage from "./pages/auth/portfolio/PortfolioCreatePage.tsx";
-import PortfolioDetailPage from "./pages/auth/portfolio/PortfolioDetailPage.tsx";
-import PortfolioEditPage from "./pages/auth/portfolio/PortfolioEditPage.tsx";
-import RepositoryEditPage from "./pages/auth/repository/RepositoryEditPage.tsx";
-import RepositoryDetailPage from "./pages/auth/repository/RepositoryDetailPage.tsx";
-import RepositoryCreatePage from "./pages/auth/repository/RepositoryCreatePage.tsx";
+import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
+import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
+import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
+import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
+import PortfolioDetailPage from "./pages/board/portfolio/PortfolioDetailPage.tsx";
+import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
+import RepositoryEditPage from "./pages/board/repository/RepositoryEditPage.tsx";
+import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.tsx";
+import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
