@@ -18,7 +18,6 @@ interface Post {
 }
 
 const PortfolioPosts: React.FC = () => {
-  const BASE_URL = "http://localhost:8080";
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const [hasMore, setHasMore] = useState(true);
