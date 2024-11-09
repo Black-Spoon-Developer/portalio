@@ -34,6 +34,30 @@ public class PortfolioComment {
     private Portfolio portfolio;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
+
+    private PortfolioComment(String content) {
+        this.content = content;
+    }
+
+    public static PortfolioComment from(String content) {
+        return new PortfolioComment(content);
+    }
+
+    public void addRelation(Portfolio portfolio, Member member) {
+        if (this.portfolio != null) {
+            this.portfolio.getPortfolioComments().remove(this);
+        }
+        this.portfolio = portfolio;
+        portfolio.getPortfolioComments().add(this);
+
+        if (this.member != null) {
+            this.member.getPortfolioComments().remove(this);
+        }
+        this.member = member;
+        member.getPortfolioComments().add(this);
+    }
+
+    public void setContent(String content) { this.content = content; }
 }

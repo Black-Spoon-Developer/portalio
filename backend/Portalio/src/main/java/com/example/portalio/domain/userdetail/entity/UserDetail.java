@@ -24,10 +24,11 @@ public class UserDetail {
     @Column(name = "member_id")
     private Long memberId;
 
-    @Column(name = "user_nickname", unique = true)
+    // 추후 unique true로 다시 바꾼후 프론트에서 조회를 해서 요청을 안보내도록 하기
+    @Column(name = "user_nickname")
     private String userNickname;
 
-    @Column(name = "user_email", length = 40, unique = true)
+    @Column(name = "user_email", length = 40)
     private String userEmail;
 
     @Column(name = "user_ticket")
