@@ -49,11 +49,6 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(PortfolioNotFoundException::new);
 
-        // 유저 닉네임 정보
-        Member member = portfolio.getMember();
-        UserDetail userDetail = userDetailRepository.findById(member.getMemberId())
-                .orElseThrow(NoUserDetailException::new);
-
         return PortfolioResponse.from(portfolio);
     }
 

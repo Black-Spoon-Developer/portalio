@@ -20,7 +20,7 @@ import RepositoryEditPage from "./pages/board/repository/RepositoryEditPage.tsx"
 import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.tsx";
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
-import BoardPage from "./pages/board/BoardPage.tsx";
+import BoardPage from "./pages/board/board/BoardPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";

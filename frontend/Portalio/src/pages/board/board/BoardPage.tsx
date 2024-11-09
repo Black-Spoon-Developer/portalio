@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { issueAccessToken } from "../../api/AuthAPI";
-import { UserInfo } from "../../type/UserType";
-import { RootState } from "../../store";
-import { authActions } from "../../store/auth/AuthSlice";
-import SideNavBar from "../../components/common/navBar/SideNavBar";
-import PopularPortfolio from "../../components/common/popularPortfolio/PopularPortfolio";
-import AIinterviewPost from "../../components/common/aiInterviewPost/AIinterviewPost";
-import BoardTab from "../../components/common/tab/BoardTab";
-import PortfolioPosts from "../../components/board/portfolio/PortfolioPosts";
+import { issueAccessToken } from "../../../api/AuthAPI";
+import { UserInfo } from "../../../type/UserType";
+import { RootState } from "../../../store";
+import { authActions } from "../../../store/auth/AuthSlice";
+import SideNavBar from "../../../components/common/navBar/SideNavBar";
+import PopularPortfolio from "../../../components/common/popularPortfolio/PopularPortfolio";
+import AIinterviewPost from "../../../components/common/aiInterviewPost/AIinterviewPost";
+import BoardTab from "../../../components/common/tab/BoardTab";
+import PortfolioPosts from "../../../components/board/portfolio/PortfolioPosts";
 
 const BoardPage: React.FC = () => {
   const dispatch = useDispatch();

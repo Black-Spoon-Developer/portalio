@@ -3,23 +3,11 @@ import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PortfolioSearch from "./PortfolioSearch";
 import { fetchMorePosts } from "../../../api/BoardAPI";
-
-interface Post {
-  id: number;
-  memberId: number;
-  authorNickname: string;
-  authorPicture: string;
-  time: string;
-  portfolioContent: string;
-  portfolioCommentCount: number;
-  portfolioRecommendationCount: number;
-  comments: number;
-  created: string;
-}
+import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
 
 const PortfolioPosts: React.FC = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PortfolioList[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
   const limit = 10;
@@ -45,7 +33,7 @@ const PortfolioPosts: React.FC = () => {
 
   // 게시글 클릭 시 상세 페이지로 이동
   const handlePostClick = (postId: number) => {
-    navigate(`/posts/${postId}`);
+    navigate(`/portfolio/${postId}`);
   };
 
   const formatTime = (created: string) => {
@@ -80,8 +68,8 @@ const PortfolioPosts: React.FC = () => {
         <div className="grid grid-cols-1 gap-4 p-4">
           {posts.map((post) => (
             <div
-              key={post.id}
-              onClick={() => handlePostClick(post.id)}
+              key={post.portfolioId}
+              onClick={() => handlePostClick(post.portfolioId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
               <div className="flex items-center mb-2">
@@ -97,7 +85,11 @@ const PortfolioPosts: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="bg-gray-300 h-40 mb-2"></div>
+              <img
+                src={post.portfolioThumbnailImg}
+                alt="no-image"
+                className="bg-gray-300 h-40 mb-2"
+              />
               <p className="text-gray-700 mb-2">{post.portfolioContent}</p>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 <div className="text-lg tracking-widest">
