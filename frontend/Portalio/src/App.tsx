@@ -49,13 +49,13 @@ const App: React.FC = () => {
 
         {/* User */}
         <Route path="/users" element={<Outlet />}>
-          <Route path="signup" element={<UserSignupPage />} />
           <Route path="login" element={<LoginPage />} />
+          <Route path="signup" element={<UserSignupPage />} />
           <Route path="profile/:user_id" element={<Outlet />}>
             <Route index element={<UserProfilePage />} />
+            <Route path="board" element={<UserBoardListPage />} />
             <Route path="setting" element={<UserSettingPage />} />
             <Route path="portfolio" element={<UserPortfolioPage />} />
-            <Route path="board" element={<UserBoardListPage />} />
             <Route path="repository" element={<UserRepositoryPage />} />
           </Route>
         </Route>

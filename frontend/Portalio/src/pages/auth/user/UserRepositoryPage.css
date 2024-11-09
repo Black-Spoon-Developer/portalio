@@ -1,0 +1,206 @@
+/* ========== 전체 페이지 레이아웃 ========== */
+.repository-list-page {
+  max-width: 800px;
+  margin: 20px auto;
+  border-radius: 10px;
+}
+
+/* ========== 페이지 헤더 ========== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* 생성 버튼 스타일 */
+.create-button {
+  background-color: #57d4e2;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  min-width: 60px;
+  min-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.create-button:hover {
+  background-color: #4bc4d1;
+  transform: scale(1.05);
+}
+
+.create-button:active {
+  background-color: #3aa6b5;
+  transform: scale(0.95);
+}
+
+/* ========== 레포지토리 목록 ========== */
+.repository-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.repository-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid #bfbfbf;
+}
+
+.repository-content {
+  max-width: 70%;
+}
+
+/* 레포지토리 제목 및 가시성 표시 */
+.title-row {
+  display: flex;
+  align-items: center;
+}
+
+.repository-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.visibility-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.visibility-badge.public {
+  background-color: #b3d4fc;
+  color: #007bff;
+}
+
+.visibility-badge.private {
+  background-color: #fddede;
+  color: #ff5757;
+}
+
+/* 레포지토리 설명 및 날짜 */
+.repository-description {
+  font-size: 0.9rem;
+  margin: 5px 0;
+}
+
+.repository-date {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ========== 활동 내역 (잔디) ========== */
+.activity-section{
+  border: 2px solid #bfbfbf;
+}
+
+.months {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.months > span {
+  padding-left: 42px;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: 20px repeat(52, 1fr);
+  gap: 4px;
+  margin-left: 20px;
+}
+
+/* 요일 표시 */
+.left-box {
+  grid-row: span 7;
+  font-size: 0.8rem;
+  color: #888;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.left-box > p {
+  font-size: 10px;
+  margin-bottom: 9px;
+}
+
+/* 개별 주 및 날짜 박스 */
+.week {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.day {
+  width: 10px;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.day.highlighted {
+  background-color: #b3d4fc;
+}
+
+/* 첫 주 월요일 시작 조정 */
+.week:first-of-type .day:first-of-type {
+  display: none;
+}
+
+/* ========== 페이지네이션 ========== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.pagination button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #333;
+  width: 40px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+
+.pagination button.active {
+  background-color: #57d4e2;
+  color: white;
+}
+
+.pagination button:hover {
+  color: #b3d4fc;
+}
+
+.hidden-button {
+  visibility: hidden;
+}
