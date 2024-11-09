@@ -4,7 +4,11 @@ import { issueAccessToken } from "../../api/AuthAPI";
 import { UserInfo } from "../../type/UserType";
 import { RootState } from "../../store";
 import { authActions } from "../../store/auth/AuthSlice";
-import SideNavBar from "../../components/common/navBarComponent/navBar/SideNavBar";
+import SideNavBar from "../../components/common/navBar/SideNavBar";
+import PopularPortfolio from "../../components/common/popularPortfolio/PopularPortfolio";
+import AIinterviewPost from "../../components/common/aiInterviewPost/AIinterviewPost";
+import BoardTab from "../../components/common/tab/BoardTab";
+import PortfolioPosts from "../../components/board/portfolio/PortfolioPosts";
 
 const BoardPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -44,10 +48,24 @@ const BoardPage: React.FC = () => {
     fetchAccessToken();
   }, []);
   return (
-    <div className="grid-cols-4 min-h-screen">
-      <section className="">
+    <div className="grid grid-cols-4 min-h-screen">
+      <div className="fixed top-48 left-0 h-full">
         <SideNavBar />
-      </section>
+      </div>
+      <div className="col-span-1"></div>
+      <div className="col-span-2">
+        <div className="flex justify-start">
+          <BoardTab />
+        </div>
+        <div>
+          {/* 탭을 클릭할때마다 이 부분을 변경해서 게시판을 이동하도록 하기 */}
+          <PortfolioPosts />
+        </div>
+      </div>
+      <div className="fixed top-24 right-12">
+        <PopularPortfolio />
+        <AIinterviewPost />
+      </div>
     </div>
   );
 };

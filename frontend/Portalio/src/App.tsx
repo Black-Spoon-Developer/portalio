@@ -1,7 +1,7 @@
 import React from "react";
-import NavBar from "./components/common/navBarComponent/navBar/UpNavBar.tsx";
+import NavBar from "./components/common/navBar/UpNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 // import MainTestPage from "./pages/MainTest.tsx";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
@@ -32,6 +32,14 @@ import BoardPage from "./pages/board/BoardPage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 
 const App: React.FC = () => {
+  const location = useLocation();
+
+  // Footer를 표시하지 않을 URL 목록
+  const hideFooterPaths = ["/", "/users/signup"];
+
+  // 현재 경로가 hideFooterPaths에 포함되면 Footer를 숨깁니다.
+  const shouldShowFooter = !hideFooterPaths.includes(location.pathname);
+
   return (
     <>
       <NavBar />
@@ -97,7 +105,9 @@ const App: React.FC = () => {
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>
       </Routes>
-      <Footer />
+
+      {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}
+      {shouldShowFooter && <Footer />}
     </>
   );
 };

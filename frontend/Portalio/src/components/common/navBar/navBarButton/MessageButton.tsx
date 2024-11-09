@@ -2,7 +2,7 @@ import React from "react";
 import { MdMailOutline } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { sideTabActions } from "../../../../store/tab/SideTabSlice";
+import { sideNavActions } from "../../../../store/nav/SideNavSlice";
 
 const MessageButton: React.FC = () => {
   const dispatch = useDispatch();
@@ -11,7 +11,7 @@ const MessageButton: React.FC = () => {
 
   // 탭 상태 변환
   const onClick = () => {
-    dispatch(sideTabActions.selectMessage());
+    dispatch(sideNavActions.selectMessage());
   };
 
   return (
