@@ -2,6 +2,7 @@ import React from "react";
 import PortfolioDetailMd from "../../../components/board/portfolio/PortfolioDetailMd";
 import PortfolioDetailComments from "../../../components/board/portfolio/PortfolioDetailComments";
 import SideNavBar from "../../../components/common/navBar/SideNavBar";
+import PortfolioDetailCommentsInput from "../../../components/board/portfolio/PortfolioDetailCommentsInput";
 
 const PortfolioDetailPage: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const PortfolioDetailPage: React.FC = () => {
       <div className="col-span-1"></div>
       <div className="mx-5 my-8 col-span-3">
         <PortfolioDetailMd />
+        <PortfolioDetailCommentsInput />
         <PortfolioDetailComments />
       </div>
       <div className="col-span-1"></div>

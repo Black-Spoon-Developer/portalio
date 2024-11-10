@@ -48,7 +48,11 @@ const UserNavbar: React.FC = () => {
           <div className="mx-5 font-bold">{userNickname}</div>
 
           <img
-            src={userProfile || BasicProfile}
+            src={
+              userProfile === "default_picture_url"
+                ? BasicProfile
+                : userProfile || undefined
+            }
             alt="Profile"
             className="size-10 mx-3 rounded-full"
           />

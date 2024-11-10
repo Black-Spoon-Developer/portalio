@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // 로컬 스토리지 사용
+import storage from "redux-persist/lib/storage/session"; // 로컬 스토리지 사용
 import authReducer from "./store/auth/AuthSlice"; // authSlice 가져오기
 import sideTabReducer from "./store/nav/SideNavSlice";
 

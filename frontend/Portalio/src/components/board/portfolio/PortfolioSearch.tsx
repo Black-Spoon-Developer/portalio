@@ -3,7 +3,6 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import { IoIosArrowDropdown } from "react-icons/io";
-import { IoIosSearch } from "react-icons/io";
 
 const categories = [
   { id: 1, name: "기획·전략" },
@@ -56,9 +55,8 @@ const PortfolioSearch: React.FC = () => {
               placeholder="원하는 검색어를 입력해주세요."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border rounded-md relative"
             />
-            <IoIosSearch className="size-6" />
           </div>
 
           {/* Categories */}

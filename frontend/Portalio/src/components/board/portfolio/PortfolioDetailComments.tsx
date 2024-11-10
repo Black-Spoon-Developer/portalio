@@ -1,37 +1,78 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { fetchPortfolioDetailComments } from "../../../api/BoardAPI";
 
 interface Comment {
   username: string;
-  profileImage: string;
+  memberPicture: string;
+  memberNickname: string;
   content: string;
-  timestamp: string;
+  created: string; // ISO 날짜 문자열 형태로 가정
 }
 
 const PortfolioDetailComments: React.FC = () => {
-  const comment: Comment = {
-    username: "HK-98",
-    profileImage: "https://via.placeholder.com/40", // 예시 이미지 URL
-    content: "훌륭한 포트폴리오네요!",
-    timestamp: "2024.10.29 10:16:23",
+  const { portfolio_id } = useParams<{ portfolio_id: string }>();
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    const loadComments = async () => {
+      try {
+        if (portfolio_id) {
+          const fetchedComments = await fetchPortfolioDetailComments(
+            portfolio_id
+          );
+          console.log(fetchedComments);
+          setComments(fetchedComments);
+        }
+      } catch (error) {
+        console.error("댓글을 가져오지 못했습니다:", error);
+      }
+    };
+
+    loadComments();
+  }, []);
+
+  // 댓글 시간 포맷 함수
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return `약 ${diffInSeconds}초 전`;
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `약 ${diffInMinutes}분 전`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `약 ${diffInHours}시간 전`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 30) return `약 ${diffInDays}일 전`;
+    const diffInMonths = Math.floor(diffInDays / 30);
+    if (diffInMonths < 12) return `약 ${diffInMonths}달 전`;
+    const diffInYears = Math.floor(diffInMonths / 12);
+    return `약 ${diffInYears}년 전`;
   };
 
   return (
     <div className="border-2 rounded-lg shadow-md my-6 p-4">
-      <header className="text-lg font-bold mb-4">댓글 1</header>
-      <div className="flex items-center space-x-4 p-4 border rounded-lg">
-        <img
-          src={comment.profileImage}
-          alt={`${comment.username} 프로필 이미지`}
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <p className="font-semibold">{comment.username}</p>
-          <p className="text-gray-700">{comment.content}</p>
+      <header className="text-xl font-bold mb-4">댓글 {comments.length}</header>
+      {comments.map((comment, index) => (
+        <div
+          key={index}
+          className="flex items-center space-x-4 p-4 border rounded-lg mb-4"
+        >
+          <img
+            src={comment.memberPicture || "https://via.placeholder.com/40"}
+            alt={`${comment.username} 프로필 이미지`}
+            className="w-10 h-10 rounded-full"
+          />
+          <div className="flex items-center">
+            <div className="font-semibold =">{comment.memberNickname}</div>
+            <div className="mx-4 text-gray-400 text-sm">
+              {formatTimeAgo(comment.created)}
+            </div>
+          </div>
+          <div className="text-gray-700 tracking-wider">{comment.content}</div>
         </div>
-        <span className="ml-auto text-gray-400 text-sm">
-          {comment.timestamp}
-        </span>
-      </div>
+      ))}
     </div>
   );
 };
