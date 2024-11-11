@@ -46,5 +46,14 @@ public class MemberService {
         return memberDTO;
     }
 
+    // 회원 탈퇴 로직
+    public void deleteMember(Long memberId) {
+        // 회원 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        // 회원 삭제
+        memberRepository.delete(member);
+    }
 
 }
