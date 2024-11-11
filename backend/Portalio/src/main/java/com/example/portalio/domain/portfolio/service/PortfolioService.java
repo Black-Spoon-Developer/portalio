@@ -8,6 +8,7 @@ import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.portfolio.dto.PortfolioLikeListResponse;
+import com.example.portalio.domain.portfolio.dto.PortfolioLikeResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
@@ -49,12 +50,16 @@ public class PortfolioService {
     }
 
     // 게시글 상세보기, params : portfolioId
-    public PortfolioResponse getPortfolioDetails(Long portfolioId) {
+    public PortfolioLikeResponse getPortfolioDetails(Long portfolioId, CustomOAuth2User oauth2User) {
+
+        Member member = findMember(oauth2User.getMemberId());
 
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(PortfolioNotFoundException::new);
 
-        return PortfolioResponse.from(portfolio);
+        Boolean likeStatus = portfolioRecomRepository.existsByMemberAndPortfolio(member, portfolio);
+
+        return PortfolioLikeResponse.from(portfolio, likeStatus);
     }
 
     // 페이지네이션, 무한스크롤에 사용하려고 만들어 둠
@@ -69,8 +74,8 @@ public class PortfolioService {
         Map<Long, Boolean> likeStatusMap = new HashMap<>();
         if (oauth2User != null) {
             // 인증된 경우 좋아요 상태를 조회
-            Member member = memberRepository.findById(oauth2User.getMemberId())
-                    .orElseThrow(MemberNotFoundException::new);
+            Member member = findMember(oauth2User.getMemberId());
+
             List<PortfolioRecom> likes = portfolioRecomRepository.findAllByMemberAndPortfolioIn(member, portfolios);
             likeStatusMap = likes.stream()
                     .collect(Collectors.toMap(recom -> recom.getPortfolio().getPortfolioId(), recom -> true));
