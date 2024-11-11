@@ -4,6 +4,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { IoMdRefresh } from "react-icons/io";
 import { IoIosArrowDropdown } from "react-icons/io";
 import { mainCategories, subCategories } from "../../../assets/JobCategory";
 
@@ -12,7 +13,7 @@ interface PortfolioSearchProps {
   onReset: () => void;
 }
 
-export const PortfolioSearch: React.FC<PortfolioSearchProps> = ({
+const PortfolioSearch: React.FC<PortfolioSearchProps> = ({
   onSearch,
   onReset,
 }) => {
@@ -113,11 +114,15 @@ export const PortfolioSearch: React.FC<PortfolioSearchProps> = ({
           )}
 
           <div className="flex justify-between">
-            <button onClick={handleSearch} className="btn-primary">
+            <button onClick={handleSearch} className="btn-primary font-bold">
               검색
             </button>
-            <button onClick={handleReset} className="btn-secondary">
-              전체글 조회
+            <button
+              onClick={handleReset}
+              className="flex items-center btn-secondary font-bold"
+            >
+              <div className="mr-2">전체글 조회</div>
+              <IoMdRefresh />
             </button>
           </div>
         </AccordionDetails>

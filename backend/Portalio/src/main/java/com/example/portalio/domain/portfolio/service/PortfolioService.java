@@ -14,6 +14,9 @@ import com.example.portalio.domain.portfolio.dto.PortfolioResponse;
 import com.example.portalio.domain.portfolio.entity.Portfolio;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
 import com.example.portalio.domain.portfolio.repository.PortfolioRepository;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
+import com.example.portalio.domain.userdetail.error.NoUserDetailException;
+import com.example.portalio.domain.userdetail.repository.UserDetailRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,7 @@ public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final JobSubCategoryRepository jobSubCategoryRepository;
     private final MemberRepository memberRepository;
+    private final UserDetailRepository userDetailRepository;
 
     // jobId, title을 사용한 게시글 검색
     public PortfolioListResponse getPortfolioSearch(Long portfolioJobId, String portfolioTitle) {
@@ -81,6 +85,8 @@ public class PortfolioService {
         Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(), request.getPortfolioContent(), request.getPortfolioThumbnailImg(), request.getPortfolioPost(), jobSubCategory, member);
 
         portfolioRepository.save(portfolio);
+
+
 
         // 저장된 엔티티를 기반으로 PortfolioResponse 반환
         return PortfolioResponse.from(portfolio);

@@ -12,7 +12,7 @@ const BoardTab: React.FC = () => {
           <button
             key={index}
             onClick={() => setSelectedTab(index)}
-            className={`mx-2 text-xl text-conceptGrey py-2 px-4 font-semibold  ${
+            className={`mx-4 mt-10 text-md text-conceptGrey py-2 px-4 font-semibold  ${
               selectedTab === index
                 ? "text-conceptSkyBlue border-b-2 border-conceptSkyBlue"
                 : "hover:text-conceptSkyBlue"

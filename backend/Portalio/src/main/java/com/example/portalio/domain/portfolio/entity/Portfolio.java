@@ -73,6 +73,7 @@ public class Portfolio extends AuditableCreatedEntity {
         this.portfolioPost = portfolioPost;
         this.jobSubCategory = jobSubCategory;
         this.member = member;
+        this.portfolioPost = true; // 나중에 따로 설정해야함
     }
 
     public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, JobSubCategory jobSubCategory, Member member) {

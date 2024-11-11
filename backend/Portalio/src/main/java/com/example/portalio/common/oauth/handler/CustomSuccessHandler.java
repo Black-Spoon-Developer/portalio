@@ -133,9 +133,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 새 유저라면 정보 입력 페이지로 리다이렉트
         if (!isAuth) {
-            response.sendRedirect("http://localhost:5173/user/signup");
+            response.sendRedirect("http://k11d202.p.ssafy.io/users/signup");
+//            response.sendRedirect("http://localhost:5173/users/signup");
         } else {
-            response.sendRedirect("http://localhost:5173/");
+            response.sendRedirect("http://k11d202.p.ssafy.io/");
+            //response.sendRedirect("http://localhost:5173/");
         }
     }
 
