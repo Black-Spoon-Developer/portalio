@@ -112,18 +112,14 @@ const PortfolioPosts: React.FC = () => {
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
               <div className="flex items-center mb-2">
+                {/* 이 부분 수정해야함 */}
                 <img
-                  src={
-                    post.authorInfo.memberPicture ||
-                    "https://via.placeholder.com/40"
-                  }
+                  src={post.picture}
                   alt="프로필 이미지"
                   className="w-10 h-10 rounded-full mr-4"
                 />
                 <div>
-                  <p className="font-semibold">
-                    {post.authorInfo.memberPicture}
-                  </p>
+                  <p className="font-semibold">{post.memberNickname}</p>
                   <p className="text-gray-500 text-sm">
                     {formatTimeAgo(post.created)}
                   </p>
