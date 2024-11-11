@@ -21,19 +21,46 @@ import RepositoryDetailPage from "./pages/auth/repository/RepositoryDetailPage.t
 import RepositoryCreatePage from "./pages/auth/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 
+import { useNavigate } from "react-router-dom";
+
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
 
 // AI (주석 처리 - 현재 계획 없음)
 // import AIIntroducePage from "./pages/ai/AIIntroducePage.tsx";
-// import AIInterviewPage from "./pages/ai/AIInterviewPage.tsx";
+ import CamInterviewPage from "./pages/interview/cam/CamInterviewpage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 
 const App: React.FC = () => {
+  const navigate = useNavigate();
+
+  // Handle button click to navigate to interview page
+  const handleStartInterview = () => {
+    const interviewId = 1; // 원하는 interview_id를 설정
+    navigate(`/ai/interview/${interviewId}`);
+  };
+
   return (
     <>
       <NavBar />
+      <div style={{ textAlign: "center", margin: "20px" }}>
+        <button
+          onClick={handleStartInterview}
+          style={{
+            padding: "10px 20px",
+            fontSize: "16px",
+            cursor: "pointer",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+          }}
+        >
+          면접 시작하기
+        </button>
+      </div>
+      
       <Routes>
         {/* Main */}
         {/* <Route path="/" element={<MainTestPage />} /> */}
@@ -86,12 +113,12 @@ const App: React.FC = () => {
         {/* <Route path="/recruiter" element={<RecruiterPage />} /> */}
 
         {/* AI (주석 처리) */}
-        {/* <Route path="/ai" element={<Outlet />}>
-          <Route path="introduce" element={<AIIntroducePage />} />
-          <Route path="interview/:interview_id" element={<AIInterviewPage />} />
-          <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
-          <Route path="record/:record_id" element={<AIRecordPage />} />
-        </Route> */}
+        { <Route path="/ai" element={<Outlet />}>
+          {/* <Route path="introduce" element={<AIIntroducePage />} /> */}
+          <Route path="interview/:interview_id" element={<CamInterviewPage />} />
+          {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
+          <Route path="record/:record_id" element={<AIRecordPage />} /> */}
+        </Route> }
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>

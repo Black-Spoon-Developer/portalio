@@ -87,3 +87,16 @@ class MemberInfoDTO(BaseModel):
 
     class Config:
         from_attributes = True
+
+## 면접관련 
+class TimeSeriesData(BaseModel):
+    time: int
+    emotion: str
+    movement_focus: float
+    gaze_focus: float
+
+class AnalysisResult(BaseModel):
+    current_emotion: str
+    movement_focus: float
+    gaze_focus: float
+    time_series_data: List[TimeSeriesData]
