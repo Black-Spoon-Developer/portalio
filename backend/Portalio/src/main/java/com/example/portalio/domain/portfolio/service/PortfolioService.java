@@ -1,8 +1,6 @@
 package com.example.portalio.domain.portfolio.service;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
-import com.example.portalio.domain.board.dto.BoardListResponse;
-import com.example.portalio.domain.board.entity.Board;
 import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.jobsubcategory.repository.JobSubCategoryRepository;
@@ -84,7 +82,7 @@ public class PortfolioService {
         JobSubCategory jobSubCategory = findJobSubCategory(request.getJobSubCategoryId());
 
         // PortfolioRequest를 Portfolio 엔티티로 변환
-        Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(), request.getPortfolioContent(), request.getPortfolioImgKey(), request.getPortfolioFileKey(), request.getPortfolioThumbnailImg(), jobSubCategory, member);
+        Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(), request.getPortfolioContent(), request.getPortfolioThumbnailImg(), request.getPortfolioPost(), jobSubCategory, member);
 
         portfolioRepository.save(portfolio);
 
@@ -111,12 +109,6 @@ public class PortfolioService {
         if (request.getJobSubCategoryId() != null) {
             JobSubCategory jobSubCategory = findJobSubCategory(request.getJobSubCategoryId());
             portfolio.setJobSubCategory(jobSubCategory);
-        }
-        if (request.getPortfolioImgKey() != null) {
-            portfolio.setPortfolioImgKey(request.getPortfolioImgKey());
-        }
-        if (request.getPortfolioFileKey() != null) {
-            portfolio.setPortfolioFileKey(request.getPortfolioFileKey());
         }
         if (request.getPortfolioThumbnailImg() != null) {
             portfolio.setPortfolioThumbnailImg(request.getPortfolioThumbnailImg());

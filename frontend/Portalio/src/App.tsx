@@ -30,6 +30,10 @@ import BoardPage from "./pages/board/board/BoardPage.tsx";
 // import AIInterviewPage from "./pages/ai/AIInterviewPage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
+import PortfolioPage from "./pages/board/PortfolioPage.tsx";
+import ToastEditor from "./components/common/ToastEditor.tsx";
+import Dropzone from "./components/common/Dropzone.tsx";
+import ToastEditorWithVideo from "./components/common/ToastEditorMovie.tsx";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -104,6 +108,13 @@ const App: React.FC = () => {
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>
+        <Route path="/" element={<PortfolioPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/user/signup" element={<UserSignupPage />}></Route>
+        {/* 밑에3개 테스트용 삭제 ㄴㄴ */}
+        <Route path="/test" element={<ToastEditor />}></Route>
+        <Route path="/test2" element={<Dropzone />}></Route>
+        <Route path="/test3" element={<ToastEditorWithVideo />}></Route>
       </Routes>
 
       {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}
