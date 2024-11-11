@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080";
-// const BASE_URL = "http://k11d202.p.ssafy.io";
+// const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://k11d202.p.ssafy.io";
 
 export const onUploadImage = async (
   blob: Blob,
