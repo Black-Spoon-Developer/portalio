@@ -25,7 +25,8 @@ public class AwsS3Controller {
 
     private final AwsS3Service awsS3Service;
 
-    @Operation(summary = "Amazon S3에 이미지 업로드", description = "Activity_board : 활동게시판"
+    @Operation(summary = "Amazon S3에 이미지 업로드", description =
+            "Activity_board : 활동게시판"
             + "\n Free_board : 자유게시판"
             + "\n Member : 회원프로필"
             + "\n Portfolio_board : 포트폴리오 게시판"
@@ -44,6 +45,28 @@ public class AwsS3Controller {
             )
             @RequestPart List<MultipartFile> multipartFile) {
 
+        System.out.println("Received folderName: " + folderName);
+        System.out.println("Number of files: " + multipartFile.size());
+
         return ResponseEntity.ok(awsS3Service.upLoadFile(multipartFile, folderName));
+    }
+
+    @Operation(summary = "Amazon S3에 다수의 파일 zip로 업로드", description =
+            "\n Repository : 레포지토리 게시판")
+    @PostMapping(value = "/files", consumes = "multipart/form-data")
+    public ResponseEntity<String> uploadFilesAsZip(
+            @Parameter(
+                    description = "파일 (여러 파일 업로드 가능)",
+                    required = false,
+                    content = @Content(
+                            mediaType = "multipart/form-data",
+                            schema = @Schema(type = "array", format = "binary")
+                    )
+            )
+            @RequestPart List<MultipartFile> multipartFile) {
+
+        String zipFileUrl = awsS3Service.uploadFilesAsZip(multipartFile, "Repository");
+
+        return ResponseEntity.ok(zipFileUrl);
     }
 }

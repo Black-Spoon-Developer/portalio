@@ -27,6 +27,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "portfolio")
 public class Portfolio extends AuditableCreatedEntity {
 
+    private static final String DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/157494028?v=4";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "portfolio_id")
@@ -38,17 +40,11 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_content", nullable = false, columnDefinition = "TEXT")
     private String portfolioContent;
 
-    @Column(name = "portfolio_img_key", nullable = false, columnDefinition = "TEXT")
-    private String portfolioImgKey;
-
-    @Column(name = "portfolio_file_key", nullable = false, columnDefinition = "TEXT")
-    private String portfolioFileKey;
-
     @Column(name = "portfolio_views", nullable = false)
     private Integer portfolioViews = 0;
 
     @Column(name = "portfolio_thumbnail_img", nullable = false, columnDefinition = "TEXT")
-    private String portfolioThumbnailImg;
+    private String portfolioThumbnailImg = DEFAULT_IMAGE_URL;
 
     @Column(name = "portfolio_recommendation_count", nullable = false)
     private Integer portfolioRecommendationCount = 0;
@@ -70,28 +66,23 @@ public class Portfolio extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioRecom> portfolioRecoms = new ArrayList<>();
 
-    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory, Member member) {
+    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, JobSubCategory jobSubCategory, Member member) {
         this.portfolioTitle = portfolioTitle;
         this.portfolioContent = portfolioContent;
-        this.portfolioImgKey = portfolioImgKey;
-        this.portfolioFileKey = portfolioFileKey;
         this.portfolioThumbnailImg = portfolioThumbnailImg;
+        this.portfolioPost = portfolioPost;
         this.jobSubCategory = jobSubCategory;
         this.member = member;
         this.portfolioPost = true; // 나중에 따로 설정해야함
     }
 
-    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioImgKey, String portfolioFileKey, String portfolioThumbnailImg, JobSubCategory jobSubCategory, Member member) {
-        return new Portfolio(portfolioTitle, portfolioContent, portfolioImgKey, portfolioFileKey, portfolioThumbnailImg, jobSubCategory, member);
+    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, JobSubCategory jobSubCategory, Member member) {
+        return new Portfolio(portfolioTitle, portfolioContent, portfolioThumbnailImg, portfolioPost, jobSubCategory, member);
     }
 
     public void setPortfolioTitle(String portfolioTitle) { this.portfolioTitle = portfolioTitle; }
 
     public void setPortfolioContent(String portfolioContent) { this.portfolioContent = portfolioContent; }
-
-    public void setPortfolioImgKey(String portfolioImgKey) { this.portfolioImgKey = portfolioImgKey; }
-
-    public void setPortfolioFileKey(String portfolioFileKey) { this.portfolioFileKey = portfolioFileKey; }
 
     public void setPortfolioThumbnailImg(String portfolioThumbnailImg) { this.portfolioThumbnailImg = portfolioThumbnailImg; }
 
