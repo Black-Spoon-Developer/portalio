@@ -1,13 +1,13 @@
 // src/components/ai/WebcamCapture.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import { WebcamCaptureProps } from '../../type/InterviewType';
-import { uploadVideoApi } from '../../api/InterviewAPI'; // 정확한 경로로 수정 필요
+import { uploadVideoApi } from '../../api/InterviewAPI'; 
 
 
-const WebcamCapture: React.FC<WebcamCaptureProps> = ({ isRecording, interviewId, questionId, onUploadComplete }) => {
+const WebcamCapture: React.FC<WebcamCaptureProps> = ({/*isRecording, interviewId, questionId, onUploadComplete*/ }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const chunks = useRef<Blob[]>([]);
+  //const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  //const chunks = useRef<Blob[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({ isRecording, interviewId,
       .catch(error => console.error("Error accessing media devices.", error));
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (isRecording && !isUploading) {
       startRecording();
     } else if (!isRecording && mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
@@ -57,7 +57,7 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({ isRecording, interviewId,
     const result = await uploadVideoApi(interviewId, questionId, blob, retries);
     onUploadComplete(result);
   };
-
+  */
   return <video ref={videoRef} autoPlay muted />;
 };
 

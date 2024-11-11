@@ -32,6 +32,13 @@ const interviewSlice = createSlice({
       state.isRecording = false;
       state.isUploading = true;
     },
+    incrementQuestionIndex(state) {
+      if (state.currentQuestionIndex < state.questions.length - 1) {
+        state.currentQuestionIndex += 1;
+      } else {
+        state.isFinished = true; // 모든 질문이 완료된 경우 isFinished 플래그 설정
+      }
+    },
     uploadComplete(
       state,
       action: PayloadAction<{ questionIndex: number; result: any }>
@@ -65,6 +72,7 @@ export const {
   setQuestions,
   startAnswering,
   stopAnswering,
+  incrementQuestionIndex, 
   uploadComplete,
   resetInterview,
   setLoading,

@@ -1,100 +1,35 @@
 // src/components/interview/InterviewProcess.tsx
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setQuestions,
-  startAnswering,
-  stopAnswering,
-  uploadComplete,
-  setLoading,
-} from "../../store/interview/InterviewSlice";
-import { RootState } from "../../store";
-import QuestionTimer from "../ai/QuestionTimer";
+import React from "react";
 import WebcamCapture from "../ai/WebcamCapture";
-import AnalysisResults from "../ai/AnalysisResults";
-import { fetchQuestionsApi, uploadAnalysisResultApi } from "../../api/InterviewAPI";
+import QuestionTimer from "../ai/QuestionTimer";
 
 interface InterviewProcessProps {
   interviewType: "video" | "audio" | "text";
   interviewId: number;
+  currentQuestion: string;
+  isAnswering: boolean;
+  // isRecording: boolean; // 녹화 상태 전달이 필요하면 주석 해제
 }
 
-const InterviewProcess: React.FC<InterviewProcessProps> = ({ interviewType, interviewId }) => {
-  const dispatch = useDispatch();
-
-  const {
-    questions,
-    currentQuestionIndex,
-    isRecording,
-    isAnswering,
-    isLoading,
-    isFinished,
-    isUploading,
-    preparationTime,
-    answerTime,
-    analysisResults,
-  } = useSelector((state: RootState) => state.interview);
-
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      dispatch(setLoading(true));
-      const questions = await fetchQuestionsApi();
-      if (questions) {
-        dispatch(setQuestions(questions));
-      } else {
-        dispatch(setLoading(false));
-      }
-    };
-
-    fetchQuestions();
-  }, [dispatch]);
-
-  const handleStartAnswering = () => {
-    dispatch(startAnswering());
-  };
-
-  const handleStopAnswering = () => {
-    dispatch(stopAnswering());
-  };
-
-  const handleAnalysisResult = async (blob: Blob) => {
-    const questionId = currentQuestionIndex + 1;
-    const result = await uploadAnalysisResultApi(interviewId, questionId, blob);
-    if (result !== null) {
-      dispatch(uploadComplete({ questionIndex: currentQuestionIndex, result }));
-    }
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
+const InterviewProcess: React.FC<InterviewProcessProps> = ({
+  interviewType,
+  interviewId,
+  currentQuestion,
+  isAnswering,
+  // isRecording,
+}) => {
   return (
-    <div>
-      {!isFinished ? (
-        <>
-          <h2>
-            질문 {currentQuestionIndex + 1}: {questions[currentQuestionIndex]}
-          </h2>
-          {interviewType === "video" && (
-            <WebcamCapture
-              isRecording={isRecording}
-              interviewId={interviewId}
-              questionId={currentQuestionIndex + 1}
-              onUploadComplete={handleAnalysisResult}
-            />
-          )}
-          {!isAnswering ? (
-            <QuestionTimer time={preparationTime} onTimeEnd={handleStartAnswering} label="준비 시간" />
-          ) : (
-            <QuestionTimer time={answerTime} onTimeEnd={handleStopAnswering} label="답변 시간" />
-          )}
-          {!isAnswering && !isUploading && <button onClick={handleStartAnswering}>답변 시작</button>}
-          {isAnswering && !isUploading && <button onClick={handleStopAnswering}>답변 종료</button>}
-        </>
+    <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center">
+      {interviewType === "video" ? (
+        <WebcamCapture interviewId={interviewId} /* isRecording={isRecording} */ />
       ) : (
-        <AnalysisResults results={Object.values(analysisResults)} />
+        <img
+          src="/path/to/default_img.png"
+          alt="음성 면접 이미지"
+          className="w-full h-full object-cover rounded-lg"
+        />
       )}
+
     </div>
   );
 };

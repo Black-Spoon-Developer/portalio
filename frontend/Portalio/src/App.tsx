@@ -31,8 +31,7 @@ import InterviewIntroPage from "./pages/ai/InterviewIntroPage.tsx"
 import InterviewProcessPage  from "./pages/ai/InterviewProcesspage.tsx";
 import InterviewQuestionPage from "./pages/ai/InterviewQuestionPage.tsx";
 import InterviewSetupPage from "./pages/ai/InterviewSetupPage.tsx";
- 
-// import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
+import AnalysisResultPage from "./pages/ai/AnalysisResultPage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 
 const App: React.FC = () => {
@@ -122,8 +121,8 @@ const App: React.FC = () => {
           <Route path="interview/:interview_id" element={<InterviewProcessPage  />} />
           <Route path="interview/setup" element={<InterviewSetupPage />} />
           <Route path="interview/questions" element={<InterviewQuestionPage />} />
-          {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
-          <Route path="record/:record_id" element={<AIRecordPage />} /> */}
+          <Route path="analyze" element={<AnalysisResultPage />} />
+          {/* <Route path="record/:record_id" element={<AIRecordPage />} /> */}
         </Route> }
 
         {/* Exception handling */}

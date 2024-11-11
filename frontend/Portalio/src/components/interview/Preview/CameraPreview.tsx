@@ -27,10 +27,12 @@ const CameraPreview: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <h2>카메라 미리보기</h2>
-      <video ref={videoRef} autoPlay muted style={{ width: "60%", height: "auto" }} /> {/* 카메라 미리보기 표시 */}
-    </div>
+    <video
+      ref={videoRef}
+      autoPlay
+      muted
+    />
+
   );
 };
 

@@ -1,3 +1,5 @@
+export type InterviewType = "video" | "audio" | "text"; // 인터뷰 타입 정의
+
 export interface AnalysisResult {
   [key: number]: any;
 }
@@ -17,10 +19,11 @@ export interface InterviewState {
 
 // WebcamCapture 컴포넌트의 props 타입 정의
 export interface WebcamCaptureProps {
-  isRecording: boolean;
-  interviewId: number;
-  questionId: number;
-  onUploadComplete: (result: any) => void;
+  //isRecording: boolean;
+  interviewType?: InterviewType; // 인터뷰 타입 추가
+  interviewId?: number;
+  questionId?: number;
+  onUploadComplete?: (result: any) => void;
 }
 
 // QuestionTimer 컴포넌트의 props 타입 정의
@@ -46,4 +49,10 @@ export interface ResultData {
 
 export interface AnalysisResultsProps {
   results: ResultData[];
+}
+
+// InterviewProcess 컴포넌트의 props 타입 정의
+export interface InterviewProcessProps {
+  interviewType: InterviewType; // 인터뷰 타입 추가
+  interviewId: number;
 }
