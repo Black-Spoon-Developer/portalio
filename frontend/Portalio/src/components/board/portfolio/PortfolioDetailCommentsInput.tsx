@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postPortfolioDetailComment } from "../../../api/BoardAPI";
+import { postPortfolioDetailComment } from "../../../api/PortfolioAPI";
 
 const PortfolioDetailCommentsInput: React.FC = () => {
   const navigate = useNavigate();

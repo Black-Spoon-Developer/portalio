@@ -55,3 +55,40 @@ export const postPortfolioDetailComment = async (
 
   return response.data.PortfolioCommentResponse;
 };
+
+// 포트 폴리오 상세 게시글 좋아요
+export const portfolioDetailLike = async (portfolioID: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  const portfolioId = BigInt(portfolioID);
+
+  const response = await axios.post(
+    `${BASE_URL}/api/v1/portfolios/${portfolioId}/recom`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data.PortfolioRecomResponse;
+};
+
+// 포트폴리오 검색
+export const portfolioSearch = async (
+  portfolioTitle: string,
+  jobId: number
+) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/portfolios`, {
+    params: {
+      portfolioJob: jobId,
+      portfolioTitle: portfolioTitle,
+    },
+  });
+
+  console.log(response.data);
+
+  return response;
+};

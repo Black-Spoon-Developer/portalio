@@ -1,14 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { fetchPortfolioDetail } from "../../../api/BoardAPI";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  fetchPortfolioDetail,
+  portfolioDetailLike,
+} from "../../../api/PortfolioAPI";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./PortfolioDetailMd.css";
 
 const PortfolioDetailMd: React.FC = () => {
+  const navigate = useNavigate();
+
+  const userID = BigInt(
+    useSelector((state: RootState) => state.auth.memberId) ?? "0"
+  );
+
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
   const [portfolioContent, setPortfolioContent] = useState<string>("");
-  const [likes, setLikes] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
   useEffect(() => {
@@ -16,9 +26,14 @@ const PortfolioDetailMd: React.FC = () => {
       try {
         if (portfolio_id) {
           const response = await fetchPortfolioDetail(portfolio_id);
+
+          // 좋아요한 유저 목록에서 본인이 있는지 확인
+          const isLikedByUser = await response.data.userPortfolioRecom.some(
+            (recom: { memberId: bigint }) => recom.memberId === userID
+          );
+
           setPortfolioContent(response.data.portfolioContent);
-          setLikes(response.data.likes);
-          setIsLiked(response.data.isLiked);
+          setIsLiked(isLikedByUser);
         }
       } catch (error) {
         alert("글 조회를 실패했습니다.: " + error);
@@ -26,16 +41,19 @@ const PortfolioDetailMd: React.FC = () => {
     };
 
     fetchMarkdownContent();
-  }, [portfolio_id]);
+  }, []);
 
   const handleLike = async () => {
+    if (!portfolio_id) {
+      alert("포트폴리오 ID가 없습니다.");
+      return;
+    }
+
     try {
-      setIsLiked((prev) => !prev);
-      setLikes((prev) => (isLiked ? prev - 1 : prev + 1));
-      // 실제 API 호출 필요 시 이 줄 활성화
-      // await likePortfolio(portfolio_id);
+      await portfolioDetailLike(portfolio_id);
+      navigate(0);
     } catch (error) {
-      alert("좋아요 처리 중 오류가 발생했습니다.");
+      alert("좋아요 처리 중 오류가 발생했습니다." + error);
     }
   };
 
@@ -56,7 +74,6 @@ const PortfolioDetailMd: React.FC = () => {
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {portfolioContent}
       </ReactMarkdown>
-      <div className="mt-4 text-gray-600">{likes}명이 좋아합니다</div>
     </div>
   );
 };

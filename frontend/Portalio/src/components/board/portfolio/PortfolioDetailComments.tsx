@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fetchPortfolioDetailComments } from "../../../api/BoardAPI";
+import { fetchPortfolioDetailComments } from "../../../api/PortfolioAPI";
 
 interface Comment {
   username: string;

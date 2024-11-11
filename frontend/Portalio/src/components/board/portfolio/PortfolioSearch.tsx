@@ -2,39 +2,56 @@ import React, { useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { IoMdRefresh } from "react-icons/io";
 import { IoIosArrowDropdown } from "react-icons/io";
+import { mainCategories, subCategories } from "../../../assets/JobCategory";
 
-const categories = [
-  { id: 1, name: "기획·전략" },
-  { id: 2, name: "마케팅·홍보·조사" },
-  { id: 3, name: "회계·세무·재무" },
-  { id: 4, name: "인사·노무·HRD" },
-  { id: 5, name: "총무·법무·사무" },
-  { id: 6, name: "IT개발·데이터" },
-  { id: 7, name: "디자인" },
-  { id: 8, name: "영업·판매·무역" },
-  { id: 9, name: "구매·자재·물류" },
-  { id: 10, name: "상품기획·MD" },
-  { id: 11, name: "생산" },
-  { id: 12, name: "건설·건축" },
-  { id: 13, name: "의료" },
-  { id: 14, name: "연구·R&D" },
-  { id: 15, name: "교육" },
-  { id: 16, name: "미디어·문화·스포츠" },
-  { id: 17, name: "금융·보험" },
-  { id: 18, name: "공공·복지" },
-];
+interface PortfolioSearchProps {
+  onSearch: (term: string, subCategory: number | null) => void;
+  onReset: () => void;
+}
 
-const PortfolioSearch: React.FC = () => {
+const PortfolioSearch: React.FC<PortfolioSearchProps> = ({
+  onSearch,
+  onReset,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedMainCategory, setSelectedMainCategory] = useState<
+    number | null
+  >(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
+    null
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleCategoryClick = (id: number) => {
-    setSelectedCategory(id);
+  const handleMainCategoryChange = (event: SelectChangeEvent<number>) => {
+    const mainCategoryId = Number(event.target.value);
+    setSelectedMainCategory(mainCategoryId);
+    setSelectedSubCategory(null); // 메인 카테고리가 변경될 때 서브 카테고리 초기화
+  };
+
+  const handleSubCategoryChange = (event: SelectChangeEvent<number>) => {
+    setSelectedSubCategory(Number(event.target.value));
+  };
+
+  const filteredSubCategories = subCategories.filter(
+    (subCategory) => subCategory.parentId === selectedMainCategory
+  );
+
+  const handleSearch = () => {
+    onSearch(searchTerm, selectedSubCategory);
+  };
+
+  const handleReset = () => {
+    setSearchTerm("");
+    setSelectedMainCategory(null);
+    setSelectedSubCategory(null);
+    onReset();
   };
 
   return (
@@ -45,46 +62,69 @@ const PortfolioSearch: React.FC = () => {
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          <div>포트폴리오 검색</div>
+          <div className="font-bold">포트폴리오 검색</div>
         </AccordionSummary>
         <AccordionDetails>
-          {/* Search Bar */}
           <div className="mb-4">
             <input
               type="text"
-              placeholder="원하는 검색어를 입력해주세요."
+              placeholder="검색어를 입력하세요."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="w-full p-2 border rounded-md relative"
+              className="w-full p-2 border rounded-md"
             />
           </div>
 
-          {/* Categories */}
-          <div className="grid grid-cols-4 gap-4">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => handleCategoryClick(category.id)}
-                className={`p-2 border rounded-md ${
-                  selectedCategory === category.id
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-100"
-                }`}
-              >
-                {category.name}
-              </button>
-            ))}
+          <div className="mb-4">
+            <Select
+              value={selectedMainCategory || ""}
+              onChange={handleMainCategoryChange}
+              displayEmpty
+              className="w-full"
+            >
+              <MenuItem value="" disabled>
+                중분류 선택
+              </MenuItem>
+              {mainCategories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
           </div>
 
-          {/* Selected Category Display */}
-          {selectedCategory && (
-            <div className="mt-4">
-              <p>
-                선택된 카테고리:{" "}
-                {categories.find((cat) => cat.id === selectedCategory)?.name}
-              </p>
+          {selectedMainCategory && (
+            <div className="mb-4">
+              <Select
+                value={selectedSubCategory || ""}
+                onChange={handleSubCategoryChange}
+                displayEmpty
+                className="w-full"
+              >
+                <MenuItem value="" disabled>
+                  소분류 선택
+                </MenuItem>
+                {filteredSubCategories.map((subCategory) => (
+                  <MenuItem key={subCategory.id} value={subCategory.id}>
+                    {subCategory.name}
+                  </MenuItem>
+                ))}
+              </Select>
             </div>
           )}
+
+          <div className="flex justify-between">
+            <button onClick={handleSearch} className="btn-primary font-bold">
+              검색
+            </button>
+            <button
+              onClick={handleReset}
+              className="flex items-center btn-secondary font-bold"
+            >
+              <div className="mr-2">전체글 조회</div>
+              <IoMdRefresh />
+            </button>
+          </div>
         </AccordionDetails>
       </Accordion>
     </div>

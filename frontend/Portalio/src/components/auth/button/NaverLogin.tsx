@@ -10,7 +10,11 @@ const NaverLogin: React.FC = () => {
     }
 
     localStorage.setItem("isLogin", "true");
-    window.location.href = "http://localhost:8080/oauth2/authorization/naver";
+    // EC2에 띄워놓고 할 때
+    window.location.href = "https://k11d202.p.ssafy.io/login/oauth2/code/naver";
+
+    // 로컬에서 할때
+    // window.location.href = "http://localhost:8080/oauth2/authorization/naver";
   };
 
   return (

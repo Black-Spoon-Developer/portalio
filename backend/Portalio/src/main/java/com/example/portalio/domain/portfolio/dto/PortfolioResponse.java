@@ -1,7 +1,11 @@
 package com.example.portalio.domain.portfolio.dto;
 
+import com.example.portalio.domain.member.dto.MemberDTO;
+import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.portfolio.entity.Portfolio;
+import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,12 +27,11 @@ public class PortfolioResponse {
     private Boolean portfolioPost;
     private LocalDateTime created;
     private Integer portfolioCommentCount;
-
+    
     // 작성자 정보
-    private Long memberId;
-    private String authorNickname;
-    private String authorPicture;
+    private MemberDTO authorInfo;
 
+    // 좋아요(추천)한 유저들의 정보
 
 
     public static PortfolioResponse from(Portfolio portfolio) {
@@ -46,9 +49,7 @@ public class PortfolioResponse {
                 .portfolioRecommendationCount(portfolio.getPortfolioRecommendationCount())
                 .portfolioPost(portfolio.getPortfolioPost())
                 .created(portfolio.getCreated())
-                .memberId(portfolio.getMember().getMemberId())
-                .authorNickname(portfolio.getMember().getUserDetail().getUserNickname())
-                .authorPicture(portfolio.getMember().getMemberPicture())
+                .authorInfo(MemberDTO.from(portfolio.getMember()))
                 .build();
     }
 }

@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface PortfolioRecomRepository extends JpaRepository<PortfolioRecom, Long> {
 
     Boolean existsByMemberAndPortfolio(Member member, Portfolio portfolio);
+    PortfolioRecom findByMemberAndPortfolio(Member member, Portfolio portfolio);
 
 }
