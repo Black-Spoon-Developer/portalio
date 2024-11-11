@@ -13,6 +13,7 @@ export interface Portfolio {
 
 export interface PortfolioList {
   portfolioId: number;
+  picture: string;
   memberId: number;
   memberNickname: string;
   portfolioThumbnailImg: string;

@@ -4,7 +4,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import PortfolioSearch from "./PortfolioSearch";
 import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
 import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
-import PortfolioDetailPdf from "./PortfolioDetailPdf";
 
 const PortfolioPosts: React.FC = () => {
   const navigate = useNavigate();
@@ -115,7 +114,7 @@ const PortfolioPosts: React.FC = () => {
               <div className="flex items-center mb-2">
                 {/* 이 부분 수정해야함 */}
                 <img
-                  src={"https://via.placeholder.com/40"}
+                  src={post.picture}
                   alt="프로필 이미지"
                   className="w-10 h-10 rounded-full mr-4"
                 />

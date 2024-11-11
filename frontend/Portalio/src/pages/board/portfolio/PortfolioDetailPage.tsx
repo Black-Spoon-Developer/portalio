@@ -10,6 +10,8 @@ import { fetchPortfolioDetail } from "../../../api/PortfolioAPI";
 const PortfolioDetailPage: React.FC = () => {
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
   const [portfolioContent, setPortfolioContent] = useState<string>("");
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [memberId, setMemberId] = useState<number>(0);
 
   useEffect(() => {
     const fetchMarkdownContent = async () => {
@@ -17,6 +19,8 @@ const PortfolioDetailPage: React.FC = () => {
         if (portfolio_id) {
           const response = await fetchPortfolioDetail(portfolio_id);
           setPortfolioContent(response.data.portfolioContent);
+          setIsLiked(response.data.isLiked);
+          setMemberId(response.data.memberId);
         }
       } catch (error) {
         alert("글 조회를 실패했습니다.: " + error);
@@ -33,7 +37,11 @@ const PortfolioDetailPage: React.FC = () => {
       </div>
       <div className="col-span-1"></div>
       <div className="mx-5 my-8 col-span-3">
-        <PortfolioDetailMd portfolioContent={portfolioContent} />
+        <PortfolioDetailMd
+          portfolioContent={portfolioContent}
+          isLiked={isLiked}
+          memberId={memberId}
+        />
         <PortfolioDetailCommentsInput />
         <PortfolioDetailComments />
       </div>
