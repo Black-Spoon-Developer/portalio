@@ -31,10 +31,16 @@ public class PortfolioRecomService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(PortfolioNotFoundException::new);
 
-        boolean alreadyPortfolio = portfolioRecomRepository.existsByMemberAndPortfolio(member, portfolio);
+        PortfolioRecom existPortfolioRecom = portfolioRecomRepository.findByMemberAndPortfolio(member, portfolio);
+        
+        // 만약 기존에 추천을 했다면
+        if (existPortfolioRecom != null) {
+            portfolioRecomRepository.delete(existPortfolioRecom);
+            portfolio.setPortfolioRecommendationCount(portfolio.getPortfolioRecommendationCount() - 1);
+            portfolioRepository.save(portfolio);
 
-        if (alreadyPortfolio) {
-            throw new AlreadyPortfolioRecomException();
+            return PortfolioRecomResponse.cancel();
+
         }
 
         PortfolioRecom portfolioRecom = PortfolioRecom.of(member, portfolio);

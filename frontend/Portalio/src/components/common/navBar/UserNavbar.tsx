@@ -1,14 +1,18 @@
 import React from "react";
 import Logo from "../../../assets/Logo.png";
-import BasicProfile from "../../../assets/BasicProfile.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { authActions } from "../../../store/auth/AuthSlice";
 import { logoutApi } from "../../../api/AuthAPI";
+import { RootState } from "../../../store";
+import BasicProfile from "../../../assets/BasicProfile.png";
 
 const UserNavbar: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const userProfile = useSelector((state: RootState) => state.auth.picture);
+  const userNickname = useSelector((state: RootState) => state.auth.name);
 
   const goToMainPage = () => {
     navigate("/");
@@ -21,7 +25,7 @@ const UserNavbar: React.FC = () => {
     logoutApi();
 
     // 로그아웃 후 메인 페이지로 이동
-    navigate("/");
+    navigate("/users/login");
   };
 
   return (
@@ -41,9 +45,17 @@ const UserNavbar: React.FC = () => {
             로그아웃
           </button>
           {/* 로그인된 유저의 정보 표시 */}
-          <div className="mx-5 font-bold">유저</div>
+          <div className="mx-5 font-bold">{userNickname}</div>
 
-          <img src={BasicProfile} alt="Profile" className="size-10 mx-3" />
+          <img
+            src={
+              userProfile === "default_picture_url"
+                ? BasicProfile
+                : userProfile || undefined
+            }
+            alt="Profile"
+            className="size-10 mx-3 rounded-full"
+          />
         </div>
       </div>
     </>
