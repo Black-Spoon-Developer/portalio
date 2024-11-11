@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PortfolioResponse {
+public class PortfolioLikeResponse {
 
     private Long portfolioId;
     private String portfolioTitle;
@@ -21,10 +21,10 @@ public class PortfolioResponse {
     private Integer portfolioCommentCount;
     private Long memberId;
     private String memberNickname;
+    private Boolean isLiked;
+    public static PortfolioLikeResponse from(Portfolio portfolio, Boolean isLiked) {
 
-    public static PortfolioResponse from(Portfolio portfolio) {
-
-        return PortfolioResponse.builder()
+        return PortfolioLikeResponse.builder()
                 .portfolioId(portfolio.getPortfolioId())
                 .portfolioTitle(portfolio.getPortfolioTitle())
                 .portfolioContent(portfolio.getPortfolioContent())
@@ -37,6 +37,7 @@ public class PortfolioResponse {
                 .created(portfolio.getCreated())
                 .memberId(portfolio.getMember().getMemberId())
                 .memberNickname(portfolio.getMember().getUserDetail().getUserNickname())
+                .isLiked(isLiked)
                 .build();
     }
 }

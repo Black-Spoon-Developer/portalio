@@ -20,4 +20,5 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
     List<Portfolio> findAllByMember_MemberIdOrderByCreatedDesc(Long memberId, Pageable pageable);
 
     Optional<Portfolio> findByPortfolioIdAndMember_MemberId(Long portfolioId, Long memberId);
+
 }

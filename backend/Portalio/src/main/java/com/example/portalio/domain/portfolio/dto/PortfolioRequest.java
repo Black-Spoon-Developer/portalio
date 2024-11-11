@@ -26,4 +26,6 @@ public class PortfolioRequest {
 
     @NotNull(message = "empty portfolio job")
     private Long jobSubCategoryId;
+
+    private Long memberId = 1L;
 }
