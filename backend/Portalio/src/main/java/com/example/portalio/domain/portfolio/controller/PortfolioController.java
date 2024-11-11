@@ -3,6 +3,7 @@ package com.example.portalio.domain.portfolio.controller;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioLikeListResponse;
+import com.example.portalio.domain.portfolio.dto.PortfolioLikeResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
@@ -44,10 +45,13 @@ public class PortfolioController {
     }
 
     @Operation(summary = "[포트폴리오]글 상세보기", description = "portfolios_id 입력")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{portfoliosId}")
-    public ResponseEntity<PortfolioResponse> getPortfoliosDetail(@PathVariable("portfoliosId") Long portfoliosId) {
+    public ResponseEntity<PortfolioLikeResponse> getPortfoliosDetail(
+            @PathVariable("portfoliosId") Long portfoliosId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        PortfolioResponse response = portfolioService.getPortfolioDetails(portfoliosId);
+        PortfolioLikeResponse response = portfolioService.getPortfolioDetails(portfoliosId, oauth2User);
 
         return ResponseEntity.ok(response);
     }
