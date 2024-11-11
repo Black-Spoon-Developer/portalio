@@ -21,7 +21,9 @@ public class PortfolioLikeResponse {
     private Integer portfolioCommentCount;
     private Long memberId;
     private String memberNickname;
+    private String picture;
     private Boolean isLiked;
+
     public static PortfolioLikeResponse from(Portfolio portfolio, Boolean isLiked) {
 
         return PortfolioLikeResponse.builder()
@@ -37,6 +39,7 @@ public class PortfolioLikeResponse {
                 .created(portfolio.getCreated())
                 .memberId(portfolio.getMember().getMemberId())
                 .memberNickname(portfolio.getMember().getUserDetail().getUserNickname())
+                .picture(portfolio.getMember().getMemberPicture())
                 .isLiked(isLiked)
                 .build();
     }
