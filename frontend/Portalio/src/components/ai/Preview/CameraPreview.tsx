@@ -1,35 +1,44 @@
-// src/components/ai/CameraPreview.tsx
 import React, { useRef, useEffect } from "react";
 
-const CameraPreview: React.FC = () => {
+interface CameraPreviewProps {
+  cameraStatus: "양호" | "불량";
+}
+
+const CameraPreview: React.FC<CameraPreviewProps> = ({ cameraStatus }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
-    // 웹캠 스트림을 가져와서 video 요소에 연결
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      })
-      .catch((error) => {
-        console.error("Error accessing media devices:", error);
-      });
+    if (cameraStatus === "양호") {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch((error) => {
+          console.error("Error accessing media devices:", error);
+        });
 
-    // 컴포넌트 언마운트 시 웹캠 스트림을 중지
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        (videoRef.current.srcObject as MediaStream)
-          .getTracks()
-          .forEach((track) => track.stop());
-      }
-    };
-  }, []);
+      return () => {
+        if (videoRef.current && videoRef.current.srcObject) {
+          (videoRef.current.srcObject as MediaStream)
+            .getTracks()
+            .forEach((track) => track.stop());
+        }
+      };
+    }
+  }, [cameraStatus]);
 
   return (
     <div>
-      <h2>카메라 미리보기</h2>
-      <video ref={videoRef} autoPlay muted style={{ width: "60%", height: "auto" }} /> {/* 카메라 미리보기 표시 */}
+      <video 
+        ref={videoRef} 
+        autoPlay 
+        muted 
+        className="w-64 h-48 rounded-lg border border-gray-300" 
+        style={{ display: cameraStatus === "양호" ? "block" : "none" }}
+      />
+      {cameraStatus === "불량" && <div className="text-red-500">카메라를 사용할 수 없습니다.</div>}
     </div>
   );
 };
