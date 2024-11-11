@@ -108,7 +108,6 @@ const App: React.FC = () => {
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>
-        <Route path="/" element={<PortfolioPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
         {/* 밑에3개 테스트용 삭제 ㄴㄴ */}

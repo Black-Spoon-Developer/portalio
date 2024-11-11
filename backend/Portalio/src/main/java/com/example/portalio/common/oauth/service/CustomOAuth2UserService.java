@@ -9,6 +9,9 @@ import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -67,7 +70,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setEmail(email);
             userDTO.setRole("USER");
             userDTO.setPicture(picture);
-
 
             return new CustomOAuth2User(userDTO);
 
