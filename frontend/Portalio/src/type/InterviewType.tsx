@@ -18,6 +18,7 @@ export interface InterviewState {
 // WebcamCapture 컴포넌트의 props 타입 정의
 export interface WebcamCaptureProps {
   isRecording: boolean;
+  interviewId: number;
   questionId: number;
   onUploadComplete: (result: any) => void;
 }

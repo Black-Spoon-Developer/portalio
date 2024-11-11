@@ -27,23 +27,26 @@ import { useNavigate } from "react-router-dom";
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
 
 // AI (주석 처리 - 현재 계획 없음)
-// import AIIntroducePage from "./pages/ai/AIIntroducePage.tsx";
- import CamInterviewPage from "./pages/interview/cam/CamInterviewpage.tsx";
+import InterviewIntroPage from "./pages/ai/InterviewIntroPage.tsx"
+import InterviewProcessPage  from "./pages/ai/InterviewProcesspage.tsx";
+import InterviewQuestionPage from "./pages/ai/InterviewQuestionPage.tsx";
+import InterviewSetupPage from "./pages/ai/InterviewSetupPage.tsx";
+ 
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 
 const App: React.FC = () => {
   const navigate = useNavigate();
-
-  // Handle button click to navigate to interview page
+  
   const handleStartInterview = () => {
-    const interviewId = 1; // 원하는 interview_id를 설정
-    navigate(`/ai/interview/${interviewId}`);
+    navigate("/ai/introduce");
   };
+
 
   return (
     <>
       <NavBar />
+      {/* 면접 시작 버튼 */}
       <div style={{ textAlign: "center", margin: "20px" }}>
         <button
           onClick={handleStartInterview}
@@ -60,6 +63,7 @@ const App: React.FC = () => {
           면접 시작하기
         </button>
       </div>
+      
       
       <Routes>
         {/* Main */}
@@ -114,8 +118,10 @@ const App: React.FC = () => {
 
         {/* AI (주석 처리) */}
         { <Route path="/ai" element={<Outlet />}>
-          {/* <Route path="introduce" element={<AIIntroducePage />} /> */}
-          <Route path="interview/:interview_id" element={<CamInterviewPage />} />
+          <Route path="introduce" element={<InterviewIntroPage />} />
+          <Route path="interview/:interview_id" element={<InterviewProcessPage  />} />
+          <Route path="interview/setup" element={<InterviewSetupPage />} />
+          <Route path="interview/questions" element={<InterviewQuestionPage />} />
           {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
           <Route path="record/:record_id" element={<AIRecordPage />} /> */}
         </Route> }
