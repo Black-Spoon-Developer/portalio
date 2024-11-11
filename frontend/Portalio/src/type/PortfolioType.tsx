@@ -1,10 +1,9 @@
 export interface PortfolioRequest {
   portfolioTitle: string;
   portfolioContent: string;
-  portfolioImgKey?: string;
-  portfolioFileKey?: string;
-  portfolioThumbnailImg?: string;
-  jobSubCategoryId?: number;
+  portfolioThumbnailImg: string;
+  portfolioPost: boolean;
+  jobSubCategoryId: number;
 }
 
 export interface PortfolioResponse {
@@ -12,8 +11,6 @@ export interface PortfolioResponse {
   portfolioTitle: string;
   portfolioContent: string;
   portfolioJob: number;
-  portfolioImgKey?: string;
-  portfolioFileKey?: string;
   portfolioViews: number;
   portfolioThumbnailImg: string;
   portfolioRecommendationCount: number;

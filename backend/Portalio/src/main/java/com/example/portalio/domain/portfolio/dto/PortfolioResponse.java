@@ -9,8 +9,6 @@ import lombok.Getter;
 @Builder
 public class PortfolioResponse {
 
-    private static final String DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/157494028?v=4";
-
     private Long portfolioId;
     private String portfolioTitle;
     private String portfolioContent;
@@ -29,7 +27,7 @@ public class PortfolioResponse {
                 .portfolioContent(portfolio.getPortfolioContent())
                 .portfolioJob(portfolio.getJobSubCategory().getJobId())
                 .portfolioViews(portfolio.getPortfolioViews())
-                .portfolioThumbnailImg(portfolio.getPortfolioThumbnailImg() != null ? portfolio.getPortfolioThumbnailImg() : DEFAULT_IMAGE_URL)
+                .portfolioThumbnailImg(portfolio.getPortfolioThumbnailImg())
                 .portfolioRecommendationCount(portfolio.getPortfolioRecommendationCount())
                 .portfolioPost(portfolio.getPortfolioPost())
                 .created(portfolio.getCreated())

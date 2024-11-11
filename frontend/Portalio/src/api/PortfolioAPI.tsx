@@ -20,7 +20,7 @@ export const fetchPortfolioDetail = async (portfolioID: string) => {
     `${BASE_URL}/api/v1/portfolios/${portfoliosId}`
   );
 
-  return response;
+  return response.data;
 };
 
 // public으로 사람들이 올려놓은 포트폴리오 상세 조회 시 댓글 조회
@@ -62,7 +62,23 @@ export const createPortfolio = async (portfolioData: PortfolioRequest): Promise<
   const accessToken = state.auth.accessToken;
   const response = await axios.post<PortfolioResponse>(
     `${BASE_URL}/api/v1/portfolios`,
-    { portfolioData },
+    portfolioData,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+}
+
+export const patchPortfolio = async (portfolioID: string, portfolioData: PortfolioRequest): Promise<PortfolioResponse> => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.patch<PortfolioResponse>(
+    `${BASE_URL}/api/v1/portfolios/${portfolioID}`,
+    portfolioData,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
