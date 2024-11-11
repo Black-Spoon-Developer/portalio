@@ -8,8 +8,8 @@ const initialState: sideTabState = {
   tabState: "Feed",
 };
 
-const sideTabSlice = createSlice({
-  name: "sideTab",
+const sideNavSlice = createSlice({
+  name: "sideNav",
   initialState,
   reducers: {
     selectFeed(state) {
@@ -29,10 +29,10 @@ const sideTabSlice = createSlice({
     },
 
     selectNotification(state) {
-      state.tabState = "Notification";
+      state.tabState = "MyPage";
     },
   },
 });
 
-export const sideTabActions = sideTabSlice.actions;
-export default sideTabSlice.reducer;
+export const sideNavActions = sideNavSlice.actions;
+export default sideNavSlice.reducer;

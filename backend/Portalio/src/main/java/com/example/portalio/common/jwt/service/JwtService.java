@@ -75,7 +75,7 @@ public class JwtService {
         
         // 리프레시 토큰이 만료된 경우 새로운 리프레시 토큰도 생성
         if (isRefreshExpired) {
-            String newRefresh = jwtUtil.createJwt(memberId, name, username, picture, "refresh", email, role, 86400000L);
+            String newRefresh = jwtUtil.createJwt(memberId, name, username, picture, "refresh", email, role, 2592000000L);
 
             // 기존 리프레시 토큰 삭제 후 새로 저장
             refreshRepository.deleteByValue(refresh);
@@ -86,7 +86,7 @@ public class JwtService {
         }
 
         // access 토큰 발급
-        String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", email, role, 600000L);
+        String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", email, role, 2592000000L);
 
         // access 토큰 및 유저 정보도 같이 반환
         UserResponseDTO userResponseDTO = new UserResponseDTO();
