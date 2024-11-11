@@ -2,8 +2,8 @@ import axios from "axios";
 import store, { RootState } from "../store";
 import { PortfolioRequest, PortfolioResponse } from "../type/PortfolioType";
 
-// const BASE_URL = "http://localhost:8080";
-const BASE_URL = "http://k11d202.p.ssafy.io";
+const BASE_URL = "http://localhost:8080";
+// const BASE_URL = "http://k11d202.p.ssafy.io";
 
 // public으로 사람들이 올려놓은 포트폴리오 리스트 무한 스크롤 조회
 export const fetchMorePosts = async (skip: number, limit: number) => {
