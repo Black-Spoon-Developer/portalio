@@ -1,16 +1,15 @@
 import React from "react";
-import { MdOutlineNotifications } from "react-icons/md";
+import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { sideTabActions } from "../../../../store/tab/SideTabSlice";
+import { sideNavActions } from "../../../../store/nav/SideNavSlice";
 
-const NotificationButton: React.FC = () => {
+const TrendButton: React.FC = () => {
   const dispatch = useDispatch();
-
   const selectState = useSelector((state: RootState) => state.sideTab.tabState);
 
   const onClick = () => {
-    dispatch(sideTabActions.selectNotification());
+    dispatch(sideNavActions.selectJobInfo());
   };
 
   return (
@@ -18,16 +17,16 @@ const NotificationButton: React.FC = () => {
       <button
         onClick={onClick}
         className={`flex items-center my-8 text-conceptGrey hover:text-conceptSkyBlue font-bold ${
-          selectState == "Notification"
+          selectState == "JobInfo"
             ? "text-conceptSkyBlue border-l-4 border-conceptSkyBlue"
             : "text-conceptGrey hover:text-conceptSkyBlue"
         }`}
       >
-        <MdOutlineNotifications className="size-8 ml-12 mr-8" />
-        <div className="text-lg font-bold tracking-[0.5em]">알 림</div>
+        <HiOutlineDocumentSearch className="size-8 ml-12 mr-8" />
+        <div className="text-lg font-bold tracking-[0.3em]">채 용 정 보</div>
       </button>
     </>
   );
 };
 
-export default NotificationButton;
+export default TrendButton;

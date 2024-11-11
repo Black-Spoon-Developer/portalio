@@ -2,13 +2,13 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // 로컬 스토리지 사용
 import authReducer from "./store/auth/AuthSlice"; // authSlice 가져오기
-import sideTabReducer from "./store/tab/SideTabSlice";
+import sideTabReducer from "./store/nav/SideNavSlice";
 
 // persist 설정
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "sideTab"], // auth, sideTab 슬라이스 추가
+  whitelist: ["auth", "sideNav"], // auth, sideTab 슬라이스 추가
 };
 
 // 여러 슬라이스를 결합할 때 사용 - 사용할 reducer 하나씩 추가하는 곳!

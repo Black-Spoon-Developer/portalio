@@ -1,15 +1,16 @@
 import React from "react";
-import { HiOutlineDocumentSearch } from "react-icons/hi";
+import { CgProfile } from "react-icons/cg";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { sideTabActions } from "../../../../store/tab/SideTabSlice";
+import { sideNavActions } from "../../../../store/nav/SideNavSlice";
 
-const TrendButton: React.FC = () => {
+const MyPageButton: React.FC = () => {
   const dispatch = useDispatch();
+
   const selectState = useSelector((state: RootState) => state.sideTab.tabState);
 
   const onClick = () => {
-    dispatch(sideTabActions.selectJobInfo());
+    dispatch(sideNavActions.selectNotification());
   };
 
   return (
@@ -17,16 +18,16 @@ const TrendButton: React.FC = () => {
       <button
         onClick={onClick}
         className={`flex items-center my-8 text-conceptGrey hover:text-conceptSkyBlue font-bold ${
-          selectState == "JobInfo"
+          selectState == "Notification"
             ? "text-conceptSkyBlue border-l-4 border-conceptSkyBlue"
             : "text-conceptGrey hover:text-conceptSkyBlue"
         }`}
       >
-        <HiOutlineDocumentSearch className="size-8 ml-12 mr-8" />
-        <div className="text-lg font-bold tracking-[0.3em]">채 용 정 보</div>
+        <CgProfile className="size-8 ml-12 mr-8" />
+        <div className="text-lg font-bold tracking-[0.5em]">마이 페이지</div>
       </button>
     </>
   );
 };
 
-export default TrendButton;
+export default MyPageButton;
