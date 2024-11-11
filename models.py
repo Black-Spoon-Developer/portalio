@@ -21,6 +21,7 @@ class Member(Base):
     interviews = relationship("Interview", back_populates="member", cascade="all, delete-orphan")
     answers = relationship("Answer", back_populates="member", cascade="all, delete-orphan")
     reports = relationship("Report", back_populates="member", cascade="all, delete-orphan")
+    chatbot_entries = relationship("ChatBot", back_populates="member")
 
 
 class Portfolio(Base):
@@ -31,6 +32,8 @@ class Portfolio(Base):
     member_id = Column(BigInteger, ForeignKey('member.member_id'))
     portfolio_title = Column(String(50))
     portfolio_content = Column(Text)
+    created = Column(DateTime, default=datetime.utcnow)
+    updated = Column(DateTime, default=datetime.utcnow)
 
     # 관계 설정
     member = relationship("Member", back_populates="portfolios")
@@ -44,6 +47,8 @@ class Repository(Base):
     member_id = Column(BigInteger, ForeignKey('member.member_id'))
     repository_title = Column(String(50))
     repository_content = Column(Text)
+    created = Column(DateTime, default=datetime.utcnow)
+    updated = Column(DateTime, default=datetime.utcnow)
 
     # 관계 설정
     member = relationship("Member", back_populates="repositories")
@@ -120,6 +125,8 @@ class Question(Base):
 
     question_id = Column(BigInteger, primary_key=True, autoincrement=True)
     interview_id = Column(BigInteger, ForeignKey('interview.interview_id'), nullable=False)
+    question_tag = Column(Enum('직무', '경험', '인성'), nullable=False)
+    question_intent = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
     audio_s3_key = Column(String(255))  # 오디오 파일 키 저장
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -178,3 +185,16 @@ class RepositorySummary(Base):
 
     # 관계 설정
     repository = relationship("Repository", back_populates="summary")
+
+class Chatbot(Base):
+    __tablename__ = 'chatbot'
+
+    chatbot_id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created = Column(DateTime, default=datetime.utcnow)
+    updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    member_id = Column(BigInteger, ForeignKey('member.member_id'))
+    chatbot_prompt = Column(Text, nullable=False)
+    chatbot_response = Column(Text)
+
+    # 관계 설정
+    member = relationship("Member", back_populates="chatbot_entries")

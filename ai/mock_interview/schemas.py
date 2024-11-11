@@ -87,3 +87,17 @@ class MemberInfoDTO(BaseModel):
 
     class Config:
         from_attributes = True
+
+class QuestionDTO(BaseModel):
+    question_tag: str
+    question_intent: str
+    question_text: str
+    audio_s3_url: Optional[str] = None
+
+class QuestionRequestDTO(BaseModel):
+    portfolio_id: Optional[int] = None
+    repository_id: Optional[int] = None
+    job_role_ids: List[int]
+
+class QuestionResponseDTO(BaseModel):
+    questions: List[QuestionDTO]
