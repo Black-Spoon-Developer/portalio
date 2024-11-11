@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const ToastEditor: React.FC = () => {
   const editorRef = useRef<Editor>(null);
+  const BASE_URL = "http://k11d202.p.ssafy.io";
 
   useEffect(() => {
     if (editorRef.current) {
@@ -22,7 +23,7 @@ const ToastEditor: React.FC = () => {
       formData.append("multipartFile", blob); // 'multipartFile' 이름으로 이미지를 추가
       formData.append("folderName", "Activity_board"); // 'folderName'도 추가
   
-      const response = await axios.post("http://localhost:8080/s3/image", formData, {
+      const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

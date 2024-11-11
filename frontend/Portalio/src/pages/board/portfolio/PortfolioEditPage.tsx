@@ -17,6 +17,8 @@ const PortfolioEditPage: React.FC = () => {
   const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  
+const BASE_URL = "http://k11d202.p.ssafy.io";
 
   useEffect(() => {
     if (editorRef.current) {
@@ -59,7 +61,7 @@ const PortfolioEditPage: React.FC = () => {
       formData.append("multipartFile", blob);
       formData.append("folderName", "Portfolio_board");
   
-      const response = await axios.post("http://localhost:8080/s3/image", formData, {
+      const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -92,7 +94,7 @@ const PortfolioEditPage: React.FC = () => {
       formData.append("folderName", "Portfolio_board");
 
       try {
-        const response = await axios.post("http://localhost:8080/s3/image", formData, {
+        const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setThumbnailUrl(response.data); // URL 상태에 저장
