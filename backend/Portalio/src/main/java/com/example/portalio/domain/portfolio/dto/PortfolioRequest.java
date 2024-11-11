@@ -19,14 +19,9 @@ public class PortfolioRequest {
     @NotNull(message = "empty portfolio content")
     private String portfolioContent;
 
-    private String portfolioImgKey;
-
-    private String portfolioFileKey;
-
     @NotNull(message = "empty portfolio thumbnail img")
     private String portfolioThumbnailImg;
 
     @NotNull(message = "empty portfolio job")
     private Long jobSubCategoryId;
-
 }

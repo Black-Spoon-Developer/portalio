@@ -15,8 +15,6 @@ public class PortfolioResponse {
     private String portfolioTitle;
     private String portfolioContent;
     private Long portfolioJob;
-    private String portfolioImgKey;
-    private String portfolioFileKey;
     private Integer portfolioViews;
     private String portfolioThumbnailImg;
     private Integer portfolioRecommendationCount;
@@ -30,8 +28,6 @@ public class PortfolioResponse {
                 .portfolioTitle(portfolio.getPortfolioTitle())
                 .portfolioContent(portfolio.getPortfolioContent())
                 .portfolioJob(portfolio.getJobSubCategory().getJobId())
-                .portfolioImgKey(portfolio.getPortfolioImgKey())
-                .portfolioFileKey(portfolio.getPortfolioFileKey())
                 .portfolioViews(portfolio.getPortfolioViews())
                 .portfolioThumbnailImg(portfolio.getPortfolioThumbnailImg() != null ? portfolio.getPortfolioThumbnailImg() : DEFAULT_IMAGE_URL)
                 .portfolioRecommendationCount(portfolio.getPortfolioRecommendationCount())
