@@ -30,7 +30,7 @@ import BoardPage from "./pages/board/board/BoardPage.tsx";
 // import AIInterviewPage from "./pages/ai/AIInterviewPage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
-import PortfolioPage from "./pages/board/PortfolioPage.tsx";
+// import PortfolioPage from "./pages/board/PortfolioPage.tsx";
 import ToastEditor from "./components/common/ToastEditor.tsx";
 import Dropzone from "./components/common/Dropzone.tsx";
 import ToastEditorWithVideo from "./components/common/ToastEditorMovie.tsx";

@@ -2,6 +2,7 @@ package com.example.portalio.domain.portfolio.controller;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.board.dto.BoardListResponse;
+import com.example.portalio.domain.portfolio.dto.PortfolioLikeListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
@@ -53,11 +54,12 @@ public class PortfolioController {
 
     @Operation(summary = "[포트폴리오]글 전체보기(리스트)", description = "무한스크롤, 사용시 skip을 10씩 증가해서 넣으세요, limit 10 고정, Post(게시)가 ture인 것만 반환")
     @GetMapping("/all")
-    public ResponseEntity<PortfolioListResponse> getPortfoliosList(
+    public ResponseEntity<PortfolioLikeListResponse> getPortfoliosList(
             @RequestParam(defaultValue = "0") int skip,
-            @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(defaultValue = "10") int limit,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        PortfolioListResponse response = portfolioService.getPortfolioList(skip, limit);
+        PortfolioLikeListResponse response = portfolioService.getPortfolioList(skip, limit, oauth2User);
 
         return ResponseEntity.ok(response);
     }
