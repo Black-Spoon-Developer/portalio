@@ -12,10 +12,10 @@ const GoogleLogin: React.FC = () => {
     localStorage.setItem("isLogin", "true");
 
     //EC2에서 할때
-    window.location.href = "https://k11d202.p.ssafy.io/oauth2/code/google";
+    // window.location.href = "https://k11d202.p.ssafy.io/oauth2/code/google";
 
     // 로컬에서 할때
-    // window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
 
   return (

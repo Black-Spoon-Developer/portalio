@@ -10,7 +10,13 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./PortfolioDetailMd.css";
 
-const PortfolioDetailMd: React.FC = () => {
+interface PortfolioDetailMdProps {
+  portfolioContent: string;
+}
+
+const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
+  portfolioContent,
+}) => {
   const navigate = useNavigate();
 
   const userID = BigInt(
@@ -18,30 +24,7 @@ const PortfolioDetailMd: React.FC = () => {
   );
 
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
-  const [portfolioContent, setPortfolioContent] = useState<string>("");
   const [isLiked, setIsLiked] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchMarkdownContent = async () => {
-      try {
-        if (portfolio_id) {
-          const response = await fetchPortfolioDetail(portfolio_id);
-
-          // 좋아요한 유저 목록에서 본인이 있는지 확인
-          const isLikedByUser = await response.data.userPortfolioRecom.some(
-            (recom: { memberId: bigint }) => recom.memberId === userID
-          );
-
-          setPortfolioContent(response.data.portfolioContent);
-          setIsLiked(isLikedByUser);
-        }
-      } catch (error) {
-        alert("글 조회를 실패했습니다.: " + error);
-      }
-    };
-
-    fetchMarkdownContent();
-  }, []);
 
   const handleLike = async () => {
     if (!portfolio_id) {
