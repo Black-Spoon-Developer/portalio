@@ -24,11 +24,11 @@ const ActivitySearch: React.FC<ActivitySearchProps> = ({
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearchClick();
-    }
-  };
+  // const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter") {
+  //     handleSearchClick();
+  //   }
+  // };
 
   return (
     <div className="flex items-center border-2 rounded-full my-4 p-2">
