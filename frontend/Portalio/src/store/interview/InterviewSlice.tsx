@@ -5,14 +5,13 @@ import { InterviewState } from "../../type/InterviewType";
 const initialState: InterviewState = {
   questions: [],
   currentQuestionIndex: 0,
-  preparationTime: 30,
-  answerTime: 60,
   isAnswering: false,
   isRecording: false,
   isLoading: true,
   isUploading: false,
   analysisResults: {},
   isFinished: false,
+  isPreparationTime: true, // 추가된 상태
 };
 
 const interviewSlice = createSlice({
@@ -32,28 +31,25 @@ const interviewSlice = createSlice({
       state.isRecording = false;
       state.isUploading = true;
     },
+    startPreparation(state) {
+      // 새로운 질문 준비
+      state.isPreparationTime = true;
+      state.isAnswering = false;
+    },
     incrementQuestionIndex(state) {
       if (state.currentQuestionIndex < state.questions.length - 1) {
         state.currentQuestionIndex += 1;
       } else {
-        state.isFinished = true; // 모든 질문이 완료된 경우 isFinished 플래그 설정
-      }
-    },
-    uploadComplete(
-      state,
-      action: PayloadAction<{ questionIndex: number; result: any }>
-    ) {
-      const { questionIndex, result } = action.payload;
-      state.analysisResults[questionIndex] = result;
-      state.isUploading = false;
-      state.isAnswering = false;
-
-      if (state.currentQuestionIndex === state.questions.length - 1) {
         state.isFinished = true;
-      } else {
-        state.currentQuestionIndex += 1;
       }
+    
     },
+
+    setCurrentQuestionIndex(state, action) {
+      // action.payload로 받은 인덱스를 설정
+      state.currentQuestionIndex = action.payload;
+    },
+    
     resetInterview(state) {
       state.currentQuestionIndex = 0;
       state.isFinished = false;
@@ -72,10 +68,11 @@ export const {
   setQuestions,
   startAnswering,
   stopAnswering,
-  incrementQuestionIndex, 
-  uploadComplete,
+  incrementQuestionIndex,
+  setCurrentQuestionIndex,
   resetInterview,
   setLoading,
+  startPreparation, // 새로 추가된 액션
 } = interviewSlice.actions;
 
 export default interviewSlice.reducer;

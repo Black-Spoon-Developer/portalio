@@ -7,14 +7,13 @@ export interface AnalysisResult {
 export interface InterviewState {
   questions: string[];
   currentQuestionIndex: number;
-  preparationTime: number;
-  answerTime: number;
   isAnswering: boolean;
   isRecording: boolean;
   isLoading: boolean;
   isUploading: boolean;
   analysisResults: AnalysisResult;
   isFinished: boolean;
+  isPreparationTime: boolean;
 }
 
 // WebcamCapture 컴포넌트의 props 타입 정의
@@ -27,11 +26,15 @@ export interface WebcamCaptureProps {
 }
 
 // QuestionTimer 컴포넌트의 props 타입 정의
+
 export interface QuestionTimerProps {
-  time: number;
-  onTimeEnd: () => void;
-  label: string;
+  isPreparationTime: boolean;
+  preparationTime: number;
+  answerTime: number;
+  onPreparationEnd: () => void;
+  onAnswerEnd: () => void;
 }
+
 
 export interface TimeSeriesData {
   time: string;

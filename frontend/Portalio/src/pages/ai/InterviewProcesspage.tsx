@@ -1,147 +1,155 @@
 // src/pages/interview/InterviewProcessPage.tsx
-import React, { useEffect } from "react";
-import { useParams, useLocation,useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import WebcamCapture from "../../components/ai/WebcamCapture";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
-import { startAnswering, stopAnswering, incrementQuestionIndex,resetInterview } from "../../store/interview/InterviewSlice";
-import InterviewProcess from "../../components/ai/InterviewProcess";
-import QuestionTimer from "../../components/ai/QuestionTimer"; 
-
-
-const steps = ["1", "2", "3", "4", "5"];
-
-
+import {
+  incrementQuestionIndex,
+  setCurrentQuestionIndex,
+  resetInterview,
+  setQuestions,
+  startAnswering,
+  stopAnswering,
+  startPreparation, // 새로 추가된 액션 임포트
+} from "../../store/interview/InterviewSlice";
+import QuestionTimer from "../../components/ai/QuestionTimer";
+import { useNavigate } from "react-router-dom";
 
 const InterviewProcessPage: React.FC = () => {
-  const { interview_id } = useParams<{ interview_id: string }>();
-  const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
-  const interviewType = location.state?.type || "video"; 
-  const interviewId = parseInt(interview_id || "0", 10);
+  const navigate = useNavigate();
+  const { questions, currentQuestionIndex, isAnswering, isFinished } = useSelector(
+    (state: RootState) => state.interview
+  );
 
-  const {
-    questions,
-    currentQuestionIndex,
-    preparationTime,
-    answerTime,
-    isAnswering,
-  } = useSelector((state: RootState) => state.interview);
+  // 준비 시간 여부를 관리하는 상태
+  const [isPreparationTime, setIsPreparationTime] = useState(true);
 
-  // 준비시간 타이머 끝나면 호출
-  const handlePreparationEnd = () => {
-    if (!isAnswering) {
-      handleStartAnswering(); // 자동으로 답변 시작 상태로 전환
-    }
-  };
-  
-  const handleStartAnswering = () => {
+  const handlePreparationEnd = useCallback(() => {
+    console.log("handlePreparationEnd 호출");
+    setIsPreparationTime(false);
     dispatch(startAnswering());
-  };
+    console.log("준비시간 끝, 답변 시작");
+  }, [dispatch]);
+  
+  const [isAnsweringFinished, setIsAnsweringFinished] = useState(false); // 중복 실행 방지 플래그
 
-
-
-  // 답변 종료 핸들러
-  const handleStopAnswering = () => {
+  const handleAnswerEnd = useCallback(() => {
+    if (isAnsweringFinished) return;  // 이미 답변이 끝났다면 함수 실행 중단
+    
+    setIsAnsweringFinished(true); // 답변 완료 처리
+    console.log("handleAnswerEnd 호출");
+    
     dispatch(stopAnswering());
+    console.log("답변시간 끝");
 
-    // 다음 질문으로 이동
     if (currentQuestionIndex < questions.length - 1) {
       dispatch(incrementQuestionIndex());
+      dispatch(startPreparation()); // 다음 질문 준비 상태로 전환
+      console.log("다음 질문으로 이동:", currentQuestionIndex + 1);
     } else {
-      alert("모든 질문이 완료되었습니다.");
-      dispatch(resetInterview()); // 면접이 끝나면 상태 초기화
-      navigate("/ai/analyze"); // 분석 결과 페이지로 이동
+      console.log("모든 질문이 끝남, 분석 페이지로 이동");
+      navigate("/ai/analyze");
     }
+  }, [currentQuestionIndex, dispatch, navigate, questions.length, isAnsweringFinished]);
+
+useEffect(() => {
+  // 새로운 질문에 진입할 때마다 플래그 초기화
+  setIsAnsweringFinished(false);
+}, [currentQuestionIndex]);
+
+
+  useEffect(() => {
+    if (currentQuestionIndex < questions.length) {
+      setIsPreparationTime(true);
+      console.log("새로운 질문에 대한 준비 시간 시작");
+    }
+  }, [currentQuestionIndex, questions.length]);
+
+
+  const handleRestart = () => {
+    console.log("면접 재시작");
+    dispatch(resetInterview());
+    setIsPreparationTime(true);
   };
 
   useEffect(() => {
-    if (currentQuestionIndex >= questions.length) {
-      alert("모든 질문이 완료되었습니다.");
-      dispatch(resetInterview()); // 면접 완료 후 초기화
-      navigate("/ai/analyze"); // 분석 결과 페이지로 이동
+    const savedIndex = localStorage.getItem("currentQuestionIndex");
+    console.log("저장된 질문 인덱스:", savedIndex);
+    dispatch(setQuestions(["첫번째 질문", "두번째 질문", "세번째 질문", "네번째 질문", "다섯번째 질문"]));
+  
+    if (savedIndex) {
+      dispatch(setCurrentQuestionIndex(Number(savedIndex)));
+      console.log("저장된 인덱스로 설정:", savedIndex);
+    } else {
+      dispatch(setCurrentQuestionIndex(0));
+      console.log("저장된 인덱스가 없으므로 0으로 초기화");
     }
-  }, [currentQuestionIndex, questions.length, dispatch]);
+  }, [dispatch]);
+  
+  useEffect(() => {
+    localStorage.setItem("currentQuestionIndex", currentQuestionIndex.toString());
+    console.log("currentQuestionIndex가 업데이트됨:", currentQuestionIndex);
+  }, [currentQuestionIndex]);
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <header className="mb-8">
-        <nav aria-label="Progress">
-          <ol className="flex items-center justify-center space-x-4">
-            {steps.map((step, index) => (
-              <li key={index} className="flex items-center">
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full text-white ${
-                    index <= currentQuestionIndex ? "bg-blue-500" : "bg-gray-300"
-                  }`}
-                >
-                  {step}
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={`w-8 h-1 ${index < currentQuestionIndex ? "bg-blue-500" : "bg-gray-300"}`}></div>
-                )}
-              </li>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <header className="mb-12 text-center">
+        {/* Step 표시 */}
+        <div className="flex space-x-10 justify-center mb-6">
+            {questions.map((_, index) => (
+              <div
+                key={index}
+                className={`h-2 w-8 rounded-full ${
+                  index <= currentQuestionIndex ? "bg-blue-600" : "bg-gray-300"
+                }`}
+              />
             ))}
-          </ol>
-        </nav>
+          </div>
+        <h2 className="font-bold text-lg">면접 진행 중</h2>
       </header>
 
       <section className="flex justify-center items-start space-x-16">
-        <div className="w-1/2 max-w-md bg-white rounded-lg shadow-md p-4 relative">
+        <div className="w-1/2 max-w-lg bg-white rounded-lg shadow-md p-4 relative">
+          
+          {/* 면접 타입과 타이머 표시 */}
           <div className="flex justify-between items-center mb-4">
-            <span className="font-bold text-gray-700">
-              {interviewType === "video" ? "화상 면접" : interviewType === "audio" ? "음성 면접" : "텍스트 면접"}
-            </span>
-            <span className="text-gray-500 text-sm">
-              <QuestionTimer 
-                time={isAnswering ? answerTime : preparationTime} 
-                onTimeEnd={isAnswering ? handleStopAnswering : handlePreparationEnd}
-                label={isAnswering ? "답변 시간" : "준비 시간"}
-              />
-            </span>
+            <span className="font-bold text-gray-700">화상 면접</span>
+            <QuestionTimer
+              isPreparationTime={isPreparationTime}
+              preparationTime={30}
+              answerTime={60}
+              onPreparationEnd={handlePreparationEnd}
+              onAnswerEnd={handleAnswerEnd}
+            />
           </div>
 
-          <InterviewProcess 
-            interviewType={interviewType} 
-            interviewId={interviewId}
-            currentQuestion={questions[currentQuestionIndex]}
-            isAnswering={isAnswering}
-          />
+          {/* 화상 면접 화면 */}
+          <div className="bg-gray-200 w-full mb-4 rounded-md flex items-center justify-center">
+            <WebcamCapture />
+          </div>
         </div>
 
-        <div className="w-1/2">
-          <section aria-labelledby="interview-question" className="mb-6">
-            <h2 id="interview-question" className="text-xl font-semibold text-gray-900 mb-4">
-              주어진 질문에 답변해 주세요.
+        {/* 질문 및 답변 버튼 */}
+        <div className="w-1/3 flex flex-col justify-end h-full">
+          <section className="mb-12">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              {`질문 ${currentQuestionIndex + 1}`}
             </h2>
-            <p className="text-2xl font-bold text-gray-800">
-              🔥 {questions[currentQuestionIndex] || "모든 질문이 완료되었습니다."}
-            </p>
-            <p className="text-gray-500 text-lg mt-2">(질문)</p>
+            <p className="text-2xl font-bold text-gray-800">{questions[currentQuestionIndex]}</p>
           </section>
 
-          <div className="mt-8">
-            {!isAnswering && currentQuestionIndex < questions.length ? (
-              <button
-                onClick={handleStartAnswering}
-                className="w-full py-3 bg-teal-500 text-white rounded-lg text-lg hover:bg-teal-600 transition"
-              >
-                답변하기
-              </button>
-            ) : (
-              isAnswering && (
-                <button
-                  onClick={handleStopAnswering}
-                  className="w-full py-3 bg-red-500 text-white rounded-lg text-lg hover:bg-red-600 transition"
-                >
-                  답변 종료
-                </button>
-              )
-            )}
-          </div>
+          <button
+            onClick={isPreparationTime ? handlePreparationEnd : handleAnswerEnd}
+            className={`w-full py-3 text-white rounded-lg text-lg transition ${
+              isPreparationTime ? "bg-teal-500 hover:bg-teal-600" : "bg-red-500 hover:bg-red-600"
+            }`}
+          >
+            {isPreparationTime ? "답변하기" : "답변 완료"}
+          </button>
         </div>
       </section>
-    </main>
+    </div>
   );
 };
 

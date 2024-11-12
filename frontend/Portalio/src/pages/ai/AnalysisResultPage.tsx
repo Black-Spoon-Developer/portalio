@@ -1,24 +1,32 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
+// src/pages/analysis/AnalysisPage.tsx
+import React from "react";
+import { useDispatch } from "react-redux";
+import { resetInterview } from "../../store/interview/InterviewSlice";
+import { useNavigate } from "react-router-dom";
 
 const AnalysisResultPage: React.FC = () => {
-  const { analysisResults } = useSelector((state: RootState) => state.interview);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleRestart = () => {
+    dispatch(resetInterview());
+    navigate("/interview/1"); // 첫 번째 질문 페이지로 이동
+  };
 
   return (
-    <main className="min-h-screen bg-gray-100 p-8 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <h1 className="text-2xl font-bold mb-4">분석 결과</h1>
-        <div>
-          {Object.entries(analysisResults).map(([questionIndex, result], idx) => (
-            <div key={idx} className="mb-4">
-              <h2 className="font-semibold">질문 {Number(questionIndex) + 1}</h2>
-              <p>{JSON.stringify(result)}</p>
-            </div>
-          ))}
-        </div>
+    <div className="min-h-screen bg-gray-100 p-8">
+      {/* 분석 결과 표시 */}
+      <div className="text-center">
+        <h2 className="text-2xl font-bold mb-4">분석 결과</h2>
+        {/* 분석 결과 내용을 여기에 추가 */}
+        <button
+          onClick={handleRestart}
+          className="mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg"
+        >
+          다시하기
+        </button>
       </div>
-    </main>
+    </div>
   );
 };
 
