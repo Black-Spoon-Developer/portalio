@@ -1,7 +1,7 @@
 import React from "react";
-import NavBar from "./components/common/navBarComponent/navBar/UpNavBar.tsx";
+import NavBar from "./components/common/navBar/UpNavBar.tsx";
 import Footer from "./components/common/Footer.tsx";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 // import MainTestPage from "./pages/MainTest.tsx";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
@@ -11,17 +11,18 @@ import UserFreeListPage from "./pages/auth/user/UserFreeListPage.tsx";
 import UserActivityListPage from "./pages/auth/user/UserActivityListPage.tsx";
 import UserPortfolioListPage from "./pages/auth/user/UserPortfolioListPage.tsx";
 import UserRepositoryListPage from "./pages/auth/user/UserRepositoryListPage.tsx";
-import UserQuestionListPage from "./pages/auth/user/UserQuestionListPage.tsx"
+import UserQuestionListPage from "./pages/auth/user/UserQuestionListPage.tsx";
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
 import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
-import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
+// import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
 import PortfolioDetailPage from "./pages/board/portfolio/PortfolioDetailPage.tsx";
-import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
+// import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
 import RepositoryEditPage from "./pages/board/repository/RepositoryEditPage.tsx";
 import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.tsx";
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
+import BoardPage from "./pages/board/board/BoardPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -31,14 +32,23 @@ import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 // import AIInterviewPage from "./pages/ai/AIInterviewPage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
+// import PortfolioPage from "./pages/board/PortfolioPage.tsx";
 
 const App: React.FC = () => {
+  const location = useLocation();
+
+  // Footer를 표시하지 않을 URL 목록
+  const hideFooterPaths = ["/", "/users/signup"];
+
+  // 현재 경로가 hideFooterPaths에 포함되면 Footer를 숨깁니다.
+  const shouldShowFooter = !hideFooterPaths.includes(location.pathname);
+
   return (
     <>
       <NavBar />
       <Routes>
         {/* Main */}
-        {/* <Route path="/" element={<MainTestPage />} /> */}
+        <Route path="/" element={<BoardPage />} />
 
         {/* User */}
         <Route path="/users" element={<Outlet />}>
@@ -48,7 +58,7 @@ const App: React.FC = () => {
             <Route index element={<UserProfilePage />} />
             <Route path="setting" element={<UserSettingPage />} />
             <Route path="free" element={<UserFreeListPage />} />
-            <Route path="activity" element={<UserActivityListPage />} /> 
+            <Route path="activity" element={<UserActivityListPage />} />
             <Route path="question" element={<UserQuestionListPage />} />
             <Route path="portfolio" element={<UserPortfolioListPage />} />
             <Route path="repository" element={<UserRepositoryListPage />} />
@@ -99,8 +109,12 @@ const App: React.FC = () => {
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/user/signup" element={<UserSignupPage />}></Route>
       </Routes>
-      <Footer />
+
+      {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}
+      {shouldShowFooter && <Footer />}
     </>
   );
 };

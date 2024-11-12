@@ -14,6 +14,7 @@ import com.example.portalio.domain.portfoliocomment.entity.PortfolioComment;
 import com.example.portalio.domain.portfoliorecom.entity.PortfolioRecom;
 import com.example.portalio.domain.repository.entity.Repository;
 import com.example.portalio.domain.subscribe.entity.Subscribe;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -66,6 +67,9 @@ public class Member extends AuditableCreatedEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id")
     private RefreshEntity refreshToken;
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private UserDetail userDetail;
 
     @OneToMany(mappedBy = "follower", fetch = FetchType.LAZY)
     private List<Subscribe> followers = new ArrayList<>();

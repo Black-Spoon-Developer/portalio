@@ -14,7 +14,6 @@ public class BoardResponse {
     private BoardRole boardCategory;
     private String boardTitle;
     private String boardContent;
-    private String boardImgKey;
     private Boolean boardSolve;
     private Integer boardViews;
     private Integer boardRecommendationCount;
@@ -27,7 +26,6 @@ public class BoardResponse {
                 .boardCategory(board.getBoardCategory())
                 .boardTitle(board.getBoardTitle())
                 .boardContent(board.getBoardContent())
-                .boardImgKey(board.getBoardImgKey())
                 .boardSolve(board.getBoardSolve())
                 .boardViews(board.getBoardViews())
                 .boardRecommendationCount(board.getBoardRecommendationCount())

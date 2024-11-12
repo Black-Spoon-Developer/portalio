@@ -84,7 +84,7 @@ public class ActivityBoardService {
 
         Repository repository = findMyRepository(repositoryId, member.getMemberId());
 
-        ActivityBoard activityBoard = ActivityBoard.of(request.getActivityBoardTitle(), request.getActivityBoardContent(), request.getActivityBoardDate(), request.getActivityBoardImgKey());
+        ActivityBoard activityBoard = ActivityBoard.of(request.getActivityBoardTitle(), request.getActivityBoardContent(), request.getActivityBoardDate());
 
         activityBoard.setRepository(repository);
 
@@ -111,9 +111,6 @@ public class ActivityBoardService {
         }
         if(request.getActivityBoardDate() != null) {
             activityBoard.setActivityBoardDate(request.getActivityBoardDate());
-        }
-        if(request.getActivityBoardImgKey() != null) {
-            activityBoard.setActivityBoardImgKey(request.getActivityBoardImgKey());
         }
 
         activityBoardRepository.save(activityBoard);

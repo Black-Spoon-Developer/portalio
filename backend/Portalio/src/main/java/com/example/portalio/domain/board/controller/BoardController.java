@@ -1,10 +1,13 @@
 package com.example.portalio.domain.board.controller;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.board.dto.BoardLikeListResponse;
+import com.example.portalio.domain.board.dto.BoardLikeResponse;
 import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.board.dto.BoardRequest;
 import com.example.portalio.domain.board.dto.BoardResponse;
 import com.example.portalio.domain.board.dto.BoardSolveResponse;
+import com.example.portalio.domain.board.enums.BoardRole;
 import com.example.portalio.domain.board.service.BoardService;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,29 +36,37 @@ public class BoardController {
 
     @Operation(summary = "[자유/질문]글 검색", description = "boardTitle을 사용해 글 검색")
     @GetMapping
-    public ResponseEntity<BoardListResponse> getBoardsSearch(@RequestParam(required = false) String boardTitle) {
+    public ResponseEntity<BoardListResponse> getBoardsSearch(
+            @RequestParam(required = false) String boardTitle,
+            @RequestParam(required = false) BoardRole boardCategory) {
 
-        BoardListResponse response = boardService.getBoardsSearch(boardTitle);
+        BoardListResponse response = boardService.getBoardsSearch(boardTitle, boardCategory);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[자유/질문]글 상세보기", description = "boards_id 입력")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{boardsId}")
-    public ResponseEntity<BoardResponse> getBoardsDetail(@PathVariable("boardsId") Long boardsId) {
+    public ResponseEntity<BoardLikeResponse> getBoardsDetail(
+            @PathVariable("boardsId") Long boardsId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        BoardResponse response = boardService.getBoardDetails(boardsId);
+        BoardLikeResponse response = boardService.getBoardDetails(boardsId, oauth2User);
 
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "[자유/질문]글 전체보기(리스트)", description = "무한스크롤, 사용시 skip을 10씩 증가해서 넣으세요, limit 10 고정")
     @GetMapping("/all")
-    public ResponseEntity<BoardListResponse> getBoardsList(
+    public ResponseEntity<BoardLikeListResponse> getBoardsList(
             @RequestParam(defaultValue = "0") int skip,
-            @RequestParam(defaultValue = "10") int limit) {
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) BoardRole boardCategory,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        BoardListResponse response = boardService.getBoardList(skip, limit);
+        BoardLikeListResponse response = boardService.getBoardList(skip, limit, boardCategory, oauth2User);
 
         return ResponseEntity.ok(response);
     }
@@ -65,9 +76,10 @@ public class BoardController {
     public ResponseEntity<BoardListResponse> getMyBoardsList(
             @RequestParam(defaultValue = "0") int skip,
             @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) BoardRole boardCategory,
             @PathVariable String username) {
 
-        BoardListResponse response = boardService.getMyBoardList(skip, limit, username);
+        BoardListResponse response = boardService.getMyBoardList(skip, limit, boardCategory, username);
 
         return ResponseEntity.ok(response);
     }

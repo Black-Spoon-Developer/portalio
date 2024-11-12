@@ -16,7 +16,6 @@ public class RepositoryResponse {
     private LocalDate startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    private String repositoryImgKey;
     private String repositoryFileKey;
     private Boolean repositoryPost;
     private Long memberId;
@@ -28,7 +27,6 @@ public class RepositoryResponse {
                 .repositoryContent(repository.getRepositoryContent())
                 .startDate(repository.getStartDate())
                 .endDate(repository.getEndDate())
-                .repositoryImgKey(repository.getRepositoryImgKey())
                 .repositoryFileKey(repository.getRepositoryFileKey())
                 .repositoryPost(repository.getRepositoryPost())
                 .memberId(repository.getMember().getMemberId())

@@ -1,5 +1,6 @@
 package com.example.portalio.domain.portfoliocomment.entity;
 
+import com.example.portalio.domain.common.entity.AuditableCreatedEntity;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.portfolio.entity.Portfolio;
 import jakarta.persistence.Column;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "portfolio_comment")
-public class PortfolioComment {
+public class PortfolioComment extends AuditableCreatedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
