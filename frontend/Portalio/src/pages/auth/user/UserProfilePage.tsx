@@ -77,9 +77,9 @@ const UserProfilePage: React.FC = () => {
                   />
                   <div className="career-details">
                     <strong className="company-name">{career.company}</strong>
-                    <span className="position-location">
-                      {career.position} | {career.location}
-                    </span>
+                    <span className="position-location"> {career.position}</span>
+                    <br />
+                    <span className="position-position">{career.location} </span>
                     <span className="duration">{career.duration}</span>
                   </div>
                 </li>

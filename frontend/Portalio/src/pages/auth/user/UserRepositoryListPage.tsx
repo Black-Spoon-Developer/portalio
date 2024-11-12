@@ -40,8 +40,7 @@ const UserRepositoryListPage: React.FC = () => {
 
   // 파스텔 색상 배열: 하이라이트 효과에 사용할 색상들
   const pastelColors = [
-    "#FFD1DC", "#FFC3A0", "#FF9A8B", "#FFDEAD", "#C3FDB8", "#AEC6CF",
-  ];
+    "#FFA07A", "#FFB6C1", "#FF6F61", "#E6A57E", "#8FBC8F" , "#7DAFC9" ];
 
   // 날짜 범위 문자열을 시작일과 종료일로 파싱하는 함수
   const parseDateRange = (dateRange: string) => {
