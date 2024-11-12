@@ -17,13 +17,11 @@ const BoardEditPage: React.FC = () => {
   const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [_, setThumbnail] = useState<File | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg); // 썸네일 URL 저장
-  const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("")
-  const [board, setBoard] = useState("")
   const [solve, setSolve] = useState(false)
   const BASE_URL = "https://k11d202.p.ssafy.io";
 
@@ -60,7 +58,7 @@ const BoardEditPage: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append("multipartFile", blob);
-      formData.append("folderName", board);
+      formData.append("folderName", category);
   
       const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
         headers: {
@@ -93,7 +91,7 @@ const BoardEditPage: React.FC = () => {
       // S3로 업로드하고 URL 응답받기
       const formData = new FormData();
       formData.append("multipartFile", file);
-      formData.append("folderName", board);
+      formData.append("folderName", category);
 
       try {
         const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
@@ -116,7 +114,6 @@ const BoardEditPage: React.FC = () => {
     setIsModalOpen(false);
     setThumbnail(null);
     setThumbnailUrl(defaultImg);
-    setIsPublished(false);
   };
 
   const handleModalSave = async () => {
@@ -127,10 +124,10 @@ const BoardEditPage: React.FC = () => {
     }
     
     const boardData = {
-      boardCategory: board,
+      boardCategory: category,
       boardTitle: title,
       boardContent: content,
-      boardSolve: false,
+      boardSolve: solve,
       boardThumbnailImg: thumbnailUrl,
     };
 
@@ -139,7 +136,7 @@ const BoardEditPage: React.FC = () => {
 
   const handleMainCategoryChange = (event: SelectChangeEvent) => {
     const selectedBoardValue = event.target.value;
-    setBoard(selectedBoardValue); // 선택한 게시판의 value를 설정
+    setCategory(selectedBoardValue); // 선택한 게시판의 value를 설정
   };
 
   return (
@@ -159,7 +156,7 @@ const BoardEditPage: React.FC = () => {
       <AccordionDetails>
         <div className="mb-4">
           <Select
-            value={board || ""}
+            value={category || ""}
             onChange={handleMainCategoryChange}
             displayEmpty
             className="w-full"
