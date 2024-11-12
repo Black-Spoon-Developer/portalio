@@ -29,33 +29,32 @@ const QuestionTimer: React.FC<QuestionTimerProps> = ({
 
   // 타이머 실행 및 종료 처리
   useEffect(() => {
-    if (!isTimerActive) return; // 타이머가 활성화된 경우에만 실행
-    if (timerId.current) clearInterval(timerId.current); // 기존 타이머가 있다면 초기화
-
-    timerId.current = window.setInterval(() => {
+    if (!isTimerActive) return;
+  
+    const timer = setInterval(() => {
       setTime((prevTime) => {
         if (prevTime <= 1) {
-          if (timerId.current) clearInterval(timerId.current); // 타이머 종료
-          console.log("타이머 종료:", isPreparationTime ? "준비 시간 종료" : "답변 시간 종료");
-          setIsTimerActive(false); // 타이머 비활성화
+          clearInterval(timer);
+          setIsTimerActive(false);
           
-          // 타이머 종료 후 콜백 호출
-          if (isPreparationTime) {
-            onPreparationEnd(); // 준비 시간이 끝나면 부모 컴포넌트로 알림
-          } else {
-            onAnswerEnd(); // 답변 시간이 끝나면 부모 컴포넌트로 알림
-          }
-          return 0; // 추가적인 타이머 호출 방지
+          // 상태 업데이트를 다음 렌더링 사이클로 지연
+          setTimeout(() => {
+            if (isPreparationTime) {
+              onPreparationEnd();
+            } else {
+              onAnswerEnd();
+            }
+          }, 0);
+          
+          return 0;
         }
         return prevTime - 1;
       });
     }, 1000);
-
-    return () => {
-      if (timerId.current) clearInterval(timerId.current); // 이전 타이머 정리
-    };
+  
+    return () => clearInterval(timer);
   }, [isTimerActive, isPreparationTime, onPreparationEnd, onAnswerEnd]);
-
+  
   return (
     <div>
       <p>

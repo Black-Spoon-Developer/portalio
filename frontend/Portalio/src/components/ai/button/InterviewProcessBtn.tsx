@@ -1,8 +1,10 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 interface ButtonComponentProps {
   label: string;
-  icon: string;
+  icon: IconDefinition; // Font Awesome 아이콘 객체 타입
   onClick: () => void;
   additionalClasses?: string;
   disabled?: boolean;
@@ -23,7 +25,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
       }`}
       disabled={disabled}
     >
-      <i className={`fas fa-${icon}`}></i>
+      <FontAwesomeIcon icon={icon} className="mr-2" /> {/* FontAwesomeIcon 컴포넌트를 사용하여 아이콘 렌더링 */}
       <span>{label}</span>
     </button>
   );

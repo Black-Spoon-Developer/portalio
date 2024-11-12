@@ -118,7 +118,7 @@ const App: React.FC = () => {
         {/* AI (주석 처리) */}
         { <Route path="/ai" element={<Outlet />}>
           <Route path="introduce" element={<InterviewIntroPage />} />
-          <Route path="interview/:interview_id" element={<InterviewProcessPage  />} />
+          <Route path="interview/process" element={<InterviewProcessPage  />} />
           <Route path="interview/setup" element={<InterviewSetupPage />} />
           <Route path="interview/questions" element={<InterviewQuestionPage />} />
           <Route path="analyze" element={<AnalysisResultPage />} />

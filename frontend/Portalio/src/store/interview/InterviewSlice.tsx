@@ -32,7 +32,6 @@ const interviewSlice = createSlice({
       state.isUploading = true;
     },
     startPreparation(state) {
-      // 새로운 질문 준비
       state.isPreparationTime = true;
       state.isAnswering = false;
     },
