@@ -57,20 +57,13 @@ const UserRepositoryListPage: React.FC = () => {
     "#7DAFC9",
   ];
 
-  // 날짜 범위 문자열을 시작일과 종료일로 파싱하는 함수
-  const parseDateRange = (dateRange: string) => {
-    const [start, end] = dateRange.split(" ~ "); // "~"로 구분하여 시작일과 종료일을 추출
-    return {
-      startDate: new Date(start), // 추출된 시작일을 Date 객체로 변환
-      endDate: new Date(end), // 추출된 종료일을 Date 객체로 변환
-    };
-  };
 
   // 전체 레포지토리 목록의 총 활동 일수를 계산하는 함수
   const calculateTotalContributions = () => {
     let contributions = 0; // 총 기여도 초기화
     repositories.forEach((repo) => {
-      const { startDate, endDate } = parseDateRange(repo.dateRange); // 각 레포지토리의 시작일과 종료일을 Date 객체로 변환
+      const startDate = new Date(repo.startDate); // 각 레포지토리의 시작일과 종료일을 Date 객체로 변환
+      const endDate = new Date(repo.endDate); // 각 레포지토리의 시작일과 종료일을 Date 객체로 변환
       const days = Math.ceil(
         (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1
       ); // 시작일과 종료일 사이의 일수를 계산

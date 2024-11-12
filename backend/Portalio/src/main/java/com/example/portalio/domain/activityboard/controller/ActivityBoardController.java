@@ -72,7 +72,7 @@ public class ActivityBoardController {
     }
 
     @Operation(summary = "[활동게시판]특정 레포지토리에 포함된 활동게시글만 불러오기", description = "레포지토리 id값을 보내 해당 활동게시글만 가져오기")
-    @GetMapping("/{repositoryId}")
+    @GetMapping("/onlyactivity/{repositoryId}")
     public ResponseEntity<ActivityBoardListResponse> getActivityBoardListDetail(
             @PathVariable Long repositoryId) {
 
@@ -84,7 +84,7 @@ public class ActivityBoardController {
     @Operation(summary = "[활동게시판]글 작성", description = "글 작성")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/{repositoryId}")
+    @PostMapping("/onlyactivity/{repositoryId}")
     public ResponseEntity<ActivityBoardResponse> registerActivityBoard(
             @RequestBody @Valid ActivityBoardRequest request,
             @PathVariable Long repositoryId,
@@ -98,7 +98,7 @@ public class ActivityBoardController {
     @Operation(summary = "[활동게시판]글 수정", description = "글 수정")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
-    @PatchMapping("/{repositoryId}/{activityId}")
+    @PatchMapping("/onlyactivity/{repositoryId}/{activityId}")
     public ResponseEntity<ActivityBoardResponse> updateActivityBoard(
             @PathVariable Long repositoryId,
             @PathVariable Long activityId,
@@ -113,7 +113,7 @@ public class ActivityBoardController {
     @Operation(summary = "[활동게시판]글 삭제", description = "글 삭제")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
-    @DeleteMapping("/{repositoryId}/{activityId}")
+    @DeleteMapping("/onlyactivity/{repositoryId}/{activityId}")
     public ResponseEntity<ActivityBoardResponse> deleteActivityBoard(
             @PathVariable Long repositoryId,
             @PathVariable Long activityId,
