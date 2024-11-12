@@ -4,6 +4,7 @@ import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
@@ -20,8 +21,10 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Iterator;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +61,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String username = customUserDetails.getUsername();
         String role = auth.getAuthority();
 
+
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
         
@@ -73,15 +77,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             userDetailRepository.save(UserDetail.of(customUserDetails.getEmail(), "no nickname", member));
         }
 
-        // 회원 인증 여부
-        boolean isAuth = false;
+
 
         // 로그인 중에 만약 발급된 refresh 토큰이 있다면 DB에서 찾아서 검증 후 토큰이 만료 되었으면 새로운 토큰 발급하고 아니면
         // 토큰 값을 조회해서 그대로 쿠키에 담아서 그냥 보내주기
         String refreshToken = memberDTO.getRefreshToken();
 
-        // 회원인증 정보 체크
-        isAuth = member.isMemberAuth();
+
 
         if (refreshToken != null) {
             boolean isExired = jwtUtil.isExpired(refreshToken);
@@ -131,13 +133,19 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             response.setStatus(HttpStatus.OK.value());
         }
 
-        // 새 유저라면 정보 입력 페이지로 리다이렉트
+        // 회원 인증 여부
+        boolean isAuth = false;
+
+        // 회원인증 정보 체크
+        isAuth = member.isMemberAuth();
+
+        // 가입 시 회원정보를 입력하지 않은 회원이면 회원정보 입력 페이지로 리다이렉트
         if (!isAuth) {
-            response.sendRedirect("http://k11d202.p.ssafy.io/users/signup");
+            response.sendRedirect("https://k11d202.p.ssafy.io/users/signup");
 //            response.sendRedirect("http://localhost:5173/users/signup");
         } else {
-            response.sendRedirect("http://k11d202.p.ssafy.io/");
-            //response.sendRedirect("http://localhost:5173/");
+            response.sendRedirect("https://k11d202.p.ssafy.io/");
+//            response.sendRedirect("http://localhost:5173/");
         }
     }
 

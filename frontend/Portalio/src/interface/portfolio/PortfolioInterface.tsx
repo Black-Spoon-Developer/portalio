@@ -13,8 +13,9 @@ export interface Portfolio {
 
 export interface PortfolioList {
   portfolioId: number;
-  authorInfo: object;
-  time: string;
+  picture: string;
+  memberId: number;
+  memberNickname: string;
   portfolioThumbnailImg: string;
   portfolioContent: string;
   portfolioCommentCount: number;

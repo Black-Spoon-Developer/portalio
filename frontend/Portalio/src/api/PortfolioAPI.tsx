@@ -1,6 +1,6 @@
 import axios from "axios";
 import store, { RootState } from "../store";
-import { PortfolioRequest, PortfolioResponse } from "../type/PortfolioType"
+import { PortfolioRequest, PortfolioResponse } from "../type/PortfolioType";
 
 // const BASE_URL = "http://localhost:8080";
 const BASE_URL = "http://k11d202.p.ssafy.io";
@@ -15,10 +15,18 @@ export const fetchMorePosts = async (skip: number, limit: number) => {
 
 // public으로 사람들이 올려놓은 포트폴리오 상세 조회
 export const fetchPortfolioDetail = async (portfolioID: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
   const portfoliosId = BigInt(portfolioID);
 
   const response = await axios.get(
-    `${BASE_URL}/api/v1/portfolios/${portfoliosId}`
+    `${BASE_URL}/api/v1/portfolios/${portfoliosId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
   );
 
   return response;
@@ -63,10 +71,10 @@ export const portfolioDetailLike = async (portfolioID: string) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
 
-  const portfolioId = BigInt(portfolioID);
+  const portfoliosId = BigInt(portfolioID);
 
   const response = await axios.post(
-    `${BASE_URL}/api/v1/portfolios/${portfolioId}/recom`,
+    `${BASE_URL}/api/v1/portfolios/${portfoliosId}/recom`,
     {},
     {
       headers: {
@@ -95,7 +103,9 @@ export const portfolioSearch = async (
   return response;
 };
 
-export const createPortfolio = async (portfolioData: PortfolioRequest): Promise<PortfolioResponse> => {
+export const createPortfolio = async (
+  portfolioData: PortfolioRequest
+): Promise<PortfolioResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post<PortfolioResponse>(
@@ -109,9 +119,12 @@ export const createPortfolio = async (portfolioData: PortfolioRequest): Promise<
   );
 
   return response.data;
-}
+};
 
-export const patchPortfolio = async (portfolioID: string, portfolioData: PortfolioRequest): Promise<PortfolioResponse> => {
+export const patchPortfolio = async (
+  portfolioID: string,
+  portfolioData: PortfolioRequest
+): Promise<PortfolioResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.patch<PortfolioResponse>(
@@ -125,4 +138,4 @@ export const patchPortfolio = async (portfolioID: string, portfolioData: Portfol
   );
 
   return response.data;
-}
+};
