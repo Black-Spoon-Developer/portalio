@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/s3")
+@RequestMapping("/api/v1/s3")
 public class AwsS3Controller {
 
     private final AwsS3Service awsS3Service;

@@ -13,7 +13,7 @@ export const onUploadImage = async (
     formData.append("multipartFile", blob); // 'multipartFile' 이름으로 이미지를 추가
     formData.append("folderName", urls); // 'folderName'도 추가
 
-    const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
+    const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -39,7 +39,7 @@ export const uploadFilesAsZip = async (
     formData.append("folderName", folderName); // 폴더 이름 추가
 
     // ZIP 파일 업로드를 위한 POST 요청
-    const response = await axios.post(`${BASE_URL}/api/v1/files`, formData, {
+    const response = await axios.post(`${BASE_URL}/api/v1/s3/files`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

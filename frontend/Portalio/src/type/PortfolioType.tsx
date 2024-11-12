@@ -3,7 +3,7 @@ export interface PortfolioRequest {
   portfolioContent: string;
   portfolioThumbnailImg: string;
   portfolioPost: boolean;
-  jobSubCategoryId: number;
+  jobSubCategoryId: number | null;
 }
 
 export interface PortfolioResponse {
@@ -17,4 +17,7 @@ export interface PortfolioResponse {
   portfolioPost: boolean;
   created: string;
   memberId: number;
+  memberNickname: string;
+  picture: string;
+  isLiked: Boolean;
 }
