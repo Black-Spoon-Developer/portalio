@@ -1,9 +1,8 @@
 import axios from "axios";
 import store, { RootState } from "../store";
 import { RepositoryRequest, RepositoryResponse } from "../type/RepositoryType";
+import { BASE_URL } from "./BaseVariable";
 
-const BASE_URL = "http://localhost:8080";
-// const BASE_URL = "https://k11d202.p.ssafy.io";
 
 // 레포지토리 글쓰기
 export const createRepository = async (
@@ -54,3 +53,19 @@ export const getRepositoryDetail = async (repositoryID: string) => {
 
   return response;
 };
+
+// 내 레포지토리 전체보기
+export const getMyRepositoryList = async (username: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/repository/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+}

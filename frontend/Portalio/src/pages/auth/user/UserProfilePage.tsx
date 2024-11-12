@@ -17,6 +17,7 @@ const UserProfilePage: React.FC = () => {
     .fill(null)
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
 
+
   // 이력 경력 더미 데이터
   const careerData = [
     {
