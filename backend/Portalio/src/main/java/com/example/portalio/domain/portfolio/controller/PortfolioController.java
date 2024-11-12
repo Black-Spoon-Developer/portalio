@@ -51,7 +51,6 @@ public class PortfolioController {
     public ResponseEntity<PortfolioLikeResponse> getPortfoliosDetail(
             @PathVariable("portfoliosId") Long portfoliosId,
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {
-
         PortfolioLikeResponse response = portfolioService.getPortfolioDetails(portfoliosId, oauth2User);
 
         return ResponseEntity.ok(response);

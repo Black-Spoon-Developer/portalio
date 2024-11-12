@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { issueAccessToken } from "../../../api/AuthAPI";
 import { UserInfo } from "../../../type/UserType";
@@ -9,10 +9,14 @@ import PopularPortfolio from "../../../components/common/popularPortfolio/Popula
 import AIinterviewPost from "../../../components/common/aiInterviewPost/AIinterviewPost";
 import BoardTab from "../../../components/common/tab/BoardTab";
 import PortfolioPosts from "../../../components/board/portfolio/PortfolioPosts";
+import ActivityPosts from "../../../components/board/activity/ActivityPosts";
 
 const BoardPage: React.FC = () => {
   const dispatch = useDispatch();
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+
+  // 선택된 탭 상태 관리
+  const [selectedTab, setSelectedTab] = useState(0);
 
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -55,11 +59,12 @@ const BoardPage: React.FC = () => {
       <div className="col-span-1"></div>
       <div className="col-span-2">
         <div className="flex justify-start">
-          <BoardTab />
+          <BoardTab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         </div>
         <div>
-          {/* 탭을 클릭할때마다 이 부분을 변경해서 게시판을 이동하도록 하기 */}
-          <PortfolioPosts />
+          {/* 선택된 탭에 따라 다른 게시판 컴포넌트를 표시 */}
+          {selectedTab === 0 && <PortfolioPosts />}
+          {selectedTab === 1 && <ActivityPosts />}
         </div>
       </div>
       <div className="fixed top-24 right-12">

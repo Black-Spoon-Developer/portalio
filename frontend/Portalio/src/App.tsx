@@ -13,9 +13,9 @@ import UserRepositoryPage from "./pages/auth/user/UserRepositoryPage.tsx";
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
 import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
-import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
+// import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
 import PortfolioDetailPage from "./pages/board/portfolio/PortfolioDetailPage.tsx";
-import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
+// import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
 import RepositoryEditPage from "./pages/board/repository/RepositoryEditPage.tsx";
 import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.tsx";
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
@@ -80,9 +80,9 @@ const App: React.FC = () => {
 
         {/* Portfolio */}
         <Route path="/portfolio" element={<Outlet />}>
-          <Route path="create" element={<PortfolioCreatePage />} />
+          {/* <Route path="create" element={<PortfolioCreatePage />} /> */}
           <Route path=":portfolio_id" element={<PortfolioDetailPage />} />
-          <Route path="edit/:portfolio_id" element={<PortfolioEditPage />} />
+          {/* <Route path="edit/:portfolio_id" element={<PortfolioEditPage />} /> */}
         </Route>
 
         {/* Repository */}
@@ -105,9 +105,12 @@ const App: React.FC = () => {
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>
-        {/* <Route path="/" element={<PortfolioPage />}></Route> */}
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
+        {/* 밑에3개 테스트용 삭제 ㄴㄴ */}
+        {/* <Route path="/test" element={<ToastEditor />}></Route>
+        <Route path="/test2" element={<Dropzone />}></Route>
+        <Route path="/test3" element={<ToastEditorWithVideo />}></Route> */}
       </Routes>
 
       {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}

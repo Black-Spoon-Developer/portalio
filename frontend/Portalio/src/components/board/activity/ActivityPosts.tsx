@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import PortfolioSearch from "./PortfolioSearch";
-import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
 import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
+import { fetchMoreActivity, activitySearch } from "../../../api/ActivityAPI";
+import ActivitySearch from "./ActivitySearch";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 
-const PortfolioPosts: React.FC = () => {
+const ActivityPosts: React.FC = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState<PortfolioList[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
   const limit = 10;
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
-    null
-  );
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
@@ -26,10 +23,7 @@ const PortfolioPosts: React.FC = () => {
     try {
       if (isSearching) {
         // 검색 중일 때는 검색 API를 호출
-        const response = await portfolioSearch(
-          searchTerm,
-          selectedSubCategory || 0
-        );
+        const response = await activitySearch(searchTerm);
         const newPosts = response.data.items;
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
         if (newPosts.length < limit) {
@@ -37,7 +31,7 @@ const PortfolioPosts: React.FC = () => {
         }
       } else {
         // 검색 중이 아닐 때는 일반 게시글 불러오기
-        const newPosts = await fetchMorePosts(skip, limit);
+        const newPosts = await fetchMoreActivity(skip, limit);
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
         if (newPosts.length < limit) {
           setHasMore(false);
@@ -51,9 +45,8 @@ const PortfolioPosts: React.FC = () => {
   };
 
   // 검색 요청 처리
-  const handleSearch = (term: string, subCategory: number | null) => {
+  const handleSearch = (term: string) => {
     setSearchTerm(term);
-    setSelectedSubCategory(subCategory);
     setIsSearching(true); // 검색 중 상태로 설정
     setSkip(0); // 무한 스크롤의 skip 값 초기화
     setPosts([]); // 기존 게시글 초기화 후 새로운 검색 결과로 설정
@@ -64,7 +57,6 @@ const PortfolioPosts: React.FC = () => {
   // 전체글 조회 요청 처리
   const handleReset = () => {
     setSearchTerm("");
-    setSelectedSubCategory(null);
     setIsSearching(false); // 검색 상태 해제
     setSkip(0);
     setPosts([]);
@@ -95,7 +87,7 @@ const PortfolioPosts: React.FC = () => {
   return (
     <>
       <header>
-        <PortfolioSearch onSearch={handleSearch} onReset={handleReset} />
+        <ActivitySearch onSearch={handleSearch} onReset={handleReset} />
       </header>
 
       <InfiniteScroll
@@ -132,14 +124,6 @@ const PortfolioPosts: React.FC = () => {
                 className="bg-gray-300 h-40 mb-2"
               />
               <p className="text-gray-700 mb-2">{post.portfolioContent}</p>
-              <div className="flex justify-evenly text-gray-500 text-sm">
-                <div className="text-lg tracking-widest">
-                  💬 {post.portfolioCommentCount}
-                </div>
-                <div className="text-lg tracking-widest">
-                  ❤️ {post.portfolioRecommendationCount}
-                </div>
-              </div>
             </div>
           ))}
         </div>
@@ -148,4 +132,4 @@ const PortfolioPosts: React.FC = () => {
   );
 };
 
-export default PortfolioPosts;
+export default ActivityPosts;
