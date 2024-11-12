@@ -31,21 +31,27 @@ public class BoardRecomService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
 
-        Boolean memberRecom = boardRecomRepository.existsByMemberAndBoard(member, board);
+        BoardRecom boardRecom = boardRecomRepository.findByMemberAndBoard(member, board)
+                .orElseThrow(BoardNotFoundException::new);
 
-        if (memberRecom) {
-            throw new AlreadyBoardRecomException();
+        if (boardRecom != null) {
+            boardRecomRepository.delete(boardRecom);
+
+            board.setBoardRecommendationCount(board.getBoardRecommendationCount() - 1);
+            boardRepository.save(board);
+
+            return BoardRecomResponse.cancel(boardRecom);
         }
 
-        BoardRecom boardRecom = BoardRecom.of(member, board);
+        BoardRecom buildoardRecom = BoardRecom.of(member, board);
 
-        boardRecomRepository.save(boardRecom);
+        boardRecomRepository.save(buildoardRecom);
 
         board.setBoardRecommendationCount(board.getBoardRecommendationCount() + 1);
 
         boardRepository.save(board);
 
-        return BoardRecomResponse.from(boardRecom);
+        return BoardRecomResponse.from(buildoardRecom);
     }
 
     private Member findMember(Long memberId) {

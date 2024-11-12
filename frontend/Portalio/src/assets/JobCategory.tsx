@@ -185,3 +185,9 @@ export const subCategories = [
   { id: 1446, name: "도서관리", parentId: 18 },
   { id: 1447, name: "돌봄교사", parentId: 18 },
 ];
+
+
+export const Categories = [
+  { id: 1, name: "자유게시판", value:"Free_board" },
+  { id: 2, name: "질문게시판", value: "Question_board" }
+];

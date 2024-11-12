@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "activity_board")
 public class ActivityBoard extends AuditableCreatedEntity {
 
+    private static final String DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/157494028?v=4";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_board_id")
@@ -36,22 +38,18 @@ public class ActivityBoard extends AuditableCreatedEntity {
     @Column(name = "activity_board_date", nullable = false)
     private LocalDate activityBoardDate;
 
-    @Column(name = "activity_board_img_key", nullable = false, columnDefinition = "TEXT")
-    private String activityBoardImgKey;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "repository_id")
     private Repository repository;
 
-    private ActivityBoard(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate, String activityBoardImgKey) {
+    private ActivityBoard(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate) {
         this.activityBoardTitle = activityBoardTitle;
         this.activityBoardContent = activityBoardContent;
         this.activityBoardDate = activityBoardDate;
-        this.activityBoardImgKey = activityBoardImgKey;
     }
 
-    public static ActivityBoard of(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate, String activityBoardImgKey) {
-        return new ActivityBoard(activityBoardTitle, activityBoardContent, activityBoardDate, activityBoardImgKey);
+    public static ActivityBoard of(String activityBoardTitle, String activityBoardContent, LocalDate activityBoardDate) {
+        return new ActivityBoard(activityBoardTitle, activityBoardContent, activityBoardDate);
     }
 
     public void setActivityBoardTitle(String activityBoardTitle) {
@@ -64,10 +62,6 @@ public class ActivityBoard extends AuditableCreatedEntity {
 
     public void setActivityBoardDate(LocalDate activityBoardDate) {
         this.activityBoardDate = activityBoardDate;
-    }
-
-    public void setActivityBoardImgKey(String activityBoardImgKey) {
-        this.activityBoardImgKey = activityBoardImgKey;
     }
 
     public void setRepository(Repository repository) {
