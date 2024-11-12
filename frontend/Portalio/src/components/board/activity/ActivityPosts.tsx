@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ActivityList } from "../../../interface/activity/ActivityInterface";
 import { fetchMoreActivity, activitySearch } from "../../../api/ActivityAPI";
@@ -8,7 +7,6 @@ import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 import ActivityDetailModal from "./ActivityDetailModal";
 
 const ActivityPosts: React.FC = () => {
-  const navigate = useNavigate();
   const [posts, setPosts] = useState<ActivityList[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
@@ -16,8 +14,8 @@ const ActivityPosts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isSearching, setIsSearching] = useState(false);
 
-  // 모달 상태와 선택된 게시물 데이터 관리
-  const [selectedPost, setSelectedPost] = useState<ActivityList | null>(null);
+  // 모달 상태와 선택된 게시물 ID 관리
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -68,16 +66,16 @@ const ActivityPosts: React.FC = () => {
     loadMorePosts();
   };
 
-  // 게시물 클릭 시 모달을 열고 해당 게시물을 선택
-  const handlePostClick = (post: ActivityList) => {
-    setSelectedPost(post);
+  // 게시물 클릭 시 모달을 열고 게시물 ID를 선택
+  const handlePostClick = (postId: number) => {
+    setSelectedPostId(postId);
     setIsModalOpen(true);
   };
 
   // 모달 닫기 함수
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedPost(null);
+    setSelectedPostId(null);
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -115,37 +113,33 @@ const ActivityPosts: React.FC = () => {
           {posts.map((post) => (
             <div
               key={post.activityBoardId}
-              onClick={() => handlePostClick(post)}
+              onClick={() => handlePostClick(post.activityBoardId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
               <div className="flex items-center mb-2">
                 <img
-                  src={post.activityBoardImageKey}
+                  src={post.picture}
                   alt="프로필 이미지"
                   className="w-10 h-10 rounded-full mr-4"
                 />
                 <div>
-                  <p className="font-semibold">{post.activityBoardContent}</p>
+                  <p className="font-semibold">{post.memberNickname}</p>
                   <p className="text-gray-500 text-sm">
-                    {formatTimeAgo(post.activityBoardDate)}
+                    {formatTimeAgo(post.created)}
                   </p>
                 </div>
               </div>
-              <img
-                src={post.activityBoardImageKey}
-                alt="no-image"
-                className="bg-gray-300 h-40 mb-2"
-              />
-              <p className="text-gray-700 mb-2">{post.activityBoardTitle}</p>
+              <p className="text-gray-700 mb-2 font-bold text-3xl">
+                {post.activityBoardTitle}
+              </p>
             </div>
           ))}
         </div>
       </InfiniteScroll>
 
-      {isModalOpen && selectedPost && (
+      {isModalOpen && selectedPostId && (
         <ActivityDetailModal
-          activityContent={selectedPost.activityBoardContent}
-          isLiked={false}
+          activityId={selectedPostId} // activityId만 전달
           onClose={closeModal} // 모달 닫기 함수 전달
         />
       )}

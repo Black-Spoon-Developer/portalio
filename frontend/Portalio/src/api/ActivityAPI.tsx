@@ -21,6 +21,10 @@ export const activitySearch = async (searchTerm: string) => {
 };
 
 // public으로 사람들이 올려놓은 활동 게시글 상세 조회
-export const fetchDetailActivity = async () => {
-  return <></>;
+export const fetchDetailActivity = async (activityId: number) => {
+  const activityID = BigInt(activityId);
+
+  const response = await axios.get(`${BASE_URL}/api/v1/activity/${activityID}`);
+
+  return response.data;
 };
