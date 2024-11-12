@@ -42,8 +42,6 @@ export const patchRepository = async (repositoryID: string, repositoryData: Repo
 
 // 레포지토리 글 상세보기
 export const getRepositoryDetail = async (repositoryID: string) => {
-  const state: RootState = store.getState();
-  const accessToken = state.auth.accessToken;
   const response = await axios.get(
     `${BASE_URL}/api/v1/repository/${repositoryID}/detail`,
   );

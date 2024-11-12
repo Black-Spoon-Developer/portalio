@@ -3,7 +3,7 @@ export interface RepositoryRequest {
   repositoryContent: string;
   startDate: string;
   endDate: string;
-  repositoryFileKey: string;
+  repositoryFileKey: string | null;
   repositoryPost: boolean;
 }
 
