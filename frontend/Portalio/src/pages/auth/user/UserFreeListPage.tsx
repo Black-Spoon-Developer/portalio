@@ -10,7 +10,7 @@ const ITEMS_PER_PAGE = 10;  // 한 페이지에 보여줄 아이템 수
 
 interface Board {
   boardId: number;
-  boardCategory: "FREE" | "ACTIVITY" | "QUESTION";
+  boardCategory: "FREE";
   boardTitle: string;
   boardContent: string;
   boardImgKey: string;

@@ -1,40 +1,52 @@
 // UserFreeListPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TempBoardTab from "../../../components/common/tab/TempBoardTab";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { getMyActivities } from "../../../api/BoardAPI";
+
+const ITEMS_PER_PAGE = 10; // 한 페이지에 보여줄 아이템 수
 
 interface Board {
   activityBoardId: number;
   activityBoardTitle: string;
   activityBoardContent: string;
-  activityBoardDate: string; // or Date, depending on how you handle dates
-  activityBoardImgKey: string;
-  repository?: {
-    repositoryId: number;
+  activityBoardDate: Date;
+  member: {
+    memberId: number;
+    name: string;
   };
 }
 
-const mockBoards: Board[] = [
-  { activityBoardId: 1, activityBoardTitle: "활동 게시글 1", activityBoardContent: "게시글 내용 1", activityBoardDate: "2024-11-12", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 1 } },
-  { activityBoardId: 2, activityBoardTitle: "활동 게시글 2", activityBoardContent: "게시글 내용 2", activityBoardDate: "2024-11-13", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 2 } },
-  { activityBoardId: 3, activityBoardTitle: "활동 게시글 3", activityBoardContent: "게시글 내용 3", activityBoardDate: "2024-11-14", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 3 } },
-  { activityBoardId: 4, activityBoardTitle: "활동 게시글 4", activityBoardContent: "게시글 내용 4", activityBoardDate: "2024-11-15", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 4 } },
-  { activityBoardId: 5, activityBoardTitle: "활동 게시글 5", activityBoardContent: "게시글 내용 5", activityBoardDate: "2024-11-16", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 5 } },
-  { activityBoardId: 6, activityBoardTitle: "활동 게시글 6", activityBoardContent: "게시글 내용 6", activityBoardDate: "2024-11-17", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 6 } },
-  { activityBoardId: 7, activityBoardTitle: "활동 게시글 7", activityBoardContent: "게시글 내용 7", activityBoardDate: "2024-11-18", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 7 } },
-  { activityBoardId: 8, activityBoardTitle: "활동 게시글 8", activityBoardContent: "게시글 내용 8", activityBoardDate: "2024-11-19", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 8 } },
-  { activityBoardId: 9, activityBoardTitle: "활동 게시글 9", activityBoardContent: "게시글 내용 9", activityBoardDate: "2024-11-20", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 9 } },
-  { activityBoardId: 10, activityBoardTitle: "활동 게시글 10", activityBoardContent: "게시글 내용 10", activityBoardDate: "2024-11-21", activityBoardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", repository: { repositoryId: 10 } },
-];
-
-
-
 const UserActivityListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [boards, setBoards] = useState<Board[]>([]); // Board 배열 상태 정의
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(mockBoards.length / itemsPerPage);
+  const username = useSelector((state: RootState) => state.auth.username);
   const { userId } = useParams<{ userId: string }>(); // URL에서 userId를 추출
-  console.log("userId:", userId); // userId가 제대로 받아졌는지 확인
+
+  const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+  const limit = ITEMS_PER_PAGE;
+
+  // api 요청
+  useEffect(() => {
+    if (username) {
+      const fetchMyBoards = async () => {
+        try {
+          const response = await getMyActivities(username, skip, limit);
+          setBoards(response.data.items);
+          // console.log("API 응답 데이터:", response.items);
+        } catch (error) {
+          console.error("Failed to fetch boards:", error);
+        }
+      };
+      fetchMyBoards();
+    }
+  }, [username, currentPage]); // currentPage가 바뀔 때마다 요청
+
+  const totalPages = Math.ceil(boards.length / itemsPerPage);
+
   // 한 번에 보여줄 페이지 버튼의 범위
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -47,7 +59,7 @@ const UserActivityListPage: React.FC = () => {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBoards = mockBoards.slice(startIndex, startIndex + itemsPerPage);
+  const currentBoards = boards.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -55,7 +67,7 @@ const UserActivityListPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <TempBoardTab userId={userId || ''} /> {/* 임시 보드 탭 추가 */}
+      <TempBoardTab userId={userId || ""} /> {/* 임시 보드 탭 추가 */}
       <div className="flex justify-end mb-4">
         <button
           className="bg-[#57D4E2] text-white py-2 px-4 rounded-md font-semibold"
@@ -67,13 +79,24 @@ const UserActivityListPage: React.FC = () => {
       <div className="bg-white shadow-md rounded-lg border">
         <ul>
           {currentBoards.map((board) => (
-            <li
-              key={board.activityBoardId}
-              className="flex justify-between items-center p-4 border-b last:border-b-0"
-            >
-              <span className="text-lg font-semibold">{board.activityBoardTitle}</span>
-              <span className="text-gray-500">{new Date().toLocaleDateString()}</span>
-            </li>
+            <Link to={`/activity/${board.activityBoardId}`} key={board.activityBoardId}>
+              <li
+                key={board.activityBoardId}
+                className="flex justify-between items-center p-4 border-b last:border-b-0"
+              >
+                <div className="flex-1">
+                  <span className="text-lg font-semibold">
+                    {board.activityBoardTitle}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  {/* 날짜 표시 */}
+                  <span className="text-gray-500">
+                    {new Date().toLocaleDateString()}
+                  </span>
+                </div>
+              </li>
+            </Link>
           ))}
         </ul>
       </div>

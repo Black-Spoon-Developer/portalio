@@ -10,7 +10,7 @@ const ITEMS_PER_PAGE = 10; // 한 페이지에 보여줄 아이템 수
 
 interface Board {
   boardId: number;
-  boardCategory: "FREE" | "ACTIVITY" | "QUESTION";
+  boardCategory: "QUESTION";
   boardTitle: string;
   boardContent: string;
   boardImgKey: string;
@@ -83,7 +83,7 @@ const UserQuestionListPage: React.FC = () => {
       <div className="bg-white shadow-md rounded-lg border">
         <ul>
           {currentBoards.map((board) => (
-            <Link to={`/free/${board.boardId}`} key={board.boardId}>
+            <Link to={`/question/${board.boardId}`} key={board.boardId}>
               <li
                 key={board.boardId}
                 className="flex justify-between items-center p-4 border-b last:border-b-0"
