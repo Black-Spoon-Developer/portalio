@@ -54,3 +54,60 @@ export const getBoard = async (boardID: string) => {
 
   return response;
 };
+
+// 자유/질문 게시판 리스트 조회
+export const getBoardList = async (
+  skip: number,
+  limit: number,
+  boardCategory: string
+) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/boards/all`, {
+    params: {
+      skip,
+      limit,
+      boardCategory,
+    },
+  });
+
+  return response.data.items;
+};
+
+// 자유/질문 게시판 글 검색
+export const searchBoardList = async (
+  boardTitle: string,
+  boardCategory: string
+) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/boards`, {
+    params: {
+      boardTitle,
+      boardCategory,
+    },
+  });
+
+  return response.data.items;
+};
+
+// 자유/질문 게시판 댓글 조회
+export const getBoardComments = async (boardId: number) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/comments`);
+
+  return response.data.items;
+};
+
+// 자유/질문 게시판 댓글 작성
+export const postBoardComments = async (boardId: number, content: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  const response = await axios.post(
+    `${BASE_URL}/api/v1/boards/${boardId}/comments`,
+    { content },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};

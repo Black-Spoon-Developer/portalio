@@ -10,6 +10,7 @@ import AIinterviewPost from "../../../components/common/aiInterviewPost/AIinterv
 import BoardTab from "../../../components/common/tab/BoardTab";
 import PortfolioPosts from "../../../components/board/portfolio/PortfolioPosts";
 import ActivityPosts from "../../../components/board/activity/ActivityPosts";
+import FreePosts from "../../../components/board/free/FreePosts";
 
 const BoardPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const BoardPage: React.FC = () => {
           {/* 선택된 탭에 따라 다른 게시판 컴포넌트를 표시 */}
           {selectedTab === 0 && <PortfolioPosts />}
           {selectedTab === 1 && <ActivityPosts />}
+          {selectedTab === 2 && <FreePosts />}
         </div>
       </div>
       <div className="fixed top-24 right-12">

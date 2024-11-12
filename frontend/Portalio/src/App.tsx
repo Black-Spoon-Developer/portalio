@@ -21,6 +21,7 @@ import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 import BoardPage from "./pages/board/board/BoardPage.tsx";
+import FreeDetailPage from "./pages/board/board/free/FreeDetailPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -64,7 +65,7 @@ const App: React.FC = () => {
         {/* Board */}
         <Route path="/free" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":free_id" element={<BoardDetailPage />} />
+          <Route path=":free_id" element={<FreeDetailPage />} />
           <Route path="edit/:free_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/question" element={<Outlet />}>
