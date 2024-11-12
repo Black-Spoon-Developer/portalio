@@ -7,6 +7,7 @@ import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.handler.CustomSuccessHandler;
 import com.example.portalio.common.oauth.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,8 +52,7 @@ public class SecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-//                        configuration.setAllowedOrigins(Collections.singletonList("https://k11d202.p.ssafy.io"));
+                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://k11d202.p.ssafy.io"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));

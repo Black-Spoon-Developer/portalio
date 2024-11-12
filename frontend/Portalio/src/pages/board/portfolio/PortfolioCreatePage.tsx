@@ -14,7 +14,7 @@ const PortfolioCreatePage: React.FC = () => {
   const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [_, setThumbnail] = useState<File | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg); // 썸네일 URL 저장
   const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
