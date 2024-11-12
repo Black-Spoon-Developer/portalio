@@ -1,48 +1,48 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { patchPortfolio, fetchPortfolioDetail } from "../../../api/PortfolioAPI"
+import { patchPortfolio, fetchPortfolioDetail } from "../../../api/PortfolioAPI";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { PortfolioRequest } from '../../../type/PortfolioType'
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { mainCategories, subCategories } from "../../../assets/JobCategory";
+
 
 const PortfolioEditPage: React.FC = () => {
-
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
   const editorRef = useRef<Editor>(null);
   const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg); // 썸네일 URL 저장
-  const [isPublished, setIsPublished] = useState(false);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  
-const BASE_URL = "http://k11d202.p.ssafy.io";
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg);
+  const [isPublished, setIsPublished] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
 
-  useEffect(() => {
-    if (editorRef.current) {
-      const editorInstance = editorRef.current.getInstance();
-      console.log("Editor initialized:", editorInstance);
-    }
-  }, []);
+  const BASE_URL = "https://k11d202.p.ssafy.io";
+  // const BASE_URL = "http://localhost:8080/";
+
   
   useEffect(() => {
     // 포트폴리오 데이터 불러오기
     const fetchPortfolioData = async () => {
-      console.log(portfolio_id)
       if (portfolio_id) {
-        console.log('b')
         try {
-          const data = await fetchPortfolioDetail(portfolio_id); // 데이터 fetch 호출
+          const response = await fetchPortfolioDetail(portfolio_id); // API 호출
+          const data: PortfolioRequest = response.data; // response의 data를 PortfolioResponse로 타입 지정
+  
           setTitle(data.portfolioTitle);
-          console.log(data.portfolioTitle)
           setContent(data.portfolioContent);
           setThumbnailUrl(data.portfolioThumbnailImg || defaultImg);
           setIsPublished(data.portfolioPost);
-
+  
           if (editorRef.current) {
-            editorRef.current.getInstance().setMarkdown(data.portfolioContent); // 에디터 초기화
+            editorRef.current.getInstance().setMarkdown(data.portfolioContent);
           }
         } catch (error) {
           console.error("포트폴리오 데이터 불러오기 오류:", error);
@@ -61,7 +61,7 @@ const BASE_URL = "http://k11d202.p.ssafy.io";
       formData.append("multipartFile", blob);
       formData.append("folderName", "Portfolio_board");
   
-      const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
+      const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -78,7 +78,7 @@ const BASE_URL = "http://k11d202.p.ssafy.io";
     if (editorRef.current) {
       const editorInstance = editorRef.current.getInstance();
       const markdownContent = editorInstance.getMarkdown();
-      setContent(markdownContent); // content 상태에 저장
+      setContent(markdownContent);
       setIsModalOpen(true);
     }
   };
@@ -88,16 +88,15 @@ const BASE_URL = "http://k11d202.p.ssafy.io";
       const file = event.target.files[0];
       setThumbnail(file);
 
-      // S3로 업로드하고 URL 응답받기
       const formData = new FormData();
       formData.append("multipartFile", file);
       formData.append("folderName", "Portfolio_board");
 
       try {
-        const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
+        const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        setThumbnailUrl(response.data); // URL 상태에 저장
+        setThumbnailUrl(response.data);
       } catch (error) {
         console.error("썸네일 업로드 오류:", error);
       }
@@ -124,22 +123,42 @@ const BASE_URL = "http://k11d202.p.ssafy.io";
   const handleModalSave = async () => {
     if (!title || !content) {
       console.error("모든 필드가 입력되어야 합니다.");
-      
       return;
     }
     
-    const portfolioData = {
+    const portfolioData: PortfolioRequest = {
       portfolioTitle: title,
       portfolioContent: content,
       portfolioThumbnailImg: thumbnailUrl,
       portfolioPost: isPublished,
-      jobSubCategoryId: 1, // 예시 값으로 설정. 실제 값은 필요에 따라 설정
+      jobSubCategoryId: selectedSubCategory,
     };
 
     if (portfolio_id) {
-      patchPortfolio(portfolio_id, portfolioData) 
+      await patchPortfolio(portfolio_id, portfolioData);
     }
   };
+
+  const [selectedMainCategory, setSelectedMainCategory] = useState<
+  number | null
+>(null);
+const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
+  null
+);
+
+const handleMainCategoryChange = (event: SelectChangeEvent<number>) => {
+  const mainCategoryId = Number(event.target.value);
+  setSelectedMainCategory(mainCategoryId);
+  setSelectedSubCategory(null); // 메인 카테고리가 변경될 때 서브 카테고리 초기화
+};
+
+const handleSubCategoryChange = (event: SelectChangeEvent<number>) => {
+  setSelectedSubCategory(Number(event.target.value));
+};
+
+const filteredSubCategories = subCategories.filter(
+  (subCategory) => subCategory.parentId === selectedMainCategory
+);
 
   return (
     <div>
@@ -152,6 +171,52 @@ const BASE_URL = "http://k11d202.p.ssafy.io";
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
+
+      <div className="p-4">
+      <Accordion>
+        <AccordionDetails>
+          <div className="mb-4">
+            <Select
+              value={selectedMainCategory || ""}
+              onChange={handleMainCategoryChange}
+              displayEmpty
+              className="w-full"
+            >
+              <MenuItem value="" disabled>
+                중분류 선택
+              </MenuItem>
+              {mainCategories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+
+          {selectedMainCategory && (
+            <div className="mb-4">
+              <Select
+                value={selectedSubCategory || ""}
+                onChange={handleSubCategoryChange}
+                displayEmpty
+                className="w-full"
+              >
+                <MenuItem value="" disabled>
+                  소분류 선택
+                </MenuItem>
+                {filteredSubCategories.map((subCategory) => (
+                  <MenuItem key={subCategory.id} value={subCategory.id}>
+                    {subCategory.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </div>
+
+      
 
       <Editor
         ref={editorRef}

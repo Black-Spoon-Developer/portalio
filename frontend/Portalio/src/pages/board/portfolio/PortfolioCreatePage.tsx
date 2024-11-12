@@ -3,6 +3,11 @@ import { createPortfolio } from "../../../api/PortfolioAPI"
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { mainCategories, subCategories } from "../../../assets/JobCategory";
 
 const PortfolioCreatePage: React.FC = () => {
   const editorRef = useRef<Editor>(null);
@@ -14,7 +19,7 @@ const PortfolioCreatePage: React.FC = () => {
   const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const BASE_URL = "http://k11d202.p.ssafy.io";
+  const BASE_URL = "https://k11d202.p.ssafy.io";
 
   useEffect(() => {
     if (editorRef.current) {
@@ -32,7 +37,7 @@ const PortfolioCreatePage: React.FC = () => {
       formData.append("multipartFile", blob);
       formData.append("folderName", "Portfolio_board");
   
-      const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
+      const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -66,7 +71,7 @@ const PortfolioCreatePage: React.FC = () => {
       formData.append("folderName", "Portfolio_board");
 
       try {
-        const response = await axios.post(`${BASE_URL}/s3/image`, formData, {
+        const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setThumbnailUrl(response.data); // URL 상태에 저장
@@ -105,11 +110,32 @@ const PortfolioCreatePage: React.FC = () => {
       portfolioContent: content,
       portfolioThumbnailImg: thumbnailUrl,
       portfolioPost: isPublished,
-      jobSubCategoryId: 1, // 예시 값으로 설정. 실제 값은 필요에 따라 설정
+      jobSubCategoryId: selectedSubCategory, // 예시 값으로 설정. 실제 값은 필요에 따라 설정
     };
 
     createPortfolio(portfolioData) 
   };
+
+  const [selectedMainCategory, setSelectedMainCategory] = useState<
+    number | null
+  >(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
+    null
+  );
+
+  const handleMainCategoryChange = (event: SelectChangeEvent<number>) => {
+    const mainCategoryId = Number(event.target.value);
+    setSelectedMainCategory(mainCategoryId);
+    setSelectedSubCategory(null); // 메인 카테고리가 변경될 때 서브 카테고리 초기화
+  };
+
+  const handleSubCategoryChange = (event: SelectChangeEvent<number>) => {
+    setSelectedSubCategory(Number(event.target.value));
+  };
+
+  const filteredSubCategories = subCategories.filter(
+    (subCategory) => subCategory.parentId === selectedMainCategory
+  );
 
   return (
     <div>
@@ -122,6 +148,50 @@ const PortfolioCreatePage: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
+
+    <div className="p-4">
+      <Accordion>
+        <AccordionDetails>
+          <div className="mb-4">
+            <Select
+              value={selectedMainCategory || ""}
+              onChange={handleMainCategoryChange}
+              displayEmpty
+              className="w-full"
+            >
+              <MenuItem value="" disabled>
+                중분류 선택
+              </MenuItem>
+              {mainCategories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+
+          {selectedMainCategory && (
+            <div className="mb-4">
+              <Select
+                value={selectedSubCategory || ""}
+                onChange={handleSubCategoryChange}
+                displayEmpty
+                className="w-full"
+              >
+                <MenuItem value="" disabled>
+                  소분류 선택
+                </MenuItem>
+                {filteredSubCategories.map((subCategory) => (
+                  <MenuItem key={subCategory.id} value={subCategory.id}>
+                    {subCategory.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </div>
 
       <Editor
         ref={editorRef}

@@ -8,8 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class BoardResponse {
-
+public class BoardLikeResponse {
     private Long boardId;
     private BoardRole boardCategory;
     private String boardTitle;
@@ -19,9 +18,12 @@ public class BoardResponse {
     private Integer boardRecommendationCount;
     private LocalDateTime created;
     private Long memberId;
+    private String memberNickname;
+    private String picture;
+    private Boolean isLiked;
 
-    public static BoardResponse from(Board board) {
-        return BoardResponse.builder()
+    public static BoardLikeResponse from(Board board, Boolean isLiked) {
+        return BoardLikeResponse.builder()
                 .boardId(board.getBoardId())
                 .boardCategory(board.getBoardCategory())
                 .boardTitle(board.getBoardTitle())
@@ -31,6 +33,9 @@ public class BoardResponse {
                 .boardRecommendationCount(board.getBoardRecommendationCount())
                 .created(board.getCreated())
                 .memberId(board.getMember().getMemberId())
+                .memberNickname(board.getMember().getUserDetail().getUserNickname())
+                .picture(board.getMember().getMemberPicture())
+                .isLiked(isLiked)
                 .build();
     }
 }
