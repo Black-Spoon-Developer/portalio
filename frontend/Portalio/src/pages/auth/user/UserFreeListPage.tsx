@@ -1,7 +1,11 @@
 // UserFreeListPage.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TempBoardTab from "../../../components/common/tab/TempBoardTab";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import axios from "axios";
+import { getMyBoards } from "../../../api/BoardAPI";
 
 interface Board {
   boardId: number;
@@ -18,97 +22,31 @@ interface Board {
   };
 }
 
-
-// 목업 데이터
-const mockBoards: Board[] = [
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-  { boardId: 1, boardCategory: "FREE", boardTitle: "자유 게시글 1", boardContent: "게시글 내용 1", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 34, boardRecommendationCount: 5, member: { memberId: 1, name: "홍길동" } },
-  { boardId: 2, boardCategory: "FREE", boardTitle: "자유 게시글 2", boardContent: "게시글 내용 2", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 12, boardRecommendationCount: 2, member: { memberId: 2, name: "이순신" } },
-  { boardId: 3, boardCategory: "FREE", boardTitle: "자유 게시글 3", boardContent: "게시글 내용 3", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 45, boardRecommendationCount: 8, member: { memberId: 3, name: "강감찬" } },
-  { boardId: 4, boardCategory: "FREE", boardTitle: "자유 게시글 4", boardContent: "게시글 내용 4", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 22, boardRecommendationCount: 3, member: { memberId: 4, name: "유관순" } },
-  { boardId: 5, boardCategory: "FREE", boardTitle: "자유 게시글 5", boardContent: "게시글 내용 5", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 19, boardRecommendationCount: 1, member: { memberId: 5, name: "신사임당" } },
-  { boardId: 6, boardCategory: "FREE", boardTitle: "자유 게시글 6", boardContent: "게시글 내용 6", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 31, boardRecommendationCount: 4, member: { memberId: 6, name: "세종대왕" } },
-  { boardId: 7, boardCategory: "FREE", boardTitle: "자유 게시글 7", boardContent: "게시글 내용 7", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 28, boardRecommendationCount: 6, member: { memberId: 7, name: "정약용" } },
-  { boardId: 8, boardCategory: "FREE", boardTitle: "자유 게시글 8", boardContent: "게시글 내용 8", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 40, boardRecommendationCount: 7, member: { memberId: 8, name: "장영실" } },
-  { boardId: 9, boardCategory: "FREE", boardTitle: "자유 게시글 9", boardContent: "게시글 내용 9", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: true, boardViews: 50, boardRecommendationCount: 10, member: { memberId: 9, name: "이황" } },
-  { boardId: 10, boardCategory: "FREE", boardTitle: "자유 게시글 10", boardContent: "게시글 내용 10", boardImgKey: "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img.png", boardSolve: false, boardViews: 15, boardRecommendationCount: 2, member: { memberId: 10, name: "김구" } },
-];
-
 const UserFreeListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [boards, setBoards] = useState<Board[]>([]); // Board 배열 상태 정의
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(mockBoards.length / itemsPerPage);
+  const username = useSelector((state: RootState) => state.auth.username);
   const { userId } = useParams<{ userId: string }>(); // URL에서 userId를 추출
-  console.log("userId:", userId); // userId가 제대로 받아졌는지 확인
+
+  // api 요청
+  useEffect(() => {
+    if (username) {
+      const fetchMyBoards = async () => {
+        try {
+          const response = await getMyBoards(username);
+          setBoards(response.data.items);
+          // console.log("API 응답 데이터:", response.items);
+        } catch (error) {
+          console.error("Failed to fetch boards:", error);
+        }
+      };
+      fetchMyBoards();
+    }
+  }, [username, currentPage]); // currentPage가 바뀔 때마다 요청
+
+  const totalPages = Math.ceil(boards.length / itemsPerPage);
+
   // 한 번에 보여줄 페이지 버튼의 범위
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -121,7 +59,7 @@ const UserFreeListPage: React.FC = () => {
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBoards = mockBoards.slice(startIndex, startIndex + itemsPerPage);
+  const currentBoards = boards.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -129,7 +67,7 @@ const UserFreeListPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <TempBoardTab userId={userId || ''} /> {/* 임시 보드 탭 추가 */}
+      <TempBoardTab userId={userId || ""} /> {/* 임시 보드 탭 추가 */}
       <div className="flex justify-end mb-4">
         <button
           className="bg-[#57D4E2] text-white py-2 px-4 rounded-md font-semibold"
@@ -141,13 +79,19 @@ const UserFreeListPage: React.FC = () => {
       <div className="bg-white shadow-md rounded-lg border">
         <ul>
           {currentBoards.map((board) => (
-            <li
-              key={board.boardId}
-              className="flex justify-between items-center p-4 border-b last:border-b-0"
-            >
-              <span className="text-lg font-semibold">{board.boardTitle}</span>
-              <span className="text-gray-500">{new Date().toLocaleDateString()}</span>
-            </li>
+            <Link to={`/free/${board.boardId}`} key={board.boardId}>
+              <li
+                key={board.boardId}
+                className="flex justify-between items-center p-4 border-b last:border-b-0"
+              >
+                <span className="text-lg font-semibold">
+                  {board.boardTitle}
+                </span>
+                <span className="text-gray-500">
+                  {new Date().toLocaleDateString()}
+                </span>
+              </li>
+            </Link>
           ))}
         </ul>
       </div>
