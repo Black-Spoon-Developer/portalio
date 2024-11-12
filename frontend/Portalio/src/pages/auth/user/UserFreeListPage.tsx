@@ -4,8 +4,9 @@ import TempBoardTab from "../../../components/common/tab/TempBoardTab";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import axios from "axios";
 import { getMyBoards } from "../../../api/BoardAPI";
+
+const ITEMS_PER_PAGE = 10;  // 한 페이지에 보여줄 아이템 수
 
 interface Board {
   boardId: number;
@@ -29,12 +30,15 @@ const UserFreeListPage: React.FC = () => {
   const username = useSelector((state: RootState) => state.auth.username);
   const { userId } = useParams<{ userId: string }>(); // URL에서 userId를 추출
 
+  const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+  const limit = ITEMS_PER_PAGE;
+
   // api 요청
   useEffect(() => {
     if (username) {
       const fetchMyBoards = async () => {
         try {
-          const response = await getMyBoards(username);
+          const response = await getMyBoards(username, skip, limit, "FREE");
           setBoards(response.data.items);
           // console.log("API 응답 데이터:", response.items);
         } catch (error) {

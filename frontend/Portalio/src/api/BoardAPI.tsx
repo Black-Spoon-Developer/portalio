@@ -57,7 +57,7 @@ export const getBoard = async (boardID: string) => {
 };
 
 // 자유/질문게시판 글 전체보기(내 것만)
-export const getMyBoards = async (username: string) => {
+export const getMyBoards = async (username: string, skip: number, limit: number, boardCategory: string) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.get(`${BASE_URL}/api/v1/boards/my/${username}`, {
@@ -65,9 +65,9 @@ export const getMyBoards = async (username: string) => {
       Authorization: `Bearer ${accessToken}`,
     },
     params: {
-      skip: 0,
-      limit: 10,
-      boardCategory: "FREE", // boardCategory를 "FREE"로 설정
+      skip: skip,
+      limit: limit,
+      boardCategory: boardCategory,
     },
   });
 
