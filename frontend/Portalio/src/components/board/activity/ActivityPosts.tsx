@@ -8,62 +8,54 @@ import ActivityDetailModal from "./ActivityDetailModal";
 
 const ActivityPosts: React.FC = () => {
   const [posts, setPosts] = useState<ActivityList[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [skip, setSkip] = useState(0);
-  const limit = 10;
+  const [hasMore, setHasMore] = useState(true); // 무한 스크롤 여부
+  const limit = 10; // 무한 스크롤에서 사용할 제한 수
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false); // 검색 상태 여부
 
   // 모달 상태와 선택된 게시물 ID 관리
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    loadMorePosts();
+    // 검색 상태가 아닌 경우 초기 전체 데이터 로드
+    if (!isSearching) {
+      loadMorePosts();
+    }
   }, []);
 
+  // 활동 게시글 리스트 조회 메서드 (무한 스크롤)
   const loadMorePosts = async () => {
     try {
-      if (isSearching) {
-        const response = await activitySearch(searchTerm);
-        const newPosts = response.data.items;
-        setPosts((prevPosts) =>
-          skip === 0 ? newPosts : [...prevPosts, ...newPosts]
-        );
-        if (newPosts.length < limit) {
-          setHasMore(false);
-        }
-      } else {
-        const newPosts = await fetchMoreActivity(skip, limit);
-        setPosts((prevPosts) =>
-          skip === 0 ? newPosts : [...prevPosts, ...newPosts]
-        );
-        if (newPosts.length < limit) {
-          setHasMore(false);
-        }
-      }
+      const newPosts = await fetchMoreActivity(posts.length, limit);
+      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+      setHasMore(newPosts.length === limit); // 더 이상 가져올 데이터가 없을 때 false
     } catch (error) {
       console.error("Failed to fetch posts:", error);
       setHasMore(false);
     }
   };
 
-  const handleSearch = (term: string) => {
+  // 검색 처리 핸들러
+  const handleSearch = async (term: string) => {
     setSearchTerm(term);
-    setIsSearching(true);
-    setSkip(0);
-    setPosts([]);
-    setHasMore(true);
-    loadMorePosts();
+    setIsSearching(true); // 검색 상태 활성화
+    setHasMore(false);
+    try {
+      const searchResults = await activitySearch(term);
+      console.log(searchResults);
+      setPosts(searchResults); // 검색 결과로 posts를 업데이트하고 기존 데이터를 초기화
+    } catch (error) {
+      console.error("Failed to search posts:", error);
+    }
   };
 
+  // 검색 초기화 및 전체 게시물 조회 핸들러
   const handleReset = () => {
     setSearchTerm("");
-    setIsSearching(false);
-    setSkip(0);
-    setPosts([]);
-    setHasMore(true);
-    loadMorePosts();
+    setIsSearching(false); // 검색 상태 해제
+    setPosts([]); // posts 초기화
+    setHasMore(true); // 무한 스크롤 다시 활성화
   };
 
   // 게시물 클릭 시 모달을 열고 게시물 ID를 선택
@@ -78,6 +70,7 @@ const ActivityPosts: React.FC = () => {
     setSelectedPostId(null);
   };
 
+  // 시간 표시 포맷 함수
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -105,7 +98,7 @@ const ActivityPosts: React.FC = () => {
       <InfiniteScroll
         dataLength={posts.length}
         next={loadMorePosts}
-        hasMore={hasMore}
+        hasMore={!isSearching && hasMore} // 검색 상태에서는 무한 스크롤 비활성화
         loader={<LoadingSkeleton />}
         endMessage={<p>더 이상 게시글이 없습니다.</p>}
       >
@@ -138,10 +131,7 @@ const ActivityPosts: React.FC = () => {
       </InfiniteScroll>
 
       {isModalOpen && selectedPostId && (
-        <ActivityDetailModal
-          activityId={selectedPostId} // activityId만 전달
-          onClose={closeModal} // 모달 닫기 함수 전달
-        />
+        <ActivityDetailModal activityId={selectedPostId} onClose={closeModal} />
       )}
     </>
   );

@@ -13,7 +13,7 @@ export const fetchMoreActivity = async (skip: number, limit: number) => {
 
 // 활동 게시글 검색
 export const activitySearch = async (searchTerm: string) => {
-  const response = await axios.get(`${BASE_URL}/api/v1/activity/all`, {
+  const response = await axios.get(`${BASE_URL}/api/v1/activity`, {
     params: { searchTerm },
   });
 

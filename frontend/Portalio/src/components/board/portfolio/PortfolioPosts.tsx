@@ -70,6 +70,7 @@ const PortfolioPosts: React.FC = () => {
     setPosts([]);
     setHasMore(true);
     loadMorePosts();
+    navigate(0);
   };
 
   const handlePostClick = (postId: number) => navigate(`/portfolio/${postId}`);
