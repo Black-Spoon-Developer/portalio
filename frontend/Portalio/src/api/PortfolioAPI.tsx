@@ -1,9 +1,7 @@
 import axios from "axios";
 import store, { RootState } from "../store";
 import { PortfolioRequest, PortfolioResponse } from "../type/PortfolioType";
-
-const BASE_URL = "http://localhost:8080";
-// const BASE_URL = "https://k11d202.p.ssafy.io";
+import { BASE_URL } from "./BaseVariable";
 
 // public으로 사람들이 올려놓은 포트폴리오 리스트 무한 스크롤 조회
 export const fetchMorePosts = async (skip: number, limit: number) => {
@@ -98,9 +96,7 @@ export const portfolioSearch = async (
     },
   });
 
-  console.log(response.data);
-
-  return response;
+  return response.data.items;
 };
 
 export const createPortfolio = async (

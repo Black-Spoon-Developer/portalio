@@ -7,29 +7,55 @@ import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 import ActivityDetailModal from "./ActivityDetailModal";
 
 const ActivityPosts: React.FC = () => {
+  // 게시글 상태
   const [posts, setPosts] = useState<ActivityList[]>([]);
-  const [hasMore, setHasMore] = useState(true); // 무한 스크롤 여부
-  const limit = 10; // 무한 스크롤에서 사용할 제한 수
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isSearching, setIsSearching] = useState(false); // 검색 상태 여부
+  // 무한 스크롤 여부
+  const [hasMore, setHasMore] = useState(true);
+  // 시작점 상태
+  const [skip, setSkip] = useState(0);
+  // 검색 상태 여부
+  const [isSearching, setIsSearching] = useState(false);
+  // 무한 스크롤에서 사용할 제한 수
+  const limit = 10;
 
   // 모달 상태와 선택된 게시물 ID 관리
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // 리셋 트리거 상태
+  const [resetTriggered, setResetTriggered] = useState(false);
+
+  // onMounted 트리거
   useEffect(() => {
-    // 검색 상태가 아닌 경우 초기 전체 데이터 로드
-    if (!isSearching) {
-      loadMorePosts();
-    }
+    loadMorePosts();
   }, []);
 
-  // 활동 게시글 리스트 조회 메서드 (무한 스크롤)
+  // 리셋 트리거
+  useEffect(() => {
+    // 검색 상태가 아닌 경우 초기 전체 데이터 로드
+    if (!isSearching && resetTriggered) {
+      loadMorePosts();
+      setResetTriggered(false);
+    }
+  }, [resetTriggered]);
+
+  // 활동 게시글 리스트 조회 메서드 (무한 스크롤) - 검색 상태가 아닐 경우
   const loadMorePosts = async () => {
     try {
       const newPosts = await fetchMoreActivity(posts.length, limit);
-      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-      setHasMore(newPosts.length === limit); // 더 이상 가져올 데이터가 없을 때 false
+
+      // page를 나누지 않고 기본 틀에서 컴포넌트만 바꿔줘야 하는 로직을 작성했으므로
+      // useEffect가 자주 발생하게 되어 이를 방지하고자 onMounted시 상태가 초기화 되는것을 노려서 처음에 불러오는 값이 중첩이 안되도록 구현함.
+      if (skip === 0) {
+        setPosts(newPosts);
+      } else {
+        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+      }
+
+      if (newPosts.length < limit) {
+        setHasMore(false);
+      }
+      setSkip(skip + limit);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
       setHasMore(false);
@@ -38,13 +64,13 @@ const ActivityPosts: React.FC = () => {
 
   // 검색 처리 핸들러
   const handleSearch = async (term: string) => {
-    setSearchTerm(term);
     setIsSearching(true); // 검색 상태 활성화
     setHasMore(false);
+    setPosts([]);
     try {
       const searchResults = await activitySearch(term);
       console.log(searchResults);
-      setPosts(searchResults); // 검색 결과로 posts를 업데이트하고 기존 데이터를 초기화
+      setPosts(searchResults);
     } catch (error) {
       console.error("Failed to search posts:", error);
     }
@@ -52,10 +78,11 @@ const ActivityPosts: React.FC = () => {
 
   // 검색 초기화 및 전체 게시물 조회 핸들러
   const handleReset = () => {
-    setSearchTerm("");
     setIsSearching(false); // 검색 상태 해제
+    setSkip(0); // 시작점 초기화
     setPosts([]); // posts 초기화
     setHasMore(true); // 무한 스크롤 다시 활성화
+    setResetTriggered(true); // 리셋 트리거 작동
   };
 
   // 게시물 클릭 시 모달을 열고 게시물 ID를 선택
@@ -70,7 +97,7 @@ const ActivityPosts: React.FC = () => {
     setSelectedPostId(null);
   };
 
-  // 시간 표시 포맷 함수
+  // 시간 형식 변환 함수
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
