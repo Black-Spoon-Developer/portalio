@@ -13,17 +13,17 @@ const RepositoryCreatePage: React.FC = () => {
   const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [_, setThumbnail] = useState<File | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg);
   const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-  const [fileKey, setFileKey] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
   const [uploadedZipUrl, setUploadedZipUrl] = useState<string | null>(null);
   const BASE_URL = "https://k11d202.p.ssafy.io";
+  // const BASE_URL = "http://localhost:8080";
 
   useEffect(() => {
     if (editorRef.current) {
@@ -109,7 +109,7 @@ const RepositoryCreatePage: React.FC = () => {
       repositoryContent: content,
       startDate: startDate,
       endDate: endDate,
-      repositoryFileKey: fileKey,
+      repositoryFileKey: uploadedZipUrl,
       repositoryPost: isPublished
     };
     console.log(repositoryData)

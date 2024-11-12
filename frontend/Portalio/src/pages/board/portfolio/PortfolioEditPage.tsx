@@ -18,7 +18,7 @@ const PortfolioEditPage: React.FC = () => {
   const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [_, setThumbnail] = useState<File | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg);
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
