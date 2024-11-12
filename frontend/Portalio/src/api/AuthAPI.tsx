@@ -1,8 +1,6 @@
 import axios from "axios";
 import store, { RootState } from "../store";
-
-// const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://k11d202.p.ssafy.io";
+import { BASE_URL } from "./BaseVariable";
 
 // 엑세스 토큰 발급 요청 API
 export const issueAccessToken = async () => {

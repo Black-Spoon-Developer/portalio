@@ -1,13 +1,12 @@
 import axios from "axios";
 import store, { RootState } from "../store";
-import { BoardRequest, BoardResponse } from "../type/BoardType"
-
-
-// const BASE_URL = "http://localhost:8080";
-const BASE_URL = "https://k11d202.p.ssafy.io";
+import { BoardRequest, BoardResponse } from "../type/BoardType";
+import { BASE_URL } from "./BaseVariable";
 
 // 자유/질문게시판 글쓰기
-export const createBoard = async (boardData: BoardRequest): Promise<BoardResponse> => {
+export const createBoard = async (
+  boardData: BoardRequest
+): Promise<BoardResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post<BoardResponse>(
@@ -21,10 +20,13 @@ export const createBoard = async (boardData: BoardRequest): Promise<BoardRespons
   );
 
   return response.data;
-}
+};
 
 // 자유/질문게시판 글 수정
-export const patchBoard = async (boardID: string, boardData: BoardRequest): Promise<BoardResponse> => {
+export const patchBoard = async (
+  boardID: string,
+  boardData: BoardRequest
+): Promise<BoardResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.patch<BoardResponse>(
@@ -38,20 +40,17 @@ export const patchBoard = async (boardID: string, boardData: BoardRequest): Prom
   );
 
   return response.data;
-}
+};
 
 // 자유/질문게시판 글 상세보기
 export const getBoard = async (boardID: string) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
-  const response = await axios.get(
-    `${BASE_URL}/api/v1/boards/${boardID}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+  const response = await axios.get(`${BASE_URL}/api/v1/boards/${boardID}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
   return response;
-}
+};
