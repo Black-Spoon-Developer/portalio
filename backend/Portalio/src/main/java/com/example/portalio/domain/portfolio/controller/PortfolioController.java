@@ -46,6 +46,7 @@ public class PortfolioController {
 
     @Operation(summary = "[포트폴리오]글 상세보기", description = "portfolios_id 입력")
     @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{portfoliosId}")
     public ResponseEntity<PortfolioLikeResponse> getPortfoliosDetail(
             @PathVariable("portfoliosId") Long portfoliosId,

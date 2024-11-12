@@ -11,6 +11,14 @@ public class BoardRecomResponse {
     private Long memberId;
     private Long boardId;
 
+    public static BoardRecomResponse cancel(BoardRecom boardRecom) {
+        return BoardRecomResponse.builder()
+                .recomId(boardRecom.getRecomId())
+                .memberId(boardRecom.getMember().getMemberId())
+                .boardId(boardRecom.getBoard().getBoardId())
+                .build();
+    }
+
     public static BoardRecomResponse from(BoardRecom boardRecom) {
         return BoardRecomResponse.builder()
                 .recomId(boardRecom.getRecomId())

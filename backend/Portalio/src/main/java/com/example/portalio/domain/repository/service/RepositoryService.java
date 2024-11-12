@@ -56,7 +56,7 @@ public class RepositoryService {
 
         Member member = findMember(oauth2User.getMemberId());
 
-        Repository repository = Repository.of(request.getRepositoryTitle(), request.getRepositoryContent(), request.getStartDate(), request.getEndDate(), request.getRepositoryImgKey(),
+        Repository repository = Repository.of(request.getRepositoryTitle(), request.getRepositoryContent(), request.getStartDate(), request.getEndDate(),
                 request.getRepositoryFileKey(), request.getRepositoryPost(), member);
 
         repositoryRepository.save(repository);
@@ -83,9 +83,6 @@ public class RepositoryService {
         }
         if (request.getEndDate() != null) {
             repository.setEndDate(request.getEndDate());
-        }
-        if (request.getRepositoryImgKey() != null) {
-            repository.setRepositoryImgKey(request.getRepositoryImgKey());
         }
         if (request.getRepositoryFileKey() != null) {
             repository.setRepositoryFileKey(request.getRepositoryFileKey());

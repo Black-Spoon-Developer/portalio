@@ -107,10 +107,6 @@ const App: React.FC = () => {
         <Route path="*" element={<NotFoundPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
-        {/* 밑에3개 테스트용 삭제 ㄴㄴ */}
-        {/* <Route path="/test" element={<ToastEditor />}></Route>
-        <Route path="/test2" element={<Dropzone />}></Route>
-        <Route path="/test3" element={<ToastEditorWithVideo />}></Route> */}
       </Routes>
 
       {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}
