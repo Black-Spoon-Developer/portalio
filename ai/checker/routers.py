@@ -14,7 +14,7 @@ router = APIRouter()
 #     formatted_text = "\n".join([str(sentence) for sentence in blob.sentences])
 #     return formatted_text
 
-@router.post("/correct_text", response_model=TextCorrectionResponseDTO)
+@router.post("/correct", response_model=TextCorrectionResponseDTO)
 async def correct_text(request: TextCorrectionRequestDTO):
     # 입력된 텍스트에서 교정 수행
     # try:

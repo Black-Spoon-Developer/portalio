@@ -1,5 +1,5 @@
 # sqlalchemy, etc, ... setting
-from sqlalchemy import Column, String, Integer, BigInteger, Enum, DateTime, ForeignKey, Float, Boolean, Text
+from sqlalchemy import JSON, Column, String, Integer, BigInteger, Enum, DateTime, ForeignKey, Float, Boolean, Text
 from sqlalchemy.orm import relationship, Session
 from datetime import datetime
 
@@ -150,7 +150,8 @@ class Answer(Base):
     # 관계 설정
     question = relationship("Question", back_populates="answers")
     member = relationship("Member", back_populates="answers")
-
+    feedback = relationship("Feedback", back_populates="answer", uselist=False, cascade="all, delete-orphan")
+    
 class Report(Base):
     __tablename__ = 'report'
 
@@ -198,3 +199,15 @@ class Chatbot(Base):
 
     # 관계 설정
     member = relationship("Member", back_populates="chatbot_entries")
+
+class Feedback(Base):
+    __tablename__ = 'feedback'
+    
+    feedback_id = Column(BigInteger, primary_key=True, autoincrement=True)
+    answer_id = Column(BigInteger, ForeignKey('answer.answer_id'), nullable=False)
+    feedback_text = Column(Text, nullable=False)
+    feedback_data = Column(JSON)  # JSON 타입으로 설정
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # 관계 설정
+    answer = relationship("Answer", back_populates="feedbacks")
