@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import PortfolioSearch from "./PortfolioSearch";
 import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
 import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
+import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 
 const PortfolioPosts: React.FC = () => {
   const navigate = useNavigate();
@@ -101,7 +102,7 @@ const PortfolioPosts: React.FC = () => {
         dataLength={posts.length}
         next={loadMorePosts}
         hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
+        loader={<LoadingSkeleton />}
         endMessage={<p>더 이상 게시글이 없습니다.</p>}
       >
         <div className="grid grid-cols-1 gap-4 p-4">
