@@ -11,7 +11,7 @@ public interface RepositoryRepository extends JpaRepository<com.example.portalio
 
     Optional<com.example.portalio.domain.repository.entity.Repository> findByRepositoryIdAndMember_MemberId(Long repositoryId, Long memberId);
 
-    List<com.example.portalio.domain.repository.entity.Repository> findAllByMember_MemberId(Long memberId);
+    List<com.example.portalio.domain.repository.entity.Repository> findAllByMember_MemberUsername(String memberUsername);
 
     List<com.example.portalio.domain.repository.entity.Repository> findAllByRepositoryPostTrueOrderByCreatedDesc(Pageable pageable);
 }

@@ -7,6 +7,7 @@ import com.example.portalio.domain.boardcomment.error.BoardCommentNotFoundExcept
 import com.example.portalio.domain.boardrecom.error.AlreadyBoardRecomException;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
+import com.example.portalio.domain.member.error.NotPermissionException;
 import com.example.portalio.domain.portfolio.error.PortfolioNotFoundException;
 import com.example.portalio.domain.portfoliocomment.error.PortfolioCommentNotFoundException;
 import com.example.portalio.domain.portfoliorecom.error.AlreadyPortfolioRecomException;
@@ -102,6 +103,11 @@ public class ControllerAdvice {
         return getResponse(ErrorCode.PORTFOLIO_COMMENT_NOT_FOUND);
     }
 
+    @ExceptionHandler(NotPermissionException.class)
+    public ResponseEntity<ErrorResponseDto> handlePortfolioCommentNotFound(NotPermissionException e) {
+        log.info(e.getMessage());
+        return getResponse(ErrorCode.NOT_PERMISSION);
+    }
     private ResponseEntity<ErrorResponseDto> getResponse(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponseDto(errorCode));
     }
