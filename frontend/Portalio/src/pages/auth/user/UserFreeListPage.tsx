@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { getMyBoards } from "../../../api/BoardAPI";
 
-const ITEMS_PER_PAGE = 10;  // 한 페이지에 보여줄 아이템 수
+const ITEMS_PER_PAGE = 10; // 한 페이지에 보여줄 아이템 수
 
 interface Board {
   boardId: number;

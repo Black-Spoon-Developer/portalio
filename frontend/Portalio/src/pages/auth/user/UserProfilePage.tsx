@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import "./UserProfilePage.css";
 import ProfileImage from "../../../assets/ProfileImage.png"; // 프로필 이미지 경로
 import BriefCase from "../../../assets/BriefCase.svg";
@@ -7,8 +8,27 @@ import LinkedInIcon from "../../../assets/LinkedIn.svg";
 import InstagramIcon from "../../../assets/Instagram.svg";
 import GitHubIcon from "../../../assets/GitHub.svg";
 import SettingsIcon from "../../../assets/Setting.svg";
+import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+
+interface Free {
+  boardId: number;
+  boardTitle: string;
+}
+
+interface Activity {
+  activityBoardId: number;
+  activityBoardTitle: string;
+}
+
+interface Question {
+  boardId: number;
+  boardTitle: string;
+}
 
 const UserProfilePage: React.FC = () => {
+  const { userId } = useParams<{ userId: string }>();
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedYear, setSelectedYear] = useState(2024);
   const years = [2023, 2024];
@@ -17,6 +37,50 @@ const UserProfilePage: React.FC = () => {
     .fill(null)
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
 
+
+  const username = useSelector((state: RootState) => state.auth.username);
+
+  const [frees, setFrees] = useState<Free[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const skip = 0;
+  const limit = 2;
+
+  // api 요청
+  useEffect(() => {
+    if (username) {
+      const fetchMyBoards = async () => {
+        try {
+          const freesResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "FREE"
+          );
+          const questionsResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "QUESTION"
+          );
+          const activitiesResponse = await getMyActivities(
+            username,
+            skip,
+            limit
+          );
+          setFrees(freesResponse.data.items);
+          setActivities(activitiesResponse.data.items);
+          setQuestions(questionsResponse.data.items);
+        } catch (error) {
+          console.error("Failed to fetch boards:", error);
+        }
+      };
+      fetchMyBoards();
+      console.log(frees);
+      console.log(questions);
+      console.log(activities);
+    }
+  }, []);
 
   // 이력 경력 더미 데이터
   const careerData = [
@@ -78,9 +142,14 @@ const UserProfilePage: React.FC = () => {
                   />
                   <div className="career-details">
                     <strong className="company-name">{career.company}</strong>
-                    <span className="position-location"> {career.position}</span>
+                    <span className="position-location">
+                      {" "}
+                      {career.position}
+                    </span>
                     <br />
-                    <span className="position-position">{career.location} </span>
+                    <span className="position-position">
+                      {career.location}{" "}
+                    </span>
                     <span className="duration">{career.duration}</span>
                   </div>
                 </li>
@@ -196,10 +265,13 @@ const UserProfilePage: React.FC = () => {
         {/* 대표 레포지토리 */}
         <div className="repository-section">
           <div className="section-header">
-            <h2>대표 레포지토리</h2>
-            <a href="" className="more-link">
-              레포지토리 더보기 →
-            </a>
+            <h2>대표 레퍼지토리</h2>
+            <Link
+              to={`/users/profile/${userId}/repository`}
+              className="more-link"
+            >
+              레퍼지토리 더보기 →
+            </Link>
           </div>
           <div className="repository-item">
             <a href="">
@@ -221,49 +293,54 @@ const UserProfilePage: React.FC = () => {
           <div className="post-category">
             <h3 className="post-title">
               활동 게시글{" "}
-              <a href="" className="more-link">
+              <Link
+                to={`/users/profile/${userId}/activity`}
+                className="more-link"
+              >
                 더보기 →
-              </a>
+              </Link>
             </h3>
             <ul>
-              <li>
-                <a href="">경영지도사 1일차 공부!</a>
-              </li>
-              <li>
-                <a href="">경영지도사 2일차 공부!</a>
-              </li>
+              {activities.map((activity) => (
+                <li key={activity.activityBoardId}>
+                  <Link to={`/activity/${activity.activityBoardId}`}>
+                    {activity.activityBoardTitle}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="post-category">
             <h3 className="post-title">
               자유 게시글{" "}
-              <a href="" className="more-link">
+              <Link to={`/users/profile/${userId}/free`} className="more-link">
                 더보기 →
-              </a>
+              </Link>
             </h3>
             <ul>
-              <li>
-                <a href="">저녁 메뉴 추천좀!</a>
-              </li>
-              <li>
-                <a href="">취업 활동에서의 중요 요소</a>
-              </li>
+              {frees.map((free) => (
+                <li key={free.boardId}>
+                  <Link to={`/free/${free.boardId}`}>{free.boardTitle}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="post-category">
             <h3 className="post-title">
               질문 게시글{" "}
-              <a href="" className="more-link">
+              <Link
+                to={`/users/profile/${userId}/question`}
+                className="more-link"
+              >
                 더보기 →
-              </a>
+              </Link>
             </h3>
             <ul>
-              <li>
-                <a href="">인사 포트폴리오 작성법 좀 알려주세요!</a>
-              </li>
-              <li>
-                <a href="">이 회사 어떤가요?</a>
-              </li>
+              {questions.map((question) => (
+                <li key={question.boardId}>
+                  <Link to={`/question/${question.boardId}`}>{question.boardTitle}</Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
