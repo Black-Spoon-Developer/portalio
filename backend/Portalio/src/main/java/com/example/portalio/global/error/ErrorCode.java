@@ -19,7 +19,8 @@ public enum ErrorCode {
     ALREADY_RECOM_BOARD(HttpStatus.CONFLICT, "Already recom board"),
     ALREADY_RECOM_PORTFOLIO(HttpStatus.CONFLICT, "Already recom portfolio"),
     BOARD_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Board Comment Not Found"),
-    PORTFOLIO_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Portfolio Comment Not Found");
+    PORTFOLIO_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Portfolio Comment Not Found"),
+    NOT_PERMISSION(HttpStatus.FORBIDDEN, "Not Permission");
 
     private final HttpStatus status;
     private final String message;

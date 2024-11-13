@@ -3,6 +3,7 @@ package com.example.portalio.domain.repository.service;
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
+import com.example.portalio.domain.member.error.NotPermissionException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.repository.dto.RepositoryListResponse;
 import com.example.portalio.domain.repository.dto.RepositoryPostResponse;
@@ -42,11 +43,16 @@ public class RepositoryService {
         return RepositoryListResponse.from(repository);
     }
 
-    public RepositoryListResponse getMyRepositoryList(CustomOAuth2User oauth2User) {
+    public RepositoryListResponse getMyRepositoryList(CustomOAuth2User oauth2User, String username) {
 
-        Member member = findMember(oauth2User.getMemberId());
+        Member member = memberRepository.findByMemberUsername(oauth2User.getUsername())
+                .orElseThrow(MemberNotFoundException::new);
 
-        List<Repository> repository = repositoryRepository.findAllByMember_MemberId(member.getMemberId());
+        if (!oauth2User.getUsername().equals(username)) {
+            throw new NotPermissionException();
+        }
+
+        List<Repository> repository = repositoryRepository.findAllByMember_MemberUsername(member.getMemberUsername());
 
         return RepositoryListResponse.from(repository);
     }
@@ -57,7 +63,7 @@ public class RepositoryService {
         Member member = findMember(oauth2User.getMemberId());
 
         Repository repository = Repository.of(request.getRepositoryTitle(), request.getRepositoryContent(), request.getStartDate(), request.getEndDate(),
-                request.getRepositoryFileKey(), request.getRepositoryPost(), member);
+                request.getRepositoryFileKey(), request.getRepositoryPost(), request.getRepositoryIsPrimary(), member);
 
         repositoryRepository.save(repository);
 

@@ -52,11 +52,14 @@ public class RepositoryController {
     }
 
     @Operation(summary = "[레포지토리]글 전체보기(내 것만, 내정보에서 활용)", description = "내 레포지토리 전체보기")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/{username}")
     public ResponseEntity<RepositoryListResponse> getMyRepositoryList(
+            @PathVariable String username,
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        RepositoryListResponse response = repositoryService.getMyRepositoryList(oauth2User);
+        RepositoryListResponse response = repositoryService.getMyRepositoryList(oauth2User, username);
 
         return ResponseEntity.ok(response);
     }
