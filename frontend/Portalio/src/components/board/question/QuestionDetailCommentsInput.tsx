@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { postPortfolioDetailComment } from "../../../api/PortfolioAPI";
+import { postBoardComments } from "../../../api/BoardAPI";
 
-interface PortfolioDetailCommentsInputProps {
+interface QuestionDetailCommentsProps {
   setUpdateCommentTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PortfolioDetailCommentsInput: React.FC<
-  PortfolioDetailCommentsInputProps
-> = ({ setUpdateCommentTrigger }) => {
+const QuestionDetailCommentsInput: React.FC<QuestionDetailCommentsProps> = ({
+  setUpdateCommentTrigger,
+}) => {
   const navigate = useNavigate();
   const [content, setContent] = useState("");
-  const { portfolio_id } = useParams<{ portfolio_id: string }>();
+  const { question_id } = useParams<{ question_id: string }>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (content.trim() && portfolio_id) {
+    if (content.trim() && question_id) {
       try {
         // 댓글 작성 API 호출
-        await postPortfolioDetailComment(portfolio_id, content);
+        await postBoardComments(question_id, content);
         setContent(""); // 제출 후 입력창 초기화
         setUpdateCommentTrigger(true);
       } catch (error) {
@@ -54,4 +54,4 @@ const PortfolioDetailCommentsInput: React.FC<
   );
 };
 
-export default PortfolioDetailCommentsInput;
+export default QuestionDetailCommentsInput;

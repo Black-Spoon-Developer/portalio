@@ -1,23 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import PortfolioSearch from "./PortfolioSearch";
-import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
-import { Portfolio } from "../../../interface/portfolio/PortfolioInterface";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
+import { getBoardList, searchBoardList } from "../../../api/BoardAPI";
+import { BoardLikeResponse } from "../../../interface/board/BoardInterface";
+import QuestionSearch from "./QuestionSearch";
 
-const PortfolioPosts: React.FC = () => {
+const QuestionPosts: React.FC = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<Portfolio[]>([]);
+  // 게시글 상태
+  const [posts, setPosts] = useState<BoardLikeResponse[]>([]);
+  // 무한 스크롤 여부
   const [hasMore, setHasMore] = useState(true);
+  // 시작점 상태
   const [skip, setSkip] = useState(0);
+  // 검색 상태 여부
   const [isSearching, setIsSearching] = useState(false);
-  const limit = 10;
-
+  // 무한 스크롤에서 사용할 제한 수 - 자유/질문
+  const limit = 50;
   // 리셋 트리거 상태
   const [resetTriggered, setResetTriggered] = useState(false);
 
-  // onMounted 할때 초기 게시글 불러오기
+  // onMounted 트리거
   useEffect(() => {
     loadMorePosts();
   }, []);
@@ -31,32 +35,36 @@ const PortfolioPosts: React.FC = () => {
     }
   }, [resetTriggered]);
 
-  // 게시글 리스트 조회 메서드
+  // 자유 게시글 리스트 조회 메서드 (무한 스크롤) - 검색 상태가 아닐 경우
   const loadMorePosts = async () => {
     try {
-      if (!isSearching) {
-        // 검색 중이 아닐 때는 일반 게시글 불러오기
-        const newPosts = await fetchMorePosts(skip, limit);
+      const newPosts = await getBoardList(posts.length, limit, "QUESTION"); // skip, limit, category 같이 보내기
+
+      // page를 나누지 않고 기본 틀에서 컴포넌트만 바꿔줘야 하는 로직을 작성했으므로
+      // useEffect가 자주 발생하게 되어 이를 방지하고자 onMounted시 상태가 초기화 되는것을 노려서 처음에 불러오는 값이 중첩이 안되도록 구현함.
+      if (skip === 0) {
+        setPosts(newPosts);
+      } else {
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-        if (newPosts.length < limit) {
-          setHasMore(false);
-        }
-        setSkip(skip + limit);
       }
+
+      if (newPosts.length < limit) {
+        setHasMore(false);
+      }
+      setSkip(skip + limit);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
       setHasMore(false);
     }
   };
 
-  // 검색 요청 처리
-  const handleSearch = async (term: string, subCategory: number | null) => {
-    setIsSearching(true); // 검색 중 상태로 설정
-    setSkip(0); // 무한 스크롤의 skip 값 초기화
-    setPosts([]); // 기존 게시글 초기화 후 새로운 검색 결과로 설정
-    setHasMore(true); // 무한 스크롤 활성화
+  // 검색 처리 핸들러
+  const handleSearch = async (term: string) => {
+    setIsSearching(true); // 검색 상태 활성화
+    setHasMore(false);
+    setPosts([]);
     try {
-      const searchResults = await portfolioSearch(term, subCategory || 0);
+      const searchResults = await searchBoardList(term, "QUESTION");
       console.log(searchResults);
       setPosts(searchResults);
     } catch (error) {
@@ -64,17 +72,14 @@ const PortfolioPosts: React.FC = () => {
     }
   };
 
-  // 리셋으로 전체글 조회로 변경
+  // 검색 초기화 및 전체 게시물 조회 핸들러
   const handleReset = () => {
     setIsSearching(false); // 검색 상태 해제
-    setSkip(0);
-    setPosts([]);
-    setHasMore(true);
-    setResetTriggered(true);
+    setSkip(0); // 시작점 초기화
+    setPosts([]); // posts 초기화
+    setHasMore(true); // 무한 스크롤 다시 활성화
+    setResetTriggered(true); // 리셋 트리거 작동
   };
-
-  // 상세 조회 핸들러 함수
-  const handlePostClick = (postId: number) => navigate(`/portfolio/${postId}`);
 
   // 시간 형식 변환 함수
   const formatTimeAgo = (dateString: string) => {
@@ -95,10 +100,12 @@ const PortfolioPosts: React.FC = () => {
     return `약 ${diffInYears}년 전`;
   };
 
+  const handlePostClick = (postId: number) => navigate(`/question/${postId}`);
+
   return (
     <>
       <header>
-        <PortfolioSearch onSearch={handleSearch} onReset={handleReset} />
+        <QuestionSearch onSearch={handleSearch} onReset={handleReset} />
       </header>
 
       <InfiniteScroll
@@ -111,11 +118,11 @@ const PortfolioPosts: React.FC = () => {
         <div className="grid grid-cols-1 gap-4 p-4">
           {posts.map((post) => (
             <div
-              key={post.portfolioId}
-              onClick={() => handlePostClick(post.portfolioId)}
+              key={post.boardId}
+              onClick={() => handlePostClick(post.boardId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-5">
                 {/* 이 부분 수정해야함 */}
                 <img
                   src={post.picture}
@@ -129,20 +136,16 @@ const PortfolioPosts: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <img
-                src={post.portfolioThumbnailImg}
-                alt="no-image"
-                className="bg-gray-300 h-40 mb-2"
-              />
-              <p className="text-gray-700 mb-4 line-clamp-3">
-                {post.portfolioContent}
-              </p>
+              {/* 제목 또는 내용 */}
+              <p className="text-gray-700 mb-4">{post.boardContent}</p>
               <div className="flex justify-evenly text-gray-500 text-sm">
+                {/* 댓글 수 */}
                 <div className="text-lg tracking-widest">
-                  💬 {post.portfolioCommentCount}
+                  💬 {post.boardCommentCount}
                 </div>
+                {/* 좋아요 수 */}
                 <div className="text-lg tracking-widest">
-                  ❤️ {post.portfolioRecommendationCount}
+                  ❤️ {post.boardRecommendationCount}
                 </div>
               </div>
             </div>
@@ -153,4 +156,4 @@ const PortfolioPosts: React.FC = () => {
   );
 };
 
-export default PortfolioPosts;
+export default QuestionPosts;
