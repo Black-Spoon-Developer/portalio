@@ -49,7 +49,7 @@ public class Repository extends AuditableCreatedEntity {
     @Column(name = "repository_post", nullable = false)
     private Boolean repositoryPost = false;
 
-    @Column(name = "repisitory_is_primary", nullable = false)
+    @Column(name = "repository_is_primary", nullable = false)
     private Boolean repositoryIsPrimary = false;
 
     @OneToMany(mappedBy = "repository")
