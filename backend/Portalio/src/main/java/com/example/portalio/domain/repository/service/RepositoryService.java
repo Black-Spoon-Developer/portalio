@@ -57,7 +57,7 @@ public class RepositoryService {
         Member member = findMember(oauth2User.getMemberId());
 
         Repository repository = Repository.of(request.getRepositoryTitle(), request.getRepositoryContent(), request.getStartDate(), request.getEndDate(),
-                request.getRepositoryFileKey(), request.getRepositoryPost(), member);
+                request.getRepositoryFileKey(), request.getRepositoryPost(), request.getRepositoryIsPrimary(), member);
 
         repositoryRepository.save(repository);
 
