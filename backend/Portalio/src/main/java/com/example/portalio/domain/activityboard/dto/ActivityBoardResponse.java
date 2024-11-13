@@ -10,13 +10,10 @@ import lombok.Getter;
 @Builder
 public class ActivityBoardResponse {
 
-    private static final String DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/157494028?v=4";
-
     private Long activityBoardId;
     private String activityBoardTitle;
     private String activityBoardContent;
     private LocalDate activityBoardDate;
-    private String activityBoardImageKey;
     private LocalDateTime created;
     private Long repositoryId;
     private Long memberId;

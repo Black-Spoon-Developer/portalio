@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "activity_board")
 public class ActivityBoard extends AuditableCreatedEntity {
 
-    private static final String DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/157494028?v=4";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_board_id")

@@ -22,6 +22,4 @@ public class ActivityBoardRequest {
 
     @NotNull(message = "empty activity board date")
     private LocalDate activityBoardDate = LocalDate.now();
-
-    private String activityBoardImgKey;
 }

@@ -20,6 +20,8 @@ public class RepositoryResponse {
     private Boolean repositoryPost;
     private Boolean repositoryIsPrimary;
     private Long memberId;
+    private String memberUsername;
+    private String picture;
 
     public static RepositoryResponse from(Repository repository) {
         return RepositoryResponse.builder()
@@ -32,6 +34,8 @@ public class RepositoryResponse {
                 .repositoryPost(repository.getRepositoryPost())
                 .repositoryIsPrimary(repository.getRepositoryIsPrimary())
                 .memberId(repository.getMember().getMemberId())
+                .memberUsername(repository.getMember().getMemberUsername())
+                .picture(repository.getMember().getMemberPicture())
                 .build();
     }
 }
