@@ -65,3 +65,35 @@ export const getMyRepositoryList = async (username: string) => {
 
   return response.data;
 };
+
+// 레포지토리 조회하기
+export const getRepository = async (repositoryId: number) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/repository/${repositoryId}/detail`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+// 내 레포지토리 조회하기
+export const getMyRepositories = async (username: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/repository/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import "./UserProfilePage.css";
 import ProfileImage from "../../../assets/ProfileImage.png"; // 프로필 이미지 경로
 import BriefCase from "../../../assets/BriefCase.svg";
@@ -8,10 +8,11 @@ import LinkedInIcon from "../../../assets/LinkedIn.svg";
 import InstagramIcon from "../../../assets/Instagram.svg";
 import GitHubIcon from "../../../assets/GitHub.svg";
 import SettingsIcon from "../../../assets/Setting.svg";
-import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { getMyPortfolios } from "../../../api/PortfolioAPI";
+import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
+import { getRepository, getMyRepositories } from './../../../api/RepositoryAPI';
 
 interface Free {
   boardId: number;
@@ -21,6 +22,8 @@ interface Free {
 interface Activity {
   activityBoardId: number;
   activityBoardTitle: string;
+  repositoryId: number;
+  repositoryName: string;
 }
 
 interface Question {
@@ -39,6 +42,11 @@ interface Portfolio {
   memberNickname: string;
 }
 
+interface Repository {
+  repositoryTitle: string;
+
+}
+
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -55,6 +63,7 @@ const UserProfilePage: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [portfolio, setPortfolio] = useState<Portfolio>();
+  const [repository, setRepository] = useState<Repository>();
   const skip = 0;
   const limit = 2;
 
@@ -63,27 +72,26 @@ const UserProfilePage: React.FC = () => {
     if (username) {
       const fetchMyBoards = async () => {
         try {
-          const freesResponse = await getMyBoards(
-            username,
-            skip,
-            limit,
-            "FREE"
-          );
-          const questionsResponse = await getMyBoards(
-            username,
-            skip,
-            limit,
-            "QUESTION"
-          );
-          const activitiesResponse = await getMyActivities(
-            username,
-            skip,
-            limit
-          );
+          const freesResponse = await getMyBoards(username, skip, limit, "FREE");
+          const questionsResponse = await getMyBoards(username, skip, limit, "QUESTION");
+          const activitiesResponse = await getMyActivities( username, skip, limit );
           const portfoliosResponse = await getMyPortfolios(username, 0, 100);
+          const repositoryResponse = await getMyRepositories(username);
+          console.log("repositoryResponse: ", repositoryResponse)
+          const activitiesWithRepositoryNames = await Promise.all(
+            activitiesResponse.data.items.map(async (activity: Activity) => {
+              const repository = await getRepository(activity.repositoryId);
+              return {
+                ...activity,
+                repositoryName: repository.repositoryTitle, // repository의 이름을 저장
+              };
+            })
+          );
+
           setFrees(freesResponse.data.items);
-          setActivities(activitiesResponse.data.items);
           setQuestions(questionsResponse.data.items);
+          setActivities(activitiesWithRepositoryNames);
+          setRepository(repositoryResponse.slice(0, 3));
 
           // portfolioIsPrimary가 true인 항목만 필터링하여 설정
           console.log("total portfolios: ", portfoliosResponse.data.items);
@@ -321,7 +329,7 @@ const UserProfilePage: React.FC = () => {
               to={`/users/profile/${userId}/repository`}
               className="more-link"
             >
-              레퍼지토리 더보기 →
+              더 보기 →
             </Link>
           </div>
           <div className="repository-item">
@@ -348,7 +356,7 @@ const UserProfilePage: React.FC = () => {
                 to={`/users/profile/${userId}/activity`}
                 className="more-link"
               >
-                더보기 →
+                더 보기 →
               </Link>
             </h3>
             <ul>
@@ -356,7 +364,9 @@ const UserProfilePage: React.FC = () => {
                 activities.map((activity) => (
                   <li key={activity.activityBoardId}>
                     <Link to={`/activity/${activity.activityBoardId}`}>
-                      {activity.activityBoardTitle}
+                    <span className="font-bold text-black">
+                      [{activity.repositoryName}]
+                    </span> {activity.activityBoardTitle}
                     </Link>
                   </li>
                 ))
@@ -369,7 +379,7 @@ const UserProfilePage: React.FC = () => {
             <h3 className="post-title">
               자유 게시글{" "}
               <Link to={`/users/profile/${userId}/free`} className="more-link">
-                더보기 →
+                더 보기 →
               </Link>
             </h3>
             <ul>
@@ -391,7 +401,7 @@ const UserProfilePage: React.FC = () => {
                 to={`/users/profile/${userId}/question`}
                 className="more-link"
               >
-                더보기 →
+                더 보기 →
               </Link>
             </h3>
             <ul>
