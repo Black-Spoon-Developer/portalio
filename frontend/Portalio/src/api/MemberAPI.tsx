@@ -3,6 +3,7 @@ import { UserDetailInfo } from "../type/UserType";
 import store, { RootState } from "../store";
 import { BASE_URL } from "./BaseVariable";
 
+
 // 회원 닉네임 중복 검사 API
 export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
   try {

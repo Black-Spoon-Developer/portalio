@@ -155,17 +155,10 @@
   }
   
   .day.active {
-    background-color: #4caf50;
+    background-color: #9dd89f;
   }
   
 /* 대표 포트폴리오, 레포지토리 및 게시글 섹션 */
-/* 대표 포트폴리오 섹션 */
-.portfolio-section {
-    padding: 20px;
-    border: 2px solid #bfbfbf;
-    border-radius: 5px;
-    position: relative;
-  }
   
   /* 포트폴리오 헤더 */
   .portfolio-header {

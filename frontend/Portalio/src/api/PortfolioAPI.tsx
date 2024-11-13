@@ -135,3 +135,26 @@ export const patchPortfolio = async (
 
   return response.data;
 };
+
+// 내가 쓴 포트폴리오 리스트 조회
+export const getMyPortfolios = async (
+  username: string,
+  skip: number,
+  limit: number
+) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/portfolios/my/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        skip,
+        limit,
+      },
+    }
+  );
+  return response;
+};
