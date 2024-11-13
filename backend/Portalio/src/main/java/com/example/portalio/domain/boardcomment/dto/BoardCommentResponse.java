@@ -1,6 +1,7 @@
 package com.example.portalio.domain.boardcomment.dto;
 
 import com.example.portalio.domain.boardcomment.entity.BoardComment;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +13,9 @@ public class BoardCommentResponse {
     private String content;
     private Long boardId;
     private Long memberId;
+    private String memberNickname;
+    private String picture;
+    private LocalDateTime created;
 
     public static BoardCommentResponse from(BoardComment boardComment) {
         return BoardCommentResponse.builder()
@@ -19,6 +23,9 @@ public class BoardCommentResponse {
                 .content(boardComment.getContent())
                 .boardId(boardComment.getBoard().getBoardId())
                 .memberId(boardComment.getMember().getMemberId())
+                .memberNickname(boardComment.getMember().getUserDetail().getUserNickname())
+                .picture(boardComment.getMember().getMemberPicture())
+                .created(boardComment.getCreated())
                 .build();
     }
 }
