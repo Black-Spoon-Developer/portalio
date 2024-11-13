@@ -6,7 +6,7 @@ interface FreeDetailCommentsProps {
 }
 
 const FreeDetailComments: React.FC<FreeDetailCommentsProps> = ({
-  comments,
+  comments = [],
 }) => {
   // 댓글 시간 포맷 함수
   const formatTimeAgo = (dateString: string) => {
@@ -36,7 +36,7 @@ const FreeDetailComments: React.FC<FreeDetailCommentsProps> = ({
           className="flex items-center space-x-4 p-4 border rounded-lg mb-4"
         >
           <img
-            src={comment.memberPicture || "https://via.placeholder.com/40"}
+            src={comment.content || "https://via.placeholder.com/40"}
             alt={`${comment.username} 프로필 이미지`}
             className="w-10 h-10 rounded-full"
           />

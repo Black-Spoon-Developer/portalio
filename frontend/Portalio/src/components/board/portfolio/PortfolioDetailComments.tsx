@@ -21,7 +21,7 @@ const PortfolioDetailComments: React.FC = () => {
           const fetchedComments = await fetchPortfolioDetailComments(
             portfolio_id
           );
-          console.log(fetchedComments);
+
           setComments(fetchedComments);
         }
       } catch (error) {

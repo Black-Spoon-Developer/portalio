@@ -6,6 +6,7 @@ export interface BoardLikeResponse {
   boardSolve: boolean;
   boardViews: number;
   boardRecommendationCount: number;
+  boardCommentCount: number;
   created: string;
   memberId: number;
   memberNickname: string;

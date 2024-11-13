@@ -20,7 +20,7 @@ const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
         // 댓글 작성 API 호출
         await postBoardComments(free_id, content);
         setContent(""); // 제출 후 입력창 초기화
-        alert("댓글이 성공적으로 작성되었습니다.");
+        // alert("댓글이 성공적으로 작성되었습니다.");
         setUpdateTrigger(true);
       } catch (error) {
         console.error("댓글 작성에 실패했습니다:", error);

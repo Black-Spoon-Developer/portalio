@@ -89,9 +89,16 @@ export const searchBoardList = async (
 
 // 자유/질문 게시판 댓글 조회
 export const getBoardComments = async (boardId: string) => {
-  const response = await axios.get(`${BASE_URL}/api/v1/${boardId}/comments`);
+  try {
+    const response = await axios.get(`${BASE_URL}/api/v1/${boardId}/comments`);
+    console.log(response.data.items);
 
-  return response.data.items;
+    // 댓글이 없으면 null 반환
+    return response.data.items.length ? response.data.items : [];
+  } catch (error) {
+    console.error("댓글을 가져오는 중 오류가 발생했습니다:", error);
+    return [];
+  }
 };
 
 // 자유/질문 게시판 댓글 작성

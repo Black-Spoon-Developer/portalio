@@ -36,7 +36,6 @@ const FreeDetailPage: React.FC = () => {
     try {
       if (free_id) {
         const response = await getBoard(free_id);
-        console.log(response.data);
         setPost(response.data);
       }
     } catch (error) {
@@ -63,9 +62,9 @@ const FreeDetailPage: React.FC = () => {
       <div className="col-span-1"></div>
       <div className="mx-5 my-8 col-span-3">
         <FreeDetailMd
-          portfolioContent={post?.boardContent}
-          isLiked={post?.isLiked}
-          memberId={post?.memberId}
+          FreeContent={post?.boardContent ?? ""}
+          isLiked={post?.isLiked ?? false}
+          memberId={post?.memberId ?? 0}
         />
         <FreeDetailCommentsInput setUpdateTrigger={setUpdateTrigger} />
         <FreeDetailComments comments={comments} />

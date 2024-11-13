@@ -146,9 +146,9 @@ const FreePosts: React.FC = () => {
               <p className="text-gray-700 mb-2">{post.boardContent}</p>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 {/* 댓글 수 */}
-                {/* <div className="text-lg tracking-widest">
-                  💬 {post.}
-                </div> */}
+                <div className="text-lg tracking-widest">
+                  💬 {post.boardCommentCount}
+                </div>
                 {/* 좋아요 수 */}
                 <div className="text-lg tracking-widest">
                   ❤️ {post.boardRecommendationCount}
