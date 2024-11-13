@@ -2,23 +2,23 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { postBoardComments } from "../../../api/BoardAPI";
 
-interface FreeDetailCommentsProps {
+interface QuestionDetailCommentsProps {
   setUpdateCommentTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
+const QuestionDetailCommentsInput: React.FC<QuestionDetailCommentsProps> = ({
   setUpdateCommentTrigger,
 }) => {
   const navigate = useNavigate();
   const [content, setContent] = useState("");
-  const { free_id } = useParams<{ free_id: string }>();
+  const { question_id } = useParams<{ question_id: string }>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (content.trim() && free_id) {
+    if (content.trim() && question_id) {
       try {
         // 댓글 작성 API 호출
-        await postBoardComments(free_id, content);
+        await postBoardComments(question_id, content);
         setContent(""); // 제출 후 입력창 초기화
         setUpdateCommentTrigger(true);
       } catch (error) {
@@ -54,4 +54,4 @@ const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
   );
 };
 
-export default FreeDetailCommentsInput;
+export default QuestionDetailCommentsInput;

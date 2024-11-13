@@ -141,3 +141,23 @@ export const boardDetailLike = async (boardId: string) => {
     alert("좋아요에 실패 했습니다. " + error);
   }
 };
+
+// 질문 게시글 해결 처리
+export const questionBoardSolve = async (boardId: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  try {
+    await axios.patch(
+      `${BASE_URL}/api/v1/${boardId}/solve`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    alert("질문 게시글 해결에 실패 했습니다. " + error);
+  }
+};
