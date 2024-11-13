@@ -7,14 +7,14 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import "./FreeDetailMd.css";
 
-interface PortfolioDetailMdProps {
-  portfolioContent: string;
+interface FreeDetailMdProps {
+  FreeContent: string;
   isLiked: boolean;
   memberId: number;
 }
 
-const FreeDetailMd: React.FC<PortfolioDetailMdProps> = ({
-  portfolioContent,
+const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
+  FreeContent,
   isLiked,
   memberId,
 }) => {
@@ -58,9 +58,7 @@ const FreeDetailMd: React.FC<PortfolioDetailMdProps> = ({
           </button>
         )}
       </header>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {portfolioContent}
-      </ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{FreeContent}</ReactMarkdown>
     </div>
   );
 };

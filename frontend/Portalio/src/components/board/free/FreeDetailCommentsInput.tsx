@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { postBoardComments } from "../../../api/BoardAPI";
 
-const FreeDetailCommentsInput: React.FC = () => {
+interface FreeDetailCommentsProps {
+  setUpdateTrigger: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
+  setUpdateTrigger,
+}) => {
   const navigate = useNavigate();
   const [content, setContent] = useState("");
   const { free_id } = useParams<{ free_id: string }>();
@@ -11,14 +17,11 @@ const FreeDetailCommentsInput: React.FC = () => {
     e.preventDefault();
     if (content.trim() && free_id) {
       try {
-        // id 값을 숫자로 변환
-        const freeID = Number(free_id);
-
         // 댓글 작성 API 호출
-        await postBoardComments(freeID, content);
+        await postBoardComments(free_id, content);
         setContent(""); // 제출 후 입력창 초기화
         alert("댓글이 성공적으로 작성되었습니다.");
-        navigate(0);
+        setUpdateTrigger(true);
       } catch (error) {
         console.error("댓글 작성에 실패했습니다:", error);
         alert("댓글 작성에 실패했습니다.");

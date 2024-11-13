@@ -12,3 +12,11 @@ export interface BoardLikeResponse {
   picture: string;
   isLiked: boolean;
 }
+
+// 댓글 목록 불러오는 인터페이스
+export interface BoardCommentsResponse {
+  commentId: number;
+  content: string;
+  boardId: number;
+  memberId: number;
+}

@@ -88,14 +88,14 @@ export const searchBoardList = async (
 };
 
 // 자유/질문 게시판 댓글 조회
-export const getBoardComments = async (boardId: number) => {
-  const response = await axios.get(`${BASE_URL}/api/v1/comments`);
+export const getBoardComments = async (boardId: string) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/${boardId}/comments`);
 
   return response.data.items;
 };
 
 // 자유/질문 게시판 댓글 작성
-export const postBoardComments = async (boardId: number, content: string) => {
+export const postBoardComments = async (boardId: string, content: string) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
 

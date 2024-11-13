@@ -1,34 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { getBoardComments } from "../../../api/BoardAPI";
+import React from "react";
+import { BoardCommentsResponse } from "../../../interface/board/BoardInterface";
 
-const FreeDetailComments: React.FC = () => {
-  const { free_id } = useParams<{ free_id: string }>();
-  const [comments, setComments] = useState<Comment[]>([]);
+interface FreeDetailCommentsProps {
+  comments: BoardCommentsResponse[];
+}
 
-  // 트리거 상태 설정
-
-  // onMounted
-  useEffect(() => {
-    const loadComments = async () => {
-      try {
-        if (free_id) {
-          // id값을 숫자형으로 변환
-          const freeId = Number(free_id);
-          const fetchedComments = await getBoardComments(freeId);
-          console.log(fetchedComments);
-          setComments(fetchedComments);
-        }
-      } catch (error) {
-        console.error("댓글을 가져오지 못했습니다:", error);
-      }
-    };
-
-    loadComments();
-  }, []);
-
-  // 트리거 useEffect
-
+const FreeDetailComments: React.FC<FreeDetailCommentsProps> = ({
+  comments,
+}) => {
   // 댓글 시간 포맷 함수
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
