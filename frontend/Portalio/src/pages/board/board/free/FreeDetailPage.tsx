@@ -13,10 +13,13 @@ const FreeDetailPage: React.FC = () => {
   const [post, setPost] = useState<BoardLikeResponse>();
 
   // 댓글 목록 업데이트 하는 트리거 상태
-  const [updateTrigger, setUpdateTrigger] = useState(false);
+  const [updateCommentTrigger, setUpdateCommentTrigger] = useState(false);
 
   // 댓글 내용 prop 해주기 위한 상태
   const [comments, setComments] = useState<BoardCommentsResponse[]>([]);
+
+  // 좋아요 시 상세 정보를 트리거 하기 위한 상태
+  const [updateDetailTrigger, setUpdateDetailTrigger] = useState(false);
 
   // 상세글 및 상세글의 댓글 조회
   useEffect(() => {
@@ -26,11 +29,19 @@ const FreeDetailPage: React.FC = () => {
 
   // 댓글 작성시 댓글 목록을 업데이트 하는 함수
   useEffect(() => {
-    if (updateTrigger) {
+    if (updateCommentTrigger) {
       fetchComments();
-      setUpdateTrigger(false);
+      setUpdateCommentTrigger(false);
     }
-  }, [updateTrigger]);
+  }, [updateCommentTrigger]);
+
+  // 좋아요를 눌렀을 시 새로 상세 정보를 가져오기 위한 함수
+  useEffect(() => {
+    if (updateDetailTrigger) {
+      fetchFreeDetail();
+      setUpdateDetailTrigger(false);
+    }
+  }, [updateDetailTrigger]);
 
   const fetchFreeDetail = async () => {
     try {
@@ -65,8 +76,11 @@ const FreeDetailPage: React.FC = () => {
           FreeContent={post?.boardContent ?? ""}
           isLiked={post?.isLiked ?? false}
           memberId={post?.memberId ?? 0}
+          setUpdateDetailTrigger={setUpdateDetailTrigger}
         />
-        <FreeDetailCommentsInput setUpdateTrigger={setUpdateTrigger} />
+        <FreeDetailCommentsInput
+          setUpdateCommentTrigger={setUpdateCommentTrigger}
+        />
         <FreeDetailComments comments={comments} />
       </div>
     </div>

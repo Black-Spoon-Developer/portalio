@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { postBoardComments } from "../../../api/BoardAPI";
 
 interface FreeDetailCommentsProps {
-  setUpdateTrigger: React.Dispatch<React.SetStateAction<boolean>>;
+  setUpdateCommentTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
-  setUpdateTrigger,
+  setUpdateCommentTrigger,
 }) => {
   const navigate = useNavigate();
   const [content, setContent] = useState("");
@@ -21,7 +21,7 @@ const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
         await postBoardComments(free_id, content);
         setContent(""); // 제출 후 입력창 초기화
         // alert("댓글이 성공적으로 작성되었습니다.");
-        setUpdateTrigger(true);
+        setUpdateCommentTrigger(true);
       } catch (error) {
         console.error("댓글 작성에 실패했습니다:", error);
         alert("댓글 작성에 실패했습니다.");

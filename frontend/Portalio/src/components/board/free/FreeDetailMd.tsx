@@ -1,6 +1,6 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { portfolioDetailLike } from "../../../api/PortfolioAPI";
+import { useParams } from "react-router-dom";
+import { boardDetailLike } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import ReactMarkdown from "react-markdown";
@@ -11,32 +11,31 @@ interface FreeDetailMdProps {
   FreeContent: string;
   isLiked: boolean;
   memberId: number;
+  setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
   FreeContent,
   isLiked,
   memberId,
+  setUpdateDetailTrigger,
 }) => {
-  const navigate = useNavigate();
-
   const userID = parseInt(
     useSelector((state: RootState) => state.auth.memberId) ?? "0",
     10
   );
 
-  const { portfolio_id } = useParams<{ portfolio_id: string }>();
+  const { free_id } = useParams<{ free_id: string }>();
 
   const handleLike = async () => {
-    if (!portfolio_id) {
+    if (!free_id) {
       alert("포트폴리오 ID가 없습니다.");
       return;
     }
 
     try {
-      await portfolioDetailLike(portfolio_id);
-      navigate(0);
-      console.log(isLiked);
+      await boardDetailLike(free_id);
+      setUpdateDetailTrigger(true);
     } catch (error) {
       alert("좋아요 처리 중 오류가 발생했습니다." + error);
     }

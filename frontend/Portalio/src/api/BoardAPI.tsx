@@ -90,11 +90,14 @@ export const searchBoardList = async (
 // 자유/질문 게시판 댓글 조회
 export const getBoardComments = async (boardId: string) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/v1/${boardId}/comments`);
+    console.log(boardId);
+    const response = await axios.get(
+      `${BASE_URL}/api/v1/boards/${boardId}/comments`
+    );
     console.log(response.data.items);
 
     // 댓글이 없으면 null 반환
-    return response.data.items.length ? response.data.items : [];
+    return response.data.items;
   } catch (error) {
     console.error("댓글을 가져오는 중 오류가 발생했습니다:", error);
     return [];
@@ -117,4 +120,24 @@ export const postBoardComments = async (boardId: string, content: string) => {
   );
 
   return response.data;
+};
+
+// 자유/질문 게시판 좋아요
+export const boardDetailLike = async (boardId: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  try {
+    await axios.post(
+      `${BASE_URL}/api/v1/boards/${boardId}/recom`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    alert("좋아요에 실패 했습니다. " + error);
+  }
 };

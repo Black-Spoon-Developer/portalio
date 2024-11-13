@@ -20,4 +20,7 @@ export interface BoardCommentsResponse {
   content: string;
   boardId: number;
   memberId: number;
+  memberNickname: string;
+  picture: string;
+  created: string;
 }
