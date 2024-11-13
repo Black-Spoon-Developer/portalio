@@ -125,6 +125,21 @@ public class RepositoryService {
         return RepositoryPostResponse.from(repository);
     }
 
+    @Transactional
+    public RepositoryPostResponse primaryRepository(Long repositoryId, CustomOAuth2User oauth2User) {
+
+        Member member = findMember(oauth2User.getMemberId());
+
+        Repository repository = repositoryRepository.findByRepositoryIdAndMember_MemberId(repositoryId, member.getMemberId())
+                .orElseThrow(RepositoryNotFoundException::new);
+
+        repository.setRepositoryIsPrimary(!repository.getRepositoryIsPrimary());
+
+        repositoryRepository.save(repository);
+
+        return RepositoryPostResponse.from(repository);
+    }
+
     private Member findMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
