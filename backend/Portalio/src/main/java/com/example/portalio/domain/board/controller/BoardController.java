@@ -38,9 +38,10 @@ public class BoardController {
     @GetMapping
     public ResponseEntity<BoardListResponse> getBoardsSearch(
             @RequestParam(required = false) String boardTitle,
-            @RequestParam(required = false) BoardRole boardCategory) {
+            @RequestParam(required = false) BoardRole boardCategory,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        BoardListResponse response = boardService.getBoardsSearch(boardTitle, boardCategory);
+        BoardListResponse response = boardService.getBoardsSearch(boardTitle, boardCategory, oauth2User);
 
         return ResponseEntity.ok(response);
     }
