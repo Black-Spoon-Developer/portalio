@@ -49,6 +49,9 @@ public class Repository extends AuditableCreatedEntity {
     @Column(name = "repository_post", nullable = false)
     private Boolean repositoryPost = false;
 
+    @Column(name = "repisitory_is_primary", nullable = false)
+    private Boolean repositoryIsPrimary = false;
+
     @OneToMany(mappedBy = "repository")
     private List<ActivityBoard> activityBoards = new ArrayList<>();
 
@@ -81,4 +84,6 @@ public class Repository extends AuditableCreatedEntity {
     public void setRepositoryFileKey(String repositoryFileKey) { this.repositoryFileKey = repositoryFileKey; }
 
     public void setRepositoryPost(Boolean repositoryPost) { this.repositoryPost = repositoryPost; }
+
+    public void setRepositoryIsPrimary(Boolean repisitoryIsPrimary) { this.repositoryIsPrimary = repisitoryIsPrimary; }
 }

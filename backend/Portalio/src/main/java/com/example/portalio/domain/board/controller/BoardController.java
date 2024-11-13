@@ -36,11 +36,12 @@ public class BoardController {
 
     @Operation(summary = "[자유/질문]글 검색", description = "boardTitle을 사용해 글 검색")
     @GetMapping
-    public ResponseEntity<BoardListResponse> getBoardsSearch(
+    public ResponseEntity<BoardLikeListResponse> getBoardsSearch(
             @RequestParam(required = false) String boardTitle,
-            @RequestParam(required = false) BoardRole boardCategory) {
+            @RequestParam(required = false) BoardRole boardCategory,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        BoardListResponse response = boardService.getBoardsSearch(boardTitle, boardCategory);
+        BoardLikeListResponse response = boardService.getBoardsSearch(boardTitle, boardCategory, oauth2User);
 
         return ResponseEntity.ok(response);
     }

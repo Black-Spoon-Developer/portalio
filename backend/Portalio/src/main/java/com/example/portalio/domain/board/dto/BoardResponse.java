@@ -17,6 +17,7 @@ public class BoardResponse {
     private Boolean boardSolve;
     private Integer boardViews;
     private Integer boardRecommendationCount;
+    private Integer boardCommentCount;
     private LocalDateTime created;
     private Long memberId;
 
@@ -29,6 +30,7 @@ public class BoardResponse {
                 .boardSolve(board.getBoardSolve())
                 .boardViews(board.getBoardViews())
                 .boardRecommendationCount(board.getBoardRecommendationCount())
+                .boardCommentCount(board.getBoardComments().size())
                 .created(board.getCreated())
                 .memberId(board.getMember().getMemberId())
                 .build();

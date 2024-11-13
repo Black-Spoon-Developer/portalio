@@ -35,11 +35,12 @@ public class PortfolioController {
 
     @Operation(summary = "[포트폴리오]글 검색", description = "jobId, boardTitle을 사용해 글 검색")
     @GetMapping
-    public ResponseEntity<PortfolioListResponse> getPortfolioSearch(
+    public ResponseEntity<PortfolioLikeListResponse> getPortfolioSearch(
             @RequestParam Long portfolioJob,
-            @RequestParam String portfolioTitle) {
+            @RequestParam String portfolioTitle,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        PortfolioListResponse response = portfolioService.getPortfolioSearch(portfolioJob, portfolioTitle);
+        PortfolioLikeListResponse response = portfolioService.getPortfolioSearch(portfolioJob, portfolioTitle, oauth2User);
 
         return ResponseEntity.ok(response);
     }
@@ -129,6 +130,19 @@ public class PortfolioController {
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
         PortfolioPostResponse response = portfolioService.postPortfolio(portfoliosId, oauth2User);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "[포트폴리오] 대표설정하기", description = "포르폴리오 대표설정")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/{portfoliosId}/primary")
+    public ResponseEntity<PortfolioPostResponse> primaryPortfolio(
+            @PathVariable Long portfoliosId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+
+        PortfolioPostResponse response = portfolioService.primaryPortfolio(portfoliosId, oauth2User);
 
         return ResponseEntity.ok(response);
     }

@@ -12,8 +12,10 @@ public class FileDocument {
     @Id
     private String id;
     private List<String> fileUrls;
+    private List<String> fileNames;
 
-    public FileDocument(List<String> fileUrls) {
+    public FileDocument(List<String> fileUrls, List<String> fileNames) {
         this.fileUrls = fileUrls;
+        this.fileNames = fileNames;
     }
 }

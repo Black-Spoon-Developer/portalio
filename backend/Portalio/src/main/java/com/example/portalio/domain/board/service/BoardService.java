@@ -39,11 +39,21 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     // nickname, title을 사용한 게시글 검색
-    public BoardListResponse getBoardsSearch(String boardTitle, BoardRole boardCategory) {
+    public BoardLikeListResponse getBoardsSearch(String boardTitle, BoardRole boardCategory, CustomOAuth2User oauth2User) {
 
         List<Board> boards = boardRepository.findByBoardTitleAndCategory(boardTitle, boardCategory);
 
-        return BoardListResponse.from(boards);
+        Map<Long, Boolean> likeStatusMap = new HashMap<>();
+        if (oauth2User != null) {
+            // 인증된 경우 좋아요 상태를 조회
+            Member member = findMember(oauth2User.getMemberId());
+
+            List<BoardRecom> likes = boardRecomRepository.findAllByMemberAndBoardIn(member, boards);
+            likeStatusMap = likes.stream()
+                    .collect(Collectors.toMap(recom -> recom.getBoard().getBoardId(), recom -> true));
+        }
+
+        return BoardLikeListResponse.from(boards, likeStatusMap);
     }
 
     // 게시글 상세보기, params : boardId

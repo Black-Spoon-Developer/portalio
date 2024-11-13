@@ -1,7 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "./BaseVariable";
 
-
 export const onUploadImage = async (
   blob: Blob,
   callback: (url: string, alt: string) => void,

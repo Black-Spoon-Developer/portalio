@@ -52,6 +52,9 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_post", nullable = false)
     private Boolean portfolioPost = false;
 
+    @Column(name = "portfolio_is_primary", nullable = false)
+    private Boolean portfolioIsPrimary = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -73,7 +76,6 @@ public class Portfolio extends AuditableCreatedEntity {
         this.portfolioPost = portfolioPost;
         this.jobSubCategory = jobSubCategory;
         this.member = member;
-        this.portfolioPost = true; // 나중에 따로 설정해야함
     }
 
     public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, JobSubCategory jobSubCategory, Member member) {
@@ -93,4 +95,6 @@ public class Portfolio extends AuditableCreatedEntity {
     public void setMember(Member member) { this.member = member; }
 
     public void setPortfolioRecommendationCount(Integer portfolioRecommendationCount) { this.portfolioRecommendationCount = portfolioRecommendationCount; }
+
+    public void setPortfolioIsPrimary(Boolean portfolioIsPrimary) { this.portfolioIsPrimary = portfolioIsPrimary; }
 }
