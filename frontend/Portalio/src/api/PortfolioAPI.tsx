@@ -27,7 +27,7 @@ export const fetchPortfolioDetail = async (portfolioID: string) => {
     }
   );
 
-  return response;
+  return response.data;
 };
 
 // public으로 사람들이 올려놓은 포트폴리오 상세 조회 시 댓글 조회

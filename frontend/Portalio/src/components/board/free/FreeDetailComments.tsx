@@ -1,12 +1,12 @@
 import React from "react";
-import { PortfolioCommetsResponse } from "../../../interface/portfolio/PortfolioInterface";
+import { BoardCommentsResponse } from "../../../interface/board/BoardInterface";
 
-interface PortfolioDetailCommentsProps {
-  comments: PortfolioCommetsResponse[];
+interface FreeDetailCommentsProps {
+  comments: BoardCommentsResponse[];
 }
 
-const PortfolioDetailComments: React.FC<PortfolioDetailCommentsProps> = ({
-  comments,
+const FreeDetailComments: React.FC<FreeDetailCommentsProps> = ({
+  comments = [],
 }) => {
   // 댓글 시간 포맷 함수
   const formatTimeAgo = (dateString: string) => {
@@ -36,7 +36,7 @@ const PortfolioDetailComments: React.FC<PortfolioDetailCommentsProps> = ({
           className="flex items-center space-x-4 p-4 border rounded-lg mb-4"
         >
           <img
-            src={comment.memberPicture || "https://via.placeholder.com/40"}
+            src={comment.picture || "https://via.placeholder.com/40"}
             alt={`${comment.memberNickname} 프로필 이미지`}
             className="w-10 h-10 rounded-full"
           />
@@ -53,4 +53,4 @@ const PortfolioDetailComments: React.FC<PortfolioDetailCommentsProps> = ({
   );
 };
 
-export default PortfolioDetailComments;
+export default FreeDetailComments;

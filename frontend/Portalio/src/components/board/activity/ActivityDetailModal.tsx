@@ -41,7 +41,7 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
   return (
     <>
       <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-        <div className="relative">
+        <div className="relative w-1/2">
           {/* 작성자 정보를 viewer 바로 위에 배치 */}
           <section className="flex items-center mb-4">
             <img
@@ -54,7 +54,7 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
             </div>
           </section>
 
-          <div
+          <section
             className="markdown-viewer p-6 rounded-lg bg-white shadow-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"
             style={{ minWidth: "672px", minHeight: "550px" }}
           >
@@ -78,7 +78,7 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
                 </ReactMarkdown>
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
     </>

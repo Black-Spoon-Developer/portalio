@@ -23,6 +23,8 @@ import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 import BoardPage from "./pages/board/board/BoardPage.tsx";
+import FreeDetailPage from "./pages/board/board/free/FreeDetailPage.tsx";
+import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -68,6 +70,7 @@ const App: React.FC = () => {
         {/* Board */}
         <Route path="/free" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
+<<<<<<< HEAD
           <Route path=":freeId" element={<BoardDetailPage />} />
           <Route path="edit/:freeId" element={<BoardEditPage />} />
         </Route>
@@ -75,6 +78,15 @@ const App: React.FC = () => {
           <Route path="create" element={<BoardCreatePage />} />
           <Route path=":questionId" element={<BoardDetailPage />} />
           <Route path="edit/:questionId" element={<BoardEditPage />} />
+=======
+          <Route path=":free_id" element={<FreeDetailPage />} />
+          <Route path="edit/:free_id" element={<BoardEditPage />} />
+        </Route>
+        <Route path="/question" element={<Outlet />}>
+          <Route path="create" element={<BoardCreatePage />} />
+          <Route path=":question_id" element={<QuestionDetailPage />} />
+          <Route path="edit/:question_id" element={<BoardEditPage />} />
+>>>>>>> 225a011db4d73132b3e5a21b42746a152f5d0124
         </Route>
         <Route path="/activity" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />

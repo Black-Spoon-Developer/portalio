@@ -1,23 +1,21 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { portfolioDetailLike } from "../../../api/PortfolioAPI";
+import { boardDetailLike } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import "./PortfolioDetailMd.css";
+import "./QuestionDetailMd.css";
 
-interface PortfolioDetailMdProps {
-  portfolioTitle: string;
-  portfolioContent: string;
+interface QuestionDetailMdProps {
+  QuestionContent: string;
   isLiked: boolean;
   memberId: number;
   setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
-  portfolioTitle,
-  portfolioContent,
+const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
+  QuestionContent,
   isLiked,
   memberId,
   setUpdateDetailTrigger,
@@ -27,16 +25,16 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
     10
   );
 
-  const { portfolio_id } = useParams<{ portfolio_id: string }>();
+  const { question_id } = useParams<{ question_id: string }>();
 
   const handleLike = async () => {
-    if (!portfolio_id) {
+    if (!question_id) {
       alert("포트폴리오 ID가 없습니다.");
       return;
     }
 
     try {
-      await portfolioDetailLike(portfolio_id);
+      await boardDetailLike(question_id);
       setUpdateDetailTrigger(true);
     } catch (error) {
       alert("좋아요 처리 중 오류가 발생했습니다." + error);
@@ -46,7 +44,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
       <header className="flex justify-between items-center">
-        <h1>{portfolioTitle}</h1>
+        <h1>질문 게시판 제목</h1>
         {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
           <button
             onClick={handleLike}
@@ -60,10 +58,10 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
         )}
       </header>
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {portfolioContent}
+        {QuestionContent}
       </ReactMarkdown>
     </div>
   );
 };
 
-export default PortfolioDetailMd;
+export default QuestionDetailMd;
