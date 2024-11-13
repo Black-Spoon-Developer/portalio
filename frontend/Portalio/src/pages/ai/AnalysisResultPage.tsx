@@ -1,7 +1,7 @@
 // src/pages/analysis/AnalysisPage.tsx
 import React from "react";
 import { useDispatch } from "react-redux";
-import { resetInterview } from "../../store/interview/InterviewSlice";
+import { interviewActions } from "../../store/interview/InterviewSlice";
 import { useNavigate } from "react-router-dom";
 
 const AnalysisResultPage: React.FC = () => {
@@ -9,7 +9,7 @@ const AnalysisResultPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleRestart = () => {
-    dispatch(resetInterview());
+    dispatch(interviewActions.resetInterview());
     navigate("/interview/1"); // 첫 번째 질문 페이지로 이동
   };
 

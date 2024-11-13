@@ -5,6 +5,7 @@ export interface AnalysisResult {
 }
 
 export interface InterviewState {
+  interviewId: number | null;  // interviewId 추가
   questions: string[];
   currentQuestionIndex: number;
   isAnswering: boolean;
@@ -12,17 +13,19 @@ export interface InterviewState {
   isLoading: boolean;
   isUploading: boolean;
   analysisResults: AnalysisResult;
+  pendingUploads: number[];
   isFinished: boolean;
   isPreparationTime: boolean;
 }
 
 // WebcamCapture 컴포넌트의 props 타입 정의
 export interface WebcamCaptureProps {
-  //isRecording: boolean;
+  isRecording?: boolean;
   interviewType?: InterviewType; // 인터뷰 타입 추가
   interviewId?: number;
   questionId?: number;
   onUploadComplete?: (result: any) => void;
+  onRecordingComplete?: (blob: Blob) => void; 
 }
 
 // QuestionTimer 컴포넌트의 props 타입 정의

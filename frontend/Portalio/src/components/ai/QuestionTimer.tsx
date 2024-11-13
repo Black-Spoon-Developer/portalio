@@ -30,13 +30,12 @@ const QuestionTimer: React.FC<QuestionTimerProps> = ({
   // 타이머 실행 및 종료 처리
   useEffect(() => {
     if (!isTimerActive) return;
-  
+    console.log("실행");
     const timer = setInterval(() => {
       setTime((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer);
           setIsTimerActive(false);
-          
           // 상태 업데이트를 다음 렌더링 사이클로 지연
           setTimeout(() => {
             if (isPreparationTime) {
@@ -56,8 +55,8 @@ const QuestionTimer: React.FC<QuestionTimerProps> = ({
   }, [isTimerActive, isPreparationTime, onPreparationEnd, onAnswerEnd]);
   
   return (
-    <div>
-      <p>
+    <div className="border border-gray-300 text-gray-800 font-bold text-center rounded-lg px-4 py-2 shadow-sm">
+      <p className="text-lg">
         {isPreparationTime ? "준비 시간" : "답변 시간"}: {time}초
       </p>
     </div>

@@ -1,15 +1,23 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setQuestions } from "../../store/interview/InterviewSlice";
+import { fetchQuestionsApi } from "../../api/InterviewAPI";
+import { interviewActions } from "../../store/interview/InterviewSlice";
 
 const InterviewQuestionPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 질문을 생성하여 상태에 저장
-    dispatch(setQuestions(["질문 1", "질문 2", "질문 3", "질문 4", "질문 5"]));
+    // API에서 질문을 가져와 상태에 저장
+    const fetchQuestions = async () => {
+      const questions = await fetchQuestionsApi();
+      if (questions) {
+        dispatch(interviewActions.setQuestions(questions));
+      }
+    };
+
+    fetchQuestions();
   }, [dispatch]);
 
   const handleProceedToSetup = () => {

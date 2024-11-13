@@ -1,58 +1,84 @@
 // src/pages/interview/InterviewProcessPage.tsx
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import WebcamCapture from "../../components/ai/WebcamCapture";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
-import {
-  incrementQuestionIndex,
-  setCurrentQuestionIndex,
-  resetInterview,
-  setQuestions,
-  startAnswering,
-  stopAnswering,
-  startPreparation,
-} from "../../store/interview/InterviewSlice";
+import { interviewActions } from "../../store/interview/InterviewSlice";
 import QuestionTimer from "../../components/ai/QuestionTimer";
 import { useNavigate, useLocation } from "react-router-dom";
+import { uploadVideoApi, getAnalysisResultApi } from "../../api/InterviewAPI";
 
 const InterviewProcessPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { questions, currentQuestionIndex } = useSelector((state: RootState) => state.interview);
+
+  const { interviewId, questions, currentQuestionIndex, isPreparationTime, isFinished, isRecording, pendingUploads } = useSelector((state: RootState) => state.interview);
 
   const interviewType = location.state?.interviewType || "video"; // 기본값을 "video"로 설정
 
-  const [isPreparationTime, setIsPreparationTime] = useState(true);
+  // 면접이 시작될 때 준비 상태로 설정
+  useEffect(() => {
+    if (isFinished) {
+      dispatch(interviewActions.resetInterview()); // 면접 상태 초기화
+    } else if (questions.length > 0 && currentQuestionIndex === 0) {
+      dispatch(interviewActions.startPreparation()); // 첫 질문에서 준비 상태로 설정
+    }
+  }, [dispatch, questions.length, isFinished, currentQuestionIndex]);
 
+  useEffect(() => {
+    console.log("Updated pendingUploads state:", pendingUploads);
+  }, [pendingUploads]);
+
+  // 준비시간이 끝나면 답변시간 시작
   const handlePreparationEnd = useCallback(() => {
-    setIsPreparationTime(false);
-    dispatch(startAnswering());
+    dispatch(interviewActions.startAnswering())
   }, [dispatch]);
 
+  // 답변시간 끝나면 현재 문제 번호가 마지막번호가 아니라면 현재 번호 +1, 마지막 번호면 분석페이지로 이동
+
+  const handleRecordingComplete = useCallback(
+    async (blob: Blob) => {
+      const questionId = currentQuestionIndex;
+      console.log("Adding to pendingUploads:", questionId);  // 로그 추가
+      dispatch(interviewActions.addPendingUpload(questionId));
+      
+
+      try {
+        if (interviewId !== null) {  // interviewId가 존재하는 경우에만 업로드
+          const result = await uploadVideoApi(interviewId, questionId, blob, 3);
+          if (result) {
+            dispatch(interviewActions.saveAnalysisResult({ questionId, result }));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to upload video:", error);
+      } finally {
+        dispatch(interviewActions.removePendingUpload(questionId));
+      }
+    },
+    [currentQuestionIndex, dispatch, interviewId]
+  );
+
+  // 답변 시간이 끝나면 녹화를 종료하고 다음 질문으로 이동
   const handleAnswerEnd = useCallback(() => {
-    dispatch(stopAnswering());
+    dispatch(interviewActions.stopAnswering()); // 녹화 중지 상태로 전환
 
     if (currentQuestionIndex < questions.length - 1) {
-      dispatch(incrementQuestionIndex());
-      setIsPreparationTime(true);
-      dispatch(startPreparation());
+      dispatch(interviewActions.incrementQuestionIndex());
+      dispatch(interviewActions.startPreparation());
     } else {
+      dispatch(interviewActions.resetInterview()); // 모든 질문 완료 시 초기화
       navigate("/ai/analyze");
     }
   }, [currentQuestionIndex, dispatch, navigate, questions.length]);
 
-  useEffect(() => {
-    dispatch(setQuestions(["첫번째 질문", "두번째 질문", "세번째 질문", "네번째 질문", "다섯번째 질문"]));
-    dispatch(setCurrentQuestionIndex(0));
-    dispatch(startPreparation());
-  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <header className="mb-12 text-center">
         {/* Step 표시 */}
-        <div className="flex space-x-12 justify-center mb-6">
+        <div className="flex justify-evenly mb-6">
           {questions.map((_, index) => (
             <div
               key={index}
@@ -70,7 +96,7 @@ const InterviewProcessPage: React.FC = () => {
         {/* 인터뷰 타입에 따라 다른 화면 표시 */}
         <div className="w-1/2 max-w-lg bg-white rounded-lg shadow-md p-4 relative">
           <div className="flex justify-between items-center mb-4">
-            <span className="font-bold text-gray-700">
+            <span className="bg-gray-200 text-gray-800 font-bold text-center rounded-lg px-4 py-2">
               {interviewType === "video" ? "화상 면접" : interviewType === "audio" ? "음성 면접" : "텍스트 면접"}
             </span>
             <QuestionTimer
@@ -83,8 +109,11 @@ const InterviewProcessPage: React.FC = () => {
           </div>
 
           {/* 면접 화면 표시 */}
-          <div className="bg-gray-200 w-full mb-4 rounded-md flex items-center justify-center">
-            {interviewType === "video" && <WebcamCapture />}
+          <div className="bg-gray-200 w-full mb-4 rounded-lg flex items-center justify-cente overflow-hidden">
+            {interviewType === "video" && <WebcamCapture
+                isRecording={isRecording}
+                onRecordingComplete={handleRecordingComplete}
+              />}
             {interviewType === "audio" && <img src="/path/to/default-image.png" alt="음성 면접 이미지" />}
             {interviewType === "text" && (
               <p className="text-gray-500">텍스트 면접에서는 질문에 텍스트로 답변하세요.</p>

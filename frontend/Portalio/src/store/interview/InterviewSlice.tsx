@@ -3,13 +3,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { InterviewState } from "../../type/InterviewType";
 
 const initialState: InterviewState = {
+  interviewId: 1,
   questions: [],
-  currentQuestionIndex: 0,
+  currentQuestionIndex: 1,
   isAnswering: false,
   isRecording: false,
   isLoading: true,
   isUploading: false,
   analysisResults: {},
+  pendingUploads: [],  
   isFinished: false,
   isPreparationTime: true, // 추가된 상태
 };
@@ -25,31 +27,33 @@ const interviewSlice = createSlice({
     startAnswering(state) {
       state.isAnswering = true;
       state.isRecording = true;
+      state.isPreparationTime = false;
     },
     stopAnswering(state) {
       state.isAnswering = false;
       state.isRecording = false;
       state.isUploading = true;
     },
+
     startPreparation(state) {
       state.isPreparationTime = true;
       state.isAnswering = false;
     },
+
     incrementQuestionIndex(state) {
       if (state.currentQuestionIndex < state.questions.length - 1) {
         state.currentQuestionIndex += 1;
       } else {
         state.isFinished = true;
       }
-    
     },
-
+    
     setCurrentQuestionIndex(state, action) {
-      // action.payload로 받은 인덱스를 설정
       state.currentQuestionIndex = action.payload;
     },
     
     resetInterview(state) {
+      state.interviewId = 1;
       state.currentQuestionIndex = 0;
       state.isFinished = false;
       state.isAnswering = false;
@@ -60,18 +64,21 @@ const interviewSlice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
+    addPendingUpload(state, action: PayloadAction<number>) {
+      state.pendingUploads = [...state.pendingUploads, action.payload];
+      console.log("Inside addPendingUpload - pendingUploads:", state.pendingUploads);
+    },
+    removePendingUpload(state, action: PayloadAction<number>) {
+      state.pendingUploads = state.pendingUploads.filter(id => id !== action.payload);
+      console.log("Inside removePendingUpload - pendingUploads:", state.pendingUploads);
+    },
+    saveAnalysisResult(state, action: PayloadAction<{ questionId: number, result: any }>) {
+      state.analysisResults[action.payload.questionId] = action.payload.result;
+    },
   },
 });
 
-export const {
-  setQuestions,
-  startAnswering,
-  stopAnswering,
-  incrementQuestionIndex,
-  setCurrentQuestionIndex,
-  resetInterview,
-  setLoading,
-  startPreparation, // 새로 추가된 액션
-} = interviewSlice.actions;
+
+export const interviewActions = interviewSlice.actions;
 
 export default interviewSlice.reducer;
