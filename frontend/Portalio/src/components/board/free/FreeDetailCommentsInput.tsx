@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { postBoardComments } from "../../../api/BoardAPI";
 
-interface FreeDetailCommentsProps {
+interface FreeDetailCommentsInputProps {
   setUpdateCommentTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FreeDetailCommentsInput: React.FC<FreeDetailCommentsProps> = ({
+const FreeDetailCommentsInput: React.FC<FreeDetailCommentsInputProps> = ({
   setUpdateCommentTrigger,
 }) => {
   const navigate = useNavigate();

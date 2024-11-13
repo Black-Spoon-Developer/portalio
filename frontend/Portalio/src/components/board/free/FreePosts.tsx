@@ -122,7 +122,7 @@ const FreePosts: React.FC = () => {
               onClick={() => handlePostClick(post.boardId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-5">
                 {/* 이 부분 수정해야함 */}
                 <img
                   src={post.picture}
@@ -136,14 +136,8 @@ const FreePosts: React.FC = () => {
                   </p>
                 </div>
               </div>
-              {/* 썸네일 이미지 */}
-              {/* <img
-                src={post.portfolioThumbnailImg}
-                alt="no-image"
-                className="bg-gray-300 h-40 mb-2"
-              /> */}
               {/* 제목 또는 내용 */}
-              <p className="text-gray-700 mb-2">{post.boardContent}</p>
+              <p className="text-gray-700 mb-4">{post.boardContent}</p>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 {/* 댓글 수 */}
                 <div className="text-lg tracking-widest">

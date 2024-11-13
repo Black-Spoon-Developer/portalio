@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PortfolioSearch from "./PortfolioSearch";
 import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
-import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
+import { Portfolio } from "../../../interface/portfolio/PortfolioInterface";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 
 const PortfolioPosts: React.FC = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<PortfolioList[]>([]);
+  const [posts, setPosts] = useState<Portfolio[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
@@ -115,7 +115,7 @@ const PortfolioPosts: React.FC = () => {
               onClick={() => handlePostClick(post.portfolioId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-4">
                 {/* 이 부분 수정해야함 */}
                 <img
                   src={post.picture}
@@ -134,7 +134,9 @@ const PortfolioPosts: React.FC = () => {
                 alt="no-image"
                 className="bg-gray-300 h-40 mb-2"
               />
-              <p className="text-gray-700 mb-2">{post.portfolioContent}</p>
+              <p className="text-gray-700 mb-4 line-clamp-3">
+                {post.portfolioContent}
+              </p>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 <div className="text-lg tracking-widest">
                   💬 {post.portfolioCommentCount}

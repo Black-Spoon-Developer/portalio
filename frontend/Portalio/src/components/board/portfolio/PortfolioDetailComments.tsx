@@ -1,37 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { fetchPortfolioDetailComments } from "../../../api/PortfolioAPI";
+import React from "react";
+import { PortfolioCommetsResponse } from "../../../interface/portfolio/PortfolioInterface";
 
-interface Comment {
-  username: string;
-  memberPicture: string;
-  memberNickname: string;
-  content: string;
-  created: string; // ISO 날짜 문자열 형태로 가정
+interface PortfolioDetailCommentsProps {
+  comments: PortfolioCommetsResponse[];
 }
 
-const PortfolioDetailComments: React.FC = () => {
-  const { portfolio_id } = useParams<{ portfolio_id: string }>();
-  const [comments, setComments] = useState<Comment[]>([]);
-
-  useEffect(() => {
-    const loadComments = async () => {
-      try {
-        if (portfolio_id) {
-          const fetchedComments = await fetchPortfolioDetailComments(
-            portfolio_id
-          );
-
-          setComments(fetchedComments);
-        }
-      } catch (error) {
-        console.error("댓글을 가져오지 못했습니다:", error);
-      }
-    };
-
-    loadComments();
-  }, []);
-
+const PortfolioDetailComments: React.FC<PortfolioDetailCommentsProps> = ({
+  comments,
+}) => {
   // 댓글 시간 포맷 함수
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -61,7 +37,7 @@ const PortfolioDetailComments: React.FC = () => {
         >
           <img
             src={comment.memberPicture || "https://via.placeholder.com/40"}
-            alt={`${comment.username} 프로필 이미지`}
+            alt={`${comment.memberNickname} 프로필 이미지`}
             className="w-10 h-10 rounded-full"
           />
           <div className="flex items-center">

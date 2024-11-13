@@ -27,6 +27,7 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
 
   const { free_id } = useParams<{ free_id: string }>();
 
+  // 좋아요 핸들러 함수
   const handleLike = async () => {
     if (!free_id) {
       alert("포트폴리오 ID가 없습니다.");

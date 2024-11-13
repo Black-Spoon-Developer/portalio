@@ -136,7 +136,7 @@ const ActivityPosts: React.FC = () => {
               onClick={() => handlePostClick(post.activityBoardId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-5">
                 <img
                   src={post.picture}
                   alt="프로필 이미지"
