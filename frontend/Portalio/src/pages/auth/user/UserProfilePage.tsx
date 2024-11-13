@@ -11,6 +11,7 @@ import SettingsIcon from "../../../assets/Setting.svg";
 import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
+import { getMyPortfolios } from "../../../api/PortfolioAPI";
 
 interface Free {
   boardId: number;
@@ -25,6 +26,17 @@ interface Activity {
 interface Question {
   boardId: number;
   boardTitle: string;
+}
+
+interface Portfolio {
+  created: Date;
+  portfolioId: number;
+  portfolioTitle: string;
+  portfolioIsPrimary: boolean;
+  portfolioCommentCount: number;
+  portfolioThumbnailImg: string;
+  memberId: number;
+  memberNickname: string;
 }
 
 const UserProfilePage: React.FC = () => {
@@ -42,6 +54,7 @@ const UserProfilePage: React.FC = () => {
   const [frees, setFrees] = useState<Free[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [portfolio, setPortfolio] = useState<Portfolio>();
   const skip = 0;
   const limit = 2;
 
@@ -67,17 +80,27 @@ const UserProfilePage: React.FC = () => {
             skip,
             limit
           );
+          const portfoliosResponse = await getMyPortfolios(username, 0, 100);
           setFrees(freesResponse.data.items);
           setActivities(activitiesResponse.data.items);
           setQuestions(questionsResponse.data.items);
+
+          // portfolioIsPrimary가 true인 항목만 필터링하여 설정
+          console.log("total portfolios: ", portfoliosResponse.data.items);
+          const primaryPortfolio = portfoliosResponse.data.items.find(
+            (item: Portfolio) => item.portfolioIsPrimary == true
+          );
+          setPortfolio(primaryPortfolio);
         } catch (error) {
           console.error("Failed to fetch boards:", error);
         }
       };
       fetchMyBoards();
+
       console.log(frees);
       console.log(questions);
       console.log(activities);
+      console.log("primary portfolios: ", portfolio);
     }
   }, []);
 
@@ -244,19 +267,48 @@ const UserProfilePage: React.FC = () => {
       </div>
 
       {/* 대표 포트폴리오 */}
-      <div className="portfolio-section">
+      <div className="portfolio-section !p-0">
         <div className="portfolio-header">
           <h2>대표 포트폴리오</h2>
-          <a href="" className="portfolio-settings-link">
+          <Link
+            to={`/users/profile/${userId}/portfolio`}
+            className="portfolio-settings-link"
+          >
             <img
               src={SettingsIcon}
               alt="포트폴리오 관리"
               className="settings-icon"
             />
             포트폴리오 관리
-          </a>
+          </Link>
         </div>
-        <a href="">2024-10-29 배경 포트폴리오</a>
+        {portfolio && (
+          <Link
+            to={`/portfolio/${portfolio.portfolioId}`}
+            className="block mt-4"
+          >
+            <div className="flex justify-between items-start w-full">
+              <div className="flex items-center">
+                <img
+                  src={portfolio.portfolioThumbnailImg || "기본 이미지 URL"} // 썸네일 이미지 URL 설정
+                  alt="대표 포트폴리오 썸네일"
+                  className="w-48 h-48 rounded-md mr-4" // 이미지 크기 및 여백 설정
+                />
+                <span className="text-lg font-semibold">
+                  {portfolio.portfolioTitle}
+                </span>
+              </div>
+              <span className="text-sm text-gray-500 mt-auto">
+                {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
+                {new Date(portfolio.created).toLocaleDateString()}
+              </span>
+            </div>
+            {/* memberNickname을 아래에 배치 */}
+            <div className="border-t border-gray-300 pt-2 mt-4 text-right">
+              {portfolio.memberNickname}
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* 대표 레포지토리 및 작성한 게시글 섹션 */}
