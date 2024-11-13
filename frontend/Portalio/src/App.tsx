@@ -70,7 +70,6 @@ const App: React.FC = () => {
         {/* Board */}
         <Route path="/free" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
-<<<<<<< HEAD
           <Route path=":freeId" element={<BoardDetailPage />} />
           <Route path="edit/:freeId" element={<BoardEditPage />} />
         </Route>
@@ -78,15 +77,6 @@ const App: React.FC = () => {
           <Route path="create" element={<BoardCreatePage />} />
           <Route path=":questionId" element={<BoardDetailPage />} />
           <Route path="edit/:questionId" element={<BoardEditPage />} />
-=======
-          <Route path=":free_id" element={<FreeDetailPage />} />
-          <Route path="edit/:free_id" element={<BoardEditPage />} />
-        </Route>
-        <Route path="/question" element={<Outlet />}>
-          <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":question_id" element={<QuestionDetailPage />} />
-          <Route path="edit/:question_id" element={<BoardEditPage />} />
->>>>>>> 225a011db4d73132b3e5a21b42746a152f5d0124
         </Route>
         <Route path="/activity" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
