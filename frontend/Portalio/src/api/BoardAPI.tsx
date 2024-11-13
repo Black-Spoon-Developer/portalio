@@ -3,6 +3,7 @@ import store, { RootState } from "../store";
 import { BoardRequest, BoardResponse } from "../type/BoardType";
 import { BASE_URL } from "./BaseVariable";
 
+
 // 자유/질문게시판 글쓰기
 export const createBoard = async (
   boardData: BoardRequest
@@ -55,6 +56,41 @@ export const getBoard = async (boardID: string) => {
   return response;
 };
 
+<<<<<<< HEAD
+// 자유/질문게시판 글 전체보기(내 것만)
+export const getMyBoards = async (username: string, skip: number, limit: number, boardCategory: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(`${BASE_URL}/api/v1/boards/my/${username}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      skip: skip,
+      limit: limit,
+      boardCategory: boardCategory,
+    },
+  });
+
+  return response;
+};
+
+// 활동게시판 글 전체보기(내 것만)
+export const getMyActivities = async (username: string, skip: number, limit: number) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(`${BASE_URL}/api/v1/activity/my/${username}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      skip: skip,
+      limit: limit,
+    },
+  });
+
+  return response;
+=======
 // 자유/질문 게시판 리스트 조회
 export const getBoardList = async (
   skip: number,
@@ -160,4 +196,5 @@ export const questionBoardSolve = async (boardId: string) => {
   } catch (error) {
     alert("질문 게시글 해결에 실패 했습니다. " + error);
   }
+>>>>>>> 225a011db4d73132b3e5a21b42746a152f5d0124
 };
