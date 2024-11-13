@@ -37,7 +37,6 @@ const UserProfilePage: React.FC = () => {
     .fill(null)
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
 
-
   const username = useSelector((state: RootState) => state.auth.username);
 
   const [frees, setFrees] = useState<Free[]>([]);
@@ -301,13 +300,17 @@ const UserProfilePage: React.FC = () => {
               </Link>
             </h3>
             <ul>
-              {activities.map((activity) => (
-                <li key={activity.activityBoardId}>
-                  <Link to={`/activity/${activity.activityBoardId}`}>
-                    {activity.activityBoardTitle}
-                  </Link>
-                </li>
-              ))}
+              {activities.length > 0 ? (
+                activities.map((activity) => (
+                  <li key={activity.activityBoardId}>
+                    <Link to={`/activity/${activity.activityBoardId}`}>
+                      {activity.activityBoardTitle}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>작성한 활동 게시글이 없어요</li>
+              )}
             </ul>
           </div>
           <div className="post-category">
@@ -318,11 +321,15 @@ const UserProfilePage: React.FC = () => {
               </Link>
             </h3>
             <ul>
-              {frees.map((free) => (
-                <li key={free.boardId}>
-                  <Link to={`/free/${free.boardId}`}>{free.boardTitle}</Link>
-                </li>
-              ))}
+              {frees.length > 0 ? (
+                frees.map((free) => (
+                  <li key={free.boardId}>
+                    <Link to={`/free/${free.boardId}`}>{free.boardTitle}</Link>
+                  </li>
+                ))
+              ) : (
+                <li>작성한 자유 게시글이 없어요</li>
+              )}
             </ul>
           </div>
           <div className="post-category">
@@ -336,11 +343,17 @@ const UserProfilePage: React.FC = () => {
               </Link>
             </h3>
             <ul>
-              {questions.map((question) => (
-                <li key={question.boardId}>
-                  <Link to={`/question/${question.boardId}`}>{question.boardTitle}</Link>
-                </li>
-              ))}
+              {questions.length > 0 ? (
+                questions.map((question) => (
+                  <li key={question.boardId}>
+                    <Link to={`/question/${question.boardId}`}>
+                      {question.boardTitle}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>작성한 질문 게시글이 없어요</li>
+              )}
             </ul>
           </div>
         </div>

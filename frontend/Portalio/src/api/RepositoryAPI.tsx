@@ -7,23 +7,18 @@ import { BASE_URL } from "./BaseVariable";
 export const createRepository = async (
   repositoryData: RepositoryRequest
 ): Promise<RepositoryResponse> => {
-  export const createRepository = async (
-    repositoryData: RepositoryRequest
-  ): Promise<RepositoryResponse> => {
-    const state: RootState = store.getState();
-    const accessToken = state.auth.accessToken;
-    const response = await axios.post<RepositoryResponse>(
-      `${BASE_URL}/api/v1/repository`,
-      repositoryData,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    return response.data;
-  };
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.post<RepositoryResponse>(
+    `${BASE_URL}/api/v1/repository`,
+    repositoryData,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  return response.data;
 };
 
 // 레포지토리 글 수정
@@ -31,30 +26,25 @@ export const patchRepository = async (
   repositoryID: string,
   repositoryData: RepositoryRequest
 ): Promise<RepositoryResponse> => {
-  export const patchRepository = async (
-    repositoryID: string,
-    repositoryData: RepositoryRequest
-  ): Promise<RepositoryResponse> => {
-    const state: RootState = store.getState();
-    const accessToken = state.auth.accessToken;
-    const response = await axios.patch<RepositoryResponse>(
-      `${BASE_URL}/api/v1/repository/${repositoryID}`,
-      repositoryData,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.patch<RepositoryResponse>(
+    `${BASE_URL}/api/v1/repository/${repositoryID}`,
+    repositoryData,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
 
-    return response.data;
-  };
+  return response.data;
 };
 
 // 레포지토리 글 상세보기
 export const getRepositoryDetail = async (repositoryID: string) => {
   const response = await axios.get(
-    `${BASE_URL}/api/v1/repository/${repositoryID}/detail``${BASE_URL}/api/v1/repository/${repositoryID}/detail`
+    `${BASE_URL}/api/v1/repository/${repositoryID}/detail`
   );
 
   return response;

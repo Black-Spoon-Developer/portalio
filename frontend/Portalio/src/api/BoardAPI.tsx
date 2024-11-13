@@ -8,9 +8,6 @@ import { BASE_URL } from "./BaseVariable";
 export const createBoard = async (
   boardData: BoardRequest
 ): Promise<BoardResponse> => {
-export const createBoard = async (
-  boardData: BoardRequest
-): Promise<BoardResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post<BoardResponse>(
@@ -25,13 +22,8 @@ export const createBoard = async (
 
   return response.data;
 };
-};
 
 // 자유/질문게시판 글 수정
-export const patchBoard = async (
-  boardID: string,
-  boardData: BoardRequest
-): Promise<BoardResponse> => {
 export const patchBoard = async (
   boardID: string,
   boardData: BoardRequest
@@ -49,7 +41,6 @@ export const patchBoard = async (
   );
 
   return response.data;
-};
 };
 
 // 자유/질문게시판 글 상세보기
