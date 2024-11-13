@@ -1,3 +1,66 @@
+// // src/components/ai/WebcamCapture.tsx
+// import React, { useRef, useEffect, useState } from 'react';
+// import { WebcamCaptureProps } from '../../type/InterviewType';
+
+// const WebcamCapture: React.FC<WebcamCaptureProps> = ({ isRecording, audioOnly = false, onRecordingComplete }) => {
+//   const videoRef = useRef<HTMLVideoElement | null>(null);
+//   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+//   const chunks = useRef<Blob[]>([]);
+//   const [isStreamReady, setIsStreamReady] = useState(false);
+
+//   useEffect(() => {
+//     const constraints = { audio: true, video: !audioOnly };
+//     navigator.mediaDevices.getUserMedia(constraints)
+//       .then(stream => {
+//         if (!audioOnly && videoRef.current) {
+//           videoRef.current.srcObject = stream;
+//         }
+//         setIsStreamReady(true);
+//       })
+//       .catch(error => console.error("Error accessing media devices.", error));
+//   }, [audioOnly]);
+
+//   useEffect(() => {
+//     if (isRecording && isStreamReady) {
+//       startRecording();
+//       console.log("녹화 시작");
+//     } else if (!isRecording && mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+//       stopRecording();
+//       console.log("녹화 끝");
+//     }
+//   }, [isRecording, isStreamReady]);
+
+//   const startRecording = () => {
+//     navigator.mediaDevices.getUserMedia({ audio: true, video: !audioOnly }).then(stream => {
+//       const mimeType = audioOnly ? 'audio/wav' : 'video/webm';
+//       mediaRecorderRef.current = new MediaRecorder(stream, { mimeType });
+//       chunks.current = [];
+
+//       mediaRecorderRef.current.ondataavailable = event => {
+//         if (event.data.size > 0) chunks.current.push(event.data);
+//       };
+
+//       mediaRecorderRef.current.onstop = () => {
+//         const blob = new Blob(chunks.current, { type: audioOnly ? 'audio/wav' : 'video/webm' });
+//         if (onRecordingComplete) {
+//           onRecordingComplete(blob);
+//         }
+//       };
+
+//       mediaRecorderRef.current.start();
+//     });
+//   };
+
+//   const stopRecording = () => {
+//     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+//       mediaRecorderRef.current.stop();
+//     }
+//   };
+
+//   return audioOnly ? null : <video ref={videoRef} autoPlay muted />;
+// };
+
+// export default WebcamCapture; 
 // src/components/ai/WebcamCapture.tsx
 import React, { useRef, useEffect, useState } from 'react';
 import { WebcamCaptureProps } from '../../type/InterviewType';
@@ -62,3 +125,5 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({ isRecording, onRecordingC
 };
 
 export default WebcamCapture;
+
+

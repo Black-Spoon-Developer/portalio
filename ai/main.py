@@ -17,6 +17,9 @@ from pydantic import BaseModel
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+
+
+
 load_dotenv()
 
 app = FastAPI()
@@ -41,7 +44,8 @@ s3 = boto3.client(
 # 모델 설정 (DB 없이 테스트 가능)
 model = resnet50(weights=None)
 model.fc = torch.nn.Linear(model.fc.in_features, 7)
-model.load_state_dict(torch.load(os.getenv('EMOTION_MODEL_PATH')))
+model.load_state_dict(torch.load(os.getenv('EMOTION_MODEL_PATH'), map_location=torch.device('cpu')))
+# model.load_state_dict(torch.load(os.getenv('EMOTION_MODEL_PATH')))
 model.eval()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
@@ -114,7 +118,6 @@ def get_eye_aspect_ratio(eye_landmarks):
     vertical_dist = np.linalg.norm(eye_landmarks[1] - eye_landmarks[2])
     horizontal_dist = np.linalg.norm(eye_landmarks[0] - eye_landmarks[1])
     return vertical_dist / horizontal_dist
-
 
 
 async def analyze_video(video_file):
@@ -293,6 +296,7 @@ def sync_analyze_video(video_file):
         "time_series_data": time_series_data
     }
 
+
 @app.post("/api/v1/ai/interview/questions")
 async def start_interview():
     return {"interview_id": 1, "questions": [
@@ -304,31 +308,42 @@ async def start_interview():
     ]}
 
 @app.post("/api/v1/ai/interview/{interview_id}/questions/{question_id}/upload-audio")
-async def upload_audio(interview_id: int, question_id:int, file: UploadFile = File(...)):
-    temp_file = f"temp_{interview_id}_{question_id}.wav"
-
-    with open(temp_file,"wb") as buffer:
+async def upload_audio(interview_id: int, question_id: int, file: UploadFile = File(...)):
+    # 파일을 직접 wav로 저장
+    temp_wav_file = f"temp_{interview_id}_{question_id}.wav"
+    
+    with open(temp_wav_file, "wb") as buffer:
         buffer.write(await file.read())
 
-    analysis_voice_results = await analysis_audio(temp_file)
+    # wav 파일을 바로 사용하여 오디오 분석
+    analysis_voice_results = analysis_audio(temp_wav_file)
     print(analysis_voice_results)
+
+    # 임시 파일 삭제
+    os.remove(temp_wav_file)
+
+    # 분석 결과 반환
+    return analysis_voice_results
 
 
 
 @app.post("/api/v1/ai/interview/{interview_id}/questions/{question_id}/upload-video")
 async def upload_video(interview_id: int, question_id: int, file: UploadFile = File(...)):
-    temp_file = f"temp_{interview_id}_{question_id}.mp4"
+    temp_video_file = f"temp_{interview_id}_{question_id}.mp4"
 
     # 파일을 완전히 저장
-    with open(temp_file, "wb") as buffer:
+    with open(temp_video_file, "wb") as buffer:
         buffer.write(await file.read())
 
+
     # 비디오 분석 후 S3 업로드
-    analysis_result = await analyze_video(temp_file)
+    analysis_result = await analyze_video(temp_video_file)
     print(analysis_result)
+
+
     s3_key = f'{interview_id}/{question_id}.mp4'
-    s3.upload_file(temp_file, os.getenv('S3_BUCKET_NAME'), s3_key)
-    os.remove(temp_file)
+    s3.upload_file(temp_video_file, os.getenv('S3_BUCKET_NAME'), s3_key)
+    os.remove(temp_video_file)
 
     # 인터뷰 ID에 결과 저장 후 전달
     if interview_id not in analysis_results:
@@ -336,6 +351,7 @@ async def upload_video(interview_id: int, question_id: int, file: UploadFile = F
     analysis_results[interview_id][question_id] = analysis_result
 
     return {"message": "Video uploaded and analyzed successfully", "s3_key": s3_key, "analysis_result": analysis_result}
+
 
 @app.get("/api/v1/ai/analysis/{interview_id}", response_model=AnalysisResult)
 async def get_analysis(interview_id: int):

@@ -25,7 +25,8 @@ export interface WebcamCaptureProps {
   interviewId?: number;
   questionId?: number;
   onUploadComplete?: (result: any) => void;
-  onRecordingComplete?: (blob: Blob) => void; 
+  onRecordingComplete?: (blob: Blob) => void;
+  audioOnly?: boolean;
 }
 
 // QuestionTimer 컴포넌트의 props 타입 정의

@@ -65,7 +65,10 @@ const interviewSlice = createSlice({
       state.isLoading = action.payload;
     },
     addPendingUpload(state, action: PayloadAction<number>) {
-      state.pendingUploads = [...state.pendingUploads, action.payload];
+      if (!Array.isArray(state.pendingUploads)) {
+        state.pendingUploads = []; // pendingUploads가 배열이 아닐 경우 빈 배열로 초기화
+      }
+      state.pendingUploads.push(action.payload);
       console.log("Inside addPendingUpload - pendingUploads:", state.pendingUploads);
     },
     removePendingUpload(state, action: PayloadAction<number>) {
