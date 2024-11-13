@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { getMyPortfolios } from "../../../api/PortfolioAPI";
 import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
-import { getRepository, getMyRepositories } from './../../../api/RepositoryAPI';
+import { getRepository, getMyRepositories } from "./../../../api/RepositoryAPI";
 
 interface Free {
   boardId: number;
@@ -43,8 +43,8 @@ interface Portfolio {
 }
 
 interface Repository {
+  repositoryId: number;
   repositoryTitle: string;
-
 }
 
 const UserProfilePage: React.FC = () => {
@@ -58,12 +58,13 @@ const UserProfilePage: React.FC = () => {
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
 
   const username = useSelector((state: RootState) => state.auth.username);
+  const picture = useSelector((state: RootState) => state.auth.picture);
 
   const [frees, setFrees] = useState<Free[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [portfolio, setPortfolio] = useState<Portfolio>();
-  const [repository, setRepository] = useState<Repository>();
+  const [repositories, setRepositories] = useState<Repository[]>([]);
   const skip = 0;
   const limit = 2;
 
@@ -72,12 +73,26 @@ const UserProfilePage: React.FC = () => {
     if (username) {
       const fetchMyBoards = async () => {
         try {
-          const freesResponse = await getMyBoards(username, skip, limit, "FREE");
-          const questionsResponse = await getMyBoards(username, skip, limit, "QUESTION");
-          const activitiesResponse = await getMyActivities( username, skip, limit );
+          const freesResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "FREE"
+          );
+          const questionsResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "QUESTION"
+          );
+          const activitiesResponse = await getMyActivities(
+            username,
+            skip,
+            limit
+          );
           const portfoliosResponse = await getMyPortfolios(username, 0, 100);
           const repositoryResponse = await getMyRepositories(username);
-          console.log("repositoryResponse: ", repositoryResponse)
+          console.log("repositoryResponse: ", repositoryResponse);
           const activitiesWithRepositoryNames = await Promise.all(
             activitiesResponse.data.items.map(async (activity: Activity) => {
               const repository = await getRepository(activity.repositoryId);
@@ -91,10 +106,8 @@ const UserProfilePage: React.FC = () => {
           setFrees(freesResponse.data.items);
           setQuestions(questionsResponse.data.items);
           setActivities(activitiesWithRepositoryNames);
-          setRepository(repositoryResponse.slice(0, 3));
+          setRepositories(repositoryResponse.items.slice(0, 3));
 
-          // portfolioIsPrimary가 true인 항목만 필터링하여 설정
-          console.log("total portfolios: ", portfoliosResponse.data.items);
           const primaryPortfolio = portfoliosResponse.data.items.find(
             (item: Portfolio) => item.portfolioIsPrimary == true
           );
@@ -104,11 +117,6 @@ const UserProfilePage: React.FC = () => {
         }
       };
       fetchMyBoards();
-
-      console.log(frees);
-      console.log(questions);
-      console.log(activities);
-      console.log("primary portfolios: ", portfolio);
     }
   }, []);
 
@@ -276,7 +284,8 @@ const UserProfilePage: React.FC = () => {
 
       {/* 대표 포트폴리오 */}
       <div className="portfolio-section !p-0">
-        <div className="portfolio-header">
+        {/* header */}
+        <div className="portfolio-header px-2 py-2">
           <h2>대표 포트폴리오</h2>
           <Link
             to={`/users/profile/${userId}/portfolio`}
@@ -290,32 +299,58 @@ const UserProfilePage: React.FC = () => {
             포트폴리오 관리
           </Link>
         </div>
+        {/* portfolio */}
         {portfolio && (
-          <Link
-            to={`/portfolio/${portfolio.portfolioId}`}
-            className="block mt-4"
-          >
-            <div className="flex justify-between items-start w-full">
+          <div className="block mt-4 min-h-[192px]">
+            <Link
+              to={`/portfolio/${portfolio.portfolioId}`}
+              className="flex items-start w-full px-2 py-2"
+            >
               <div className="flex items-center">
                 <img
                   src={portfolio.portfolioThumbnailImg || "기본 이미지 URL"} // 썸네일 이미지 URL 설정
                   alt="대표 포트폴리오 썸네일"
                   className="w-48 h-48 rounded-md mr-4" // 이미지 크기 및 여백 설정
                 />
+              </div>
+              <div className="flex flex-col w-full justify-between  min-h-[192px]">
                 <span className="text-lg font-semibold">
                   {portfolio.portfolioTitle}
                 </span>
+                <span>
+                  <p>레포지토리 소개(최대 세 줄)</p>
+                  <p>레포지토리 소개(최대 세 줄)</p>
+                  <p>레포지토리 소개(최대 세 줄)</p>
+                </span>
+                <div className="text-sm text-gray-500 mt-auto self-end">
+                  {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
+                  {new Date(portfolio.created)
+                    .toLocaleDateString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })
+                    .replace(/\.$/, "")}
+                </div>
               </div>
-              <span className="text-sm text-gray-500 mt-auto">
-                {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
-                {new Date(portfolio.created).toLocaleDateString()}
-              </span>
+            </Link>
+            {/* Nickname */}
+            <div className="border-t border-gray-300 py-2 text-right">
+              <Link to={`/users/profile/${portfolio.memberId}`}>
+                <div className="py-2 px-2 flex items-center justify-end space-x-2">
+                  <img
+                    src={picture || ""}
+                    alt="profile"
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <span className="text-gray-500">by</span>
+                  <span className="text-black font-bold">
+                    {portfolio.memberNickname}
+                  </span>
+                </div>
+              </Link>
             </div>
-            {/* memberNickname을 아래에 배치 */}
-            <div className="border-t border-gray-300 pt-2 mt-4 text-right">
-              {portfolio.memberNickname}
-            </div>
-          </Link>
+          </div>
         )}
       </div>
 
@@ -324,7 +359,7 @@ const UserProfilePage: React.FC = () => {
         {/* 대표 레포지토리 */}
         <div className="repository-section">
           <div className="section-header">
-            <h2>대표 레퍼지토리</h2>
+            <h2>대표 레포지토리</h2>
             <Link
               to={`/users/profile/${userId}/repository`}
               className="more-link"
@@ -332,18 +367,18 @@ const UserProfilePage: React.FC = () => {
               더 보기 →
             </Link>
           </div>
-          <div className="repository-item">
-            <a href="">
-              <h3>데이터 기반 채용 전략</h3>
-              <p>효율적인 인재 확보와 이직률 감소 사례</p>
-            </a>
-          </div>
-          <div className="repository-item">
-            <a href="">
-              <h3>조직문화 혁신을 통한 업무 효율성 향상</h3>
-              <p>효율적인 인재 확보와 이직률 감소 사례</p>
-            </a>
-          </div>
+          {repositories.length > 0 ? (
+            repositories.map((repository, index) => (
+              <div className="repository-item" key={index}>
+                <Link to={`/repository/${repository.repositoryId}`}>
+                  <h3>{repository.repositoryTitle}</h3>
+                  <p>효율적인 인재 확보와 이직률 감소 사례</p>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p>레포지토리가 없습니다</p>
+          )}
         </div>
 
         {/* 작성한 게시글 */}
@@ -364,9 +399,10 @@ const UserProfilePage: React.FC = () => {
                 activities.map((activity) => (
                   <li key={activity.activityBoardId}>
                     <Link to={`/activity/${activity.activityBoardId}`}>
-                    <span className="font-bold text-black">
-                      [{activity.repositoryName}]
-                    </span> {activity.activityBoardTitle}
+                      <span className="font-bold text-black">
+                        [{activity.repositoryName}]
+                      </span>{" "}
+                      {activity.activityBoardTitle}
                     </Link>
                   </li>
                 ))
