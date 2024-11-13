@@ -41,16 +41,16 @@ export interface QuestionTimerProps {
 
 
 export interface TimeSeriesData {
-  time: string;
+  time: number;
   emotion: string;
-  movement_focus: string;
-  gaze_focus: string;
+  movement_focus: number;
+  gaze_focus: number;
 }
 
 export interface ResultData {
-  "current emotion"?: string;
-  "movement focus"?: string;
-  "gaze focus"?: string;
+  "current_emotion"?: string;
+  "movement_focus"?: number;
+  "gaze_focus"?: number;
   "time_series_data"?: TimeSeriesData[];
 }
 

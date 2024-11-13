@@ -121,7 +121,7 @@ const App: React.FC = () => {
           <Route path="interview/process" element={<InterviewProcessPage  />} />
           <Route path="interview/setup" element={<InterviewSetupPage />} />
           <Route path="interview/questions" element={<InterviewQuestionPage />} />
-          <Route path="analyze" element={<AnalysisResultPage />} />
+          <Route path="analyze/1" element={<AnalysisResultPage />} />
           {/* <Route path="record/:record_id" element={<AIRecordPage />} /> */}
         </Route> }
 

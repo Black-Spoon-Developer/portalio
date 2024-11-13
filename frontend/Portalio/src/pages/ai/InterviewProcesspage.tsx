@@ -191,43 +191,52 @@ const InterviewProcessPage: React.FC = () => {
     dispatch(interviewActions.startAnswering())
   }, [dispatch]);
 
-  // 답변시간 끝나면 현재 문제 번호가 마지막번호가 아니라면 현재 번호 +1, 마지막 번호면 분석페이지로 이동
 
-  const handleRecordingComplete = useCallback(
-    async (blob: Blob) => {
-      const questionId = currentQuestionIndex;
-      console.log("Adding to pendingUploads:", questionId);  // 로그 추가
-      dispatch(interviewActions.addPendingUpload(questionId));
-      
+  
+// 답변 시간이 끝나면 녹화를 종료하고 다음 질문으로 이동
+const handleAnswerEnd = useCallback(() => {
+  dispatch(interviewActions.stopAnswering()); // 녹화 중지 상태로 전환
 
-      try {
-        if (interviewId !== null) {  // interviewId가 존재하는 경우에만 업로드
-          const result = await uploadVideoApi(interviewId, questionId, blob, 3);
-          if (result) {
-            dispatch(interviewActions.saveAnalysisResult({ questionId, result }));
-          }
+  if (currentQuestionIndex < questions.length - 1) {
+    // 현재 질문이 마지막 질문이 아닌 경우
+    dispatch(interviewActions.incrementQuestionIndex());
+    dispatch(interviewActions.startPreparation());
+  } else {
+    // 마지막 질문인 경우 인터뷰 상태 초기화 및 분석 페이지로 이동 준비
+    dispatch(interviewActions.resetInterview());
+    // 분석 페이지로 이동
+    navigate("/ai/analyze/1/");
+  }
+}, [currentQuestionIndex, dispatch, navigate, questions.length]);
+
+// 녹화 완료 시 비디오 업로드
+const handleRecordingComplete = useCallback(
+  async (blob: Blob) => {
+    const questionId = currentQuestionIndex;
+    console.log("Adding to pendingUploads:", questionId); // 로그 추가
+    dispatch(interviewActions.addPendingUpload(questionId));
+
+    try {
+      if (interviewId !== null) {  // interviewId가 존재하는 경우에만 업로드
+        const result = await uploadVideoApi(interviewId, questionId, blob);
+        if (result) {
+          dispatch(interviewActions.saveAnalysisResult({ questionId, result }));
         }
-      } catch (error) {
-        console.error("Failed to upload video:", error);
-      } finally {
-        dispatch(interviewActions.removePendingUpload(questionId));
+
+        // 마지막 질문이면 업로드 완료 후 분석 페이지로 이동
+        if (currentQuestionIndex === questions.length - 1) {
+          dispatch(interviewActions.resetInterview()); // 인터뷰 상태 초기화
+          navigate("/ai/analyze/1/");
+        }
       }
-    },
-    [currentQuestionIndex, dispatch, interviewId]
-  );
-
-  // 답변 시간이 끝나면 녹화를 종료하고 다음 질문으로 이동
-  const handleAnswerEnd = useCallback(() => {
-    dispatch(interviewActions.stopAnswering()); // 녹화 중지 상태로 전환
-
-    if (currentQuestionIndex < questions.length - 1) {
-      dispatch(interviewActions.incrementQuestionIndex());
-      dispatch(interviewActions.startPreparation());
-    } else {
-      dispatch(interviewActions.resetInterview()); // 모든 질문 완료 시 초기화
-      navigate("/ai/analyze");
+    } catch (error) {
+      console.error("Failed to upload video:", error);
+    } finally {
+      dispatch(interviewActions.removePendingUpload(questionId));
     }
-  }, [currentQuestionIndex, dispatch, navigate, questions.length]);
+  },
+  [currentQuestionIndex, dispatch, interviewId, questions.length, navigate]
+);
 
 
   return (

@@ -17,6 +17,10 @@ from pydantic import BaseModel
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+# 딕셔너리로
+from typing import Dict
+
+
 
 
 
@@ -134,9 +138,9 @@ class TimeSeriesData(BaseModel):
     gaze_focus: float
 
 class AnalysisResult(BaseModel):
-    현재_감정: str
-    움직임_집중도: float
-    시선_집중도: float
+    current_emotion: str
+    movement_focus: float
+    gaze_focus: float
     time_series_data: list[TimeSeriesData]
 
 
@@ -290,9 +294,9 @@ def sync_analyze_video(video_file):
     
     # 최종 결과 반환
     return {
-        "현재 감정": current_emotion,
-        "움직임 집중도": round(movement_focus_score, 2),
-        "시선 집중도": round(gaze_focus_score, 2),
+        "current_emotion": current_emotion,
+        "movement_focus": round(movement_focus_score, 2),
+        "gaze_focus": round(gaze_focus_score, 2),
         "time_series_data": time_series_data
     }
 
@@ -350,11 +354,41 @@ async def upload_video(interview_id: int, question_id: int, file: UploadFile = F
         analysis_results[interview_id] = {}
     analysis_results[interview_id][question_id] = analysis_result
 
-    return {"message": "Video uploaded and analyzed successfully", "s3_key": s3_key, "analysis_result": analysis_result}
+    return {
+        "message": "Video uploaded and analyzed successfully",
+        "interview_id": interview_id,
+        "question_id": question_id,
+        "analysis_result": analysis_results[interview_id][question_id],
+    }
 
 
-@app.get("/api/v1/ai/analysis/{interview_id}", response_model=AnalysisResult)
+@app.get("/api/v1/ai/analysis/{interview_id}", response_model=Dict[int, AnalysisResult])
 async def get_analysis(interview_id: int):
     if interview_id not in analysis_results:
         raise HTTPException(status_code=404, detail="Analysis not found for this interview")
-    return analysis_results[interview_id]
+    
+    # 데이터 형식 맞춤
+    analysis_data = analysis_results[interview_id]
+    print("------------------------")
+    print(analysis_data)
+
+    results = {
+        int(question_id): AnalysisResult(
+            current_emotion=data.get("current_emotion", "중립"),
+            movement_focus=data.get("movement_focus", 100),
+            gaze_focus=data.get("gaze_focus", 100),
+            time_series_data=[
+                TimeSeriesData(
+                    time=entry.get("time", 0),
+                    emotion=entry.get("emotion", "중립"),
+                    movement_focus=entry.get("movement_focus", 100),
+                    gaze_focus=entry.get("gaze_focus", 100)
+                )
+                for entry in data.get("time_series_data", [])
+            ]
+        )
+        for question_id, data in analysis_data.items()
+    }
+    
+    return results
+
