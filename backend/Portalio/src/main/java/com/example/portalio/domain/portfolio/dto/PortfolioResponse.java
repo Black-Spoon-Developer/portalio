@@ -17,6 +17,7 @@ public class PortfolioResponse {
     private String portfolioThumbnailImg;
     private Integer portfolioRecommendationCount;
     private Boolean portfolioPost;
+    private Boolean portfolioIsPrimary;
     private LocalDateTime created;
     private Integer portfolioCommentCount;
     private Long memberId;
@@ -34,6 +35,7 @@ public class PortfolioResponse {
                 .portfolioCommentCount(portfolio.getPortfolioComments().size())
                 .portfolioRecommendationCount(portfolio.getPortfolioRecommendationCount())
                 .portfolioPost(portfolio.getPortfolioPost())
+                .portfolioIsPrimary(portfolio.getPortfolioIsPrimary())
                 .created(portfolio.getCreated())
                 .memberId(portfolio.getMember().getMemberId())
                 .memberNickname(portfolio.getMember().getUserDetail().getUserNickname())
