@@ -24,7 +24,6 @@ const UserPortfolioListPage: React.FC = () => {
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const navigate = useNavigate();
 
-
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const limit = ITEMS_PER_PAGE;
 
@@ -32,11 +31,8 @@ const UserPortfolioListPage: React.FC = () => {
     if (username && accessToken) {
       const fetchMyPortfolios = async () => {
         try {
-          const response = await getMyPortfolios(
-            username,
-            skip,
-            limit,
-          );
+          const response = await getMyPortfolios(username, skip, limit);
+          console.log(response);
           setPortfolios(response.data.items);
         } catch (error) {
           console.error("Failed to fetch portfolios:", error);
@@ -68,7 +64,7 @@ const UserPortfolioListPage: React.FC = () => {
               to={`/portfolio/${portfolio.portfolioId}`}
               key={portfolio.portfolioId}
             >
-              <li className="flex items-center p-4 border-b-2">
+              <li className="flex items-start p-4 border-b-2">
                 <img
                   src={portfolio.portfolioThumbnailImg || "썸네일 이미지 URL"}
                   alt="썸네일 이미지"
@@ -76,17 +72,9 @@ const UserPortfolioListPage: React.FC = () => {
                 />
                 <div className="flex-grow">
                   <div className="flex items-center mb-2">
-                    <h2 className="text-lg font-bold mr-2">
-                      {portfolio.createdDate} {portfolio.portfolioTitle}
-                    </h2>
-                    <span
-                      className={`text-sm font-semibold rounded px-2 py-1 ${
-                        portfolio.visibility === "Public"
-                          ? "bg-blue-200 text-blue-600"
-                          : "bg-red-200 text-red-600"
-                      }`}
-                    >
-                      {portfolio.visibility}
+                    <h2 className="text-2xl font-bold mr-2">{portfolio.createdDate} {portfolio.portfolioTitle}</h2>
+                    <span className={`text-sm font-semibold rounded-full px-2 py-1 ${portfolio.portfolioPost ? "bg-purple-200 text-white-600" : "bg-pink-200 text-white-600" }`}>
+                      {portfolio.portfolioPost ? "Public" : "Private"}
                     </span>
                   </div>
                   <p className="text-gray-600 text-sm mb-1">
