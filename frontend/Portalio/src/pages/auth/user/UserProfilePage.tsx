@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import "./UserProfilePage.css";
 import ProfileImage from "../../../assets/ProfileImage.png"; // 프로필 이미지 경로
 import BriefCase from "../../../assets/BriefCase.svg";
@@ -7,8 +8,47 @@ import LinkedInIcon from "../../../assets/LinkedIn.svg";
 import InstagramIcon from "../../../assets/Instagram.svg";
 import GitHubIcon from "../../../assets/GitHub.svg";
 import SettingsIcon from "../../../assets/Setting.svg";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { getMyPortfolios } from "../../../api/PortfolioAPI";
+import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
+import { getRepository, getMyRepositories } from "./../../../api/RepositoryAPI";
+
+interface Free {
+  boardId: number;
+  boardTitle: string;
+}
+
+interface Activity {
+  activityBoardId: number;
+  activityBoardTitle: string;
+  repositoryId: number;
+  repositoryName: string;
+}
+
+interface Question {
+  boardId: number;
+  boardTitle: string;
+}
+
+interface Portfolio {
+  created: Date;
+  portfolioId: number;
+  portfolioTitle: string;
+  portfolioIsPrimary: boolean;
+  portfolioCommentCount: number;
+  portfolioThumbnailImg: string;
+  memberId: number;
+  memberNickname: string;
+}
+
+interface Repository {
+  repositoryId: number;
+  repositoryTitle: string;
+}
 
 const UserProfilePage: React.FC = () => {
+  const { userId } = useParams<{ userId: string }>();
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedYear, setSelectedYear] = useState(2024);
   const years = [2023, 2024];
@@ -16,6 +56,69 @@ const UserProfilePage: React.FC = () => {
   const dummyData = Array(52)
     .fill(null)
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
+
+  const username = useSelector((state: RootState) => state.auth.username);
+  const picture = useSelector((state: RootState) => state.auth.picture);
+
+  const [frees, setFrees] = useState<Free[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [portfolio, setPortfolio] = useState<Portfolio>();
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const skip = 0;
+  const limit = 2;
+
+  // api 요청
+  useEffect(() => {
+    if (username) {
+      const fetchMyBoards = async () => {
+        try {
+          const freesResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "FREE"
+          );
+          const questionsResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "QUESTION"
+          );
+          const activitiesResponse = await getMyActivities(
+            username,
+            skip,
+            limit
+          );
+          const portfoliosResponse = await getMyPortfolios(username, 0, 100);
+          const repositoryResponse = await getMyRepositories(username);
+          console.log("repositoryResponse: ", repositoryResponse);
+          const activitiesWithRepositoryNames = await Promise.all(
+            activitiesResponse.data.items.map(async (activity: Activity) => {
+              const repository = await getRepository(activity.repositoryId);
+              return {
+                ...activity,
+                repositoryName: repository.repositoryTitle, // repository의 이름을 저장
+              };
+            })
+          );
+
+          setFrees(freesResponse.data.items);
+          setQuestions(questionsResponse.data.items);
+          setActivities(activitiesWithRepositoryNames);
+          setRepositories(repositoryResponse.items.slice(0, 3));
+
+          const primaryPortfolio = portfoliosResponse.data.items.find(
+            (item: Portfolio) => item.portfolioIsPrimary == true
+          );
+          setPortfolio(primaryPortfolio);
+        } catch (error) {
+          console.error("Failed to fetch boards:", error);
+        }
+      };
+      fetchMyBoards();
+    }
+  }, []);
 
   // 이력 경력 더미 데이터
   const careerData = [
@@ -78,7 +181,12 @@ const UserProfilePage: React.FC = () => {
                   <div className="career-details">
                     <strong className="company-name">{career.company}</strong>
                     <span className="position-location">
-                      {career.position} | {career.location}
+                      {" "}
+                      {career.position}
+                    </span>
+                    <br />
+                    <span className="position-position">
+                      {career.location}{" "}
                     </span>
                     <span className="duration">{career.duration}</span>
                   </div>
@@ -175,19 +283,75 @@ const UserProfilePage: React.FC = () => {
       </div>
 
       {/* 대표 포트폴리오 */}
-      <div className="portfolio-section">
-        <div className="portfolio-header">
+      <div className="portfolio-section !p-0">
+        {/* header */}
+        <div className="portfolio-header px-2 py-2">
           <h2>대표 포트폴리오</h2>
-          <a href="" className="portfolio-settings-link">
+          <Link
+            to={`/users/profile/${userId}/portfolio`}
+            className="portfolio-settings-link"
+          >
             <img
               src={SettingsIcon}
               alt="포트폴리오 관리"
               className="settings-icon"
             />
             포트폴리오 관리
-          </a>
+          </Link>
         </div>
-        <a href="">2024-10-29 배경 포트폴리오</a>
+        {/* portfolio */}
+        {portfolio && (
+          <div className="block mt-4 min-h-[192px]">
+            <Link
+              to={`/portfolio/${portfolio.portfolioId}`}
+              className="flex items-start w-full px-2 py-2"
+            >
+              <div className="flex items-center">
+                <img
+                  src={portfolio.portfolioThumbnailImg || "기본 이미지 URL"} // 썸네일 이미지 URL 설정
+                  alt="대표 포트폴리오 썸네일"
+                  className="w-48 h-48 rounded-md mr-4" // 이미지 크기 및 여백 설정
+                />
+              </div>
+              <div className="flex flex-col w-full justify-between  min-h-[192px]">
+                <span className="text-lg font-semibold">
+                  {portfolio.portfolioTitle}
+                </span>
+                <span>
+                  <p>레포지토리 소개(최대 세 줄)</p>
+                  <p>레포지토리 소개(최대 세 줄)</p>
+                  <p>레포지토리 소개(최대 세 줄)</p>
+                </span>
+                <div className="text-sm text-gray-500 mt-auto self-end">
+                  {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
+                  {new Date(portfolio.created)
+                    .toLocaleDateString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })
+                    .replace(/\.$/, "")}
+                </div>
+              </div>
+            </Link>
+            {/* Nickname */}
+            <div className="border-t border-gray-300 py-2 text-right">
+              <Link to={`/users/profile/${portfolio.memberId}`}>
+                <div className="py-2 px-2 flex items-center justify-end space-x-2">
+                  <img
+                    src={picture || ""}
+                    alt="profile"
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <span className="text-gray-500">by</span>
+                  <span className="text-black font-bold">
+                    {portfolio.memberNickname}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 대표 레포지토리 및 작성한 게시글 섹션 */}
@@ -196,22 +360,25 @@ const UserProfilePage: React.FC = () => {
         <div className="repository-section">
           <div className="section-header">
             <h2>대표 레포지토리</h2>
-            <a href="" className="more-link">
-              레포지토리 더보기 →
-            </a>
+            <Link
+              to={`/users/profile/${userId}/repository`}
+              className="more-link"
+            >
+              더 보기 →
+            </Link>
           </div>
-          <div className="repository-item">
-            <a href="">
-              <h3>데이터 기반 채용 전략</h3>
-              <p>효율적인 인재 확보와 이직률 감소 사례</p>
-            </a>
-          </div>
-          <div className="repository-item">
-            <a href="">
-              <h3>조직문화 혁신을 통한 업무 효율성 향상</h3>
-              <p>효율적인 인재 확보와 이직률 감소 사례</p>
-            </a>
-          </div>
+          {repositories.length > 0 ? (
+            repositories.map((repository, index) => (
+              <div className="repository-item" key={index}>
+                <Link to={`/repository/${repository.repositoryId}`}>
+                  <h3>{repository.repositoryTitle}</h3>
+                  <p>효율적인 인재 확보와 이직률 감소 사례</p>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p>레포지토리가 없습니다</p>
+          )}
         </div>
 
         {/* 작성한 게시글 */}
@@ -220,49 +387,71 @@ const UserProfilePage: React.FC = () => {
           <div className="post-category">
             <h3 className="post-title">
               활동 게시글{" "}
-              <a href="" className="more-link">
-                더보기 →
-              </a>
+              <Link
+                to={`/users/profile/${userId}/activity`}
+                className="more-link"
+              >
+                더 보기 →
+              </Link>
             </h3>
             <ul>
-              <li>
-                <a href="">경영지도사 1일차 공부!</a>
-              </li>
-              <li>
-                <a href="">경영지도사 2일차 공부!</a>
-              </li>
+              {activities.length > 0 ? (
+                activities.map((activity) => (
+                  <li key={activity.activityBoardId}>
+                    <Link to={`/activity/${activity.activityBoardId}`}>
+                      <span className="font-bold text-black">
+                        [{activity.repositoryName}]
+                      </span>{" "}
+                      {activity.activityBoardTitle}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>작성한 활동 게시글이 없어요</li>
+              )}
             </ul>
           </div>
           <div className="post-category">
             <h3 className="post-title">
               자유 게시글{" "}
-              <a href="" className="more-link">
-                더보기 →
-              </a>
+              <Link to={`/users/profile/${userId}/free`} className="more-link">
+                더 보기 →
+              </Link>
             </h3>
             <ul>
-              <li>
-                <a href="">저녁 메뉴 추천좀!</a>
-              </li>
-              <li>
-                <a href="">취업 활동에서의 중요 요소</a>
-              </li>
+              {frees.length > 0 ? (
+                frees.map((free) => (
+                  <li key={free.boardId}>
+                    <Link to={`/free/${free.boardId}`}>{free.boardTitle}</Link>
+                  </li>
+                ))
+              ) : (
+                <li>작성한 자유 게시글이 없어요</li>
+              )}
             </ul>
           </div>
           <div className="post-category">
             <h3 className="post-title">
               질문 게시글{" "}
-              <a href="" className="more-link">
-                더보기 →
-              </a>
+              <Link
+                to={`/users/profile/${userId}/question`}
+                className="more-link"
+              >
+                더 보기 →
+              </Link>
             </h3>
             <ul>
-              <li>
-                <a href="">인사 포트폴리오 작성법 좀 알려주세요!</a>
-              </li>
-              <li>
-                <a href="">이 회사 어떤가요?</a>
-              </li>
+              {questions.length > 0 ? (
+                questions.map((question) => (
+                  <li key={question.boardId}>
+                    <Link to={`/question/${question.boardId}`}>
+                      {question.boardTitle}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>작성한 질문 게시글이 없어요</li>
+              )}
             </ul>
           </div>
         </div>

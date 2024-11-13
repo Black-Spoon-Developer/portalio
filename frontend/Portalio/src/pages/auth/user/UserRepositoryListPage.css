@@ -84,12 +84,12 @@
   margin-left: 10px;
 }
 
-.visibility-badge.public {
+.visibility-badge.true {
   background-color: #b3d4fc;
   color: #007bff;
 }
 
-.visibility-badge.private {
+.visibility-badge.false {
   background-color: #fddede;
   color: #ff5757;
 }
