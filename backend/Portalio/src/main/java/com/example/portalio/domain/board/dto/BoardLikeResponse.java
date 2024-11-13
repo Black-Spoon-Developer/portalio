@@ -16,6 +16,7 @@ public class BoardLikeResponse {
     private Boolean boardSolve;
     private Integer boardViews;
     private Integer boardRecommendationCount;
+    private Integer boardCommentCount;
     private LocalDateTime created;
     private Long memberId;
     private String memberNickname;
@@ -31,6 +32,7 @@ public class BoardLikeResponse {
                 .boardSolve(board.getBoardSolve())
                 .boardViews(board.getBoardViews())
                 .boardRecommendationCount(board.getBoardRecommendationCount())
+                .boardCommentCount(board.getBoardComments().size())
                 .created(board.getCreated())
                 .memberId(board.getMember().getMemberId())
                 .memberNickname(board.getMember().getUserDetail().getUserNickname())
