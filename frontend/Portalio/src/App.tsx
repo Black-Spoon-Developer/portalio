@@ -7,17 +7,15 @@ import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 import UserProfilePage from "./pages/auth/user/UserProfilePage.tsx";
 import UserSettingPage from "./pages/auth/user/UserSettingPage.tsx";
-import UserFreeListPage from "./pages/auth/user/UserFreeListPage.tsx";
-import UserActivityListPage from "./pages/auth/user/UserActivityListPage.tsx";
 import UserPortfolioListPage from "./pages/auth/user/UserPortfolioListPage.tsx";
-import UserRepositoryListPage from "./pages/auth/user/UserRepositoryListPage.tsx";
-import UserQuestionListPage from "./pages/auth/user/UserQuestionListPage.tsx";
+import UserFreeListPage from "./pages/auth/user/UserFreeListPage";
+import UserRepositoryListPage from "./pages/auth/user/UserRepositoryPage.tsx";
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
 import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
-import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
+// import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
 import PortfolioDetailPage from "./pages/board/portfolio/PortfolioDetailPage.tsx";
-import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
+// import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
 import RepositoryEditPage from "./pages/board/repository/RepositoryEditPage.tsx";
 import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.tsx";
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
@@ -56,12 +54,10 @@ const App: React.FC = () => {
         <Route path="/users" element={<Outlet />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<UserSignupPage />} />
-          <Route path="profile/:userId" element={<Outlet />}>
+          <Route path="profile/:user_id" element={<Outlet />}>
             <Route index element={<UserProfilePage />} />
-            <Route path="setting" element={<UserSettingPage />} />
             <Route path="free" element={<UserFreeListPage />} />
-            <Route path="activity" element={<UserActivityListPage />} />
-            <Route path="question" element={<UserQuestionListPage />} />
+            <Route path="setting" element={<UserSettingPage />} />
             <Route path="portfolio" element={<UserPortfolioListPage />} />
             <Route path="repository" element={<UserRepositoryListPage />} />
           </Route>
@@ -70,15 +66,6 @@ const App: React.FC = () => {
         {/* Board */}
         <Route path="/free" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
-<<<<<<< HEAD
-          <Route path=":freeId" element={<BoardDetailPage />} />
-          <Route path="edit/:freeId" element={<BoardEditPage />} />
-        </Route>
-        <Route path="/question" element={<Outlet />}>
-          <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":questionId" element={<BoardDetailPage />} />
-          <Route path="edit/:questionId" element={<BoardEditPage />} />
-=======
           <Route path=":free_id" element={<FreeDetailPage />} />
           <Route path="edit/:free_id" element={<BoardEditPage />} />
         </Route>
@@ -86,26 +73,25 @@ const App: React.FC = () => {
           <Route path="create" element={<BoardCreatePage />} />
           <Route path=":question_id" element={<QuestionDetailPage />} />
           <Route path="edit/:question_id" element={<BoardEditPage />} />
->>>>>>> 225a011db4d73132b3e5a21b42746a152f5d0124
         </Route>
         <Route path="/activity" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":activityId" element={<BoardDetailPage />} />
-          <Route path="edit/:activityId" element={<BoardEditPage />} />
+          <Route path=":activity_id" element={<BoardDetailPage />} />
+          <Route path="edit/:activity_id" element={<BoardEditPage />} />
         </Route>
 
         {/* Portfolio */}
         <Route path="/portfolio" element={<Outlet />}>
-          <Route path="create" element={<PortfolioCreatePage />} />
-          <Route path=":portfolioId" element={<PortfolioDetailPage />} />
-          <Route path="edit/:portfolioId" element={<PortfolioEditPage />} />
+          {/* <Route path="create" element={<PortfolioCreatePage />} /> */}
+          <Route path=":portfolio_id" element={<PortfolioDetailPage />} />
+          {/* <Route path="edit/:portfolio_id" element={<PortfolioEditPage />} /> */}
         </Route>
 
         {/* Repository */}
         <Route path="/repository" element={<Outlet />}>
           <Route path="create" element={<RepositoryCreatePage />} />
-          <Route path=":repositoryId" element={<RepositoryDetailPage />} />
-          <Route path="edit/:repositoryId" element={<RepositoryEditPage />} />
+          <Route path=":repository_id" element={<RepositoryDetailPage />} />
+          <Route path="edit/:repository_id" element={<RepositoryEditPage />} />
         </Route>
 
         {/* Recruiter (주석 처리) */}
@@ -114,9 +100,9 @@ const App: React.FC = () => {
         {/* AI (주석 처리) */}
         {/* <Route path="/ai" element={<Outlet />}>
           <Route path="introduce" element={<AIIntroducePage />} />
-          <Route path="interview/:interviewId" element={<AIInterviewPage />} />
-          <Route path="analyze/:analyzeId" element={<AIAnalyzePage />} />
-          <Route path="record/:recordId" element={<AIRecordPage />} />
+          <Route path="interview/:interview_id" element={<AIInterviewPage />} />
+          <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
+          <Route path="record/:record_id" element={<AIRecordPage />} />
         </Route> */}
 
         {/* Exception handling */}
