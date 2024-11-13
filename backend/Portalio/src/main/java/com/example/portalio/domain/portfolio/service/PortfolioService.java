@@ -42,11 +42,21 @@ public class PortfolioService {
     private final PortfolioRecomRepository portfolioRecomRepository;
 
     // jobId, title을 사용한 게시글 검색
-    public PortfolioListResponse getPortfolioSearch(Long portfolioJobId, String portfolioTitle) {
+    public PortfolioLikeListResponse getPortfolioSearch(Long portfolioJobId, String portfolioTitle, CustomOAuth2User oauth2User) {
 
         List<Portfolio> portfolios = portfolioRepository.findByJobSubCategoryJobIdAndPortfolioTitle(portfolioJobId, portfolioTitle);
 
-        return PortfolioListResponse.from(portfolios);
+        Map<Long, Boolean> likeStatusMap = new HashMap<>();
+        if (oauth2User != null) {
+            // 인증된 경우 좋아요 상태를 조회
+            Member member = findMember(oauth2User.getMemberId());
+
+            List<PortfolioRecom> likes = portfolioRecomRepository.findAllByMemberAndPortfolioIn(member, portfolios);
+            likeStatusMap = likes.stream()
+                    .collect(Collectors.toMap(recom -> recom.getPortfolio().getPortfolioId(), recom -> true));
+        }
+
+        return PortfolioLikeListResponse.from(portfolios, likeStatusMap);
     }
 
     // 게시글 상세보기, params : portfolioId
@@ -153,6 +163,21 @@ public class PortfolioService {
         portfolioRepository.delete(portfolio);
 
         return PortfolioResponse.from(portfolio);
+    }
+
+    @Transactional
+    public PortfolioPostResponse primaryPortfolio(Long portfoliosId, CustomOAuth2User oauth2User) {
+
+        Member member = findMember(oauth2User.getMemberId());
+
+        Portfolio portfolio = portfolioRepository.findByPortfolioIdAndMember_MemberId(portfoliosId, member.getMemberId())
+                .orElseThrow(PortfolioNotFoundException::new);
+
+        portfolio.setPortfolioIsPrimary(!portfolio.getPortfolioIsPrimary());
+
+        portfolioRepository.save(portfolio);
+
+        return PortfolioPostResponse.from(portfolio);
     }
 
     @Transactional

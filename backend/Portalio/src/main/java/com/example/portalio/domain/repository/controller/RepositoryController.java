@@ -114,4 +114,17 @@ public class RepositoryController {
 
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "[레포지토리]글 게시", description = "레포지토리 게시")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
+    @DeleteMapping("/{repositoryId}/primary")
+    public ResponseEntity<RepositoryPostResponse> primaryRepository(
+            @PathVariable Long repositoryId,
+            @AuthenticationPrincipal CustomOAuth2User oauth2User) {
+
+        RepositoryPostResponse response = repositoryService.primaryRepository(repositoryId, oauth2User);
+
+        return ResponseEntity.ok(response);
+    }
 }
