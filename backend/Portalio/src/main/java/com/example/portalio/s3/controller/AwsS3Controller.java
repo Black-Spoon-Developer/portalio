@@ -84,4 +84,15 @@ public class AwsS3Controller {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(new InputStreamResource(zipStream));
     }
+
+    @Operation(summary = "레포지토리 파일 업데이트", description = " : ")
+    @PostMapping(value = "/repofiles/update/{documentId}", consumes = "multipart/form-data")
+    public ResponseEntity<String> updateRepofiles(
+            @PathVariable String documentId,
+            @RequestParam("files") List<MultipartFile> files) {
+        // 파일을 업로드하고 S3에 저장된 URL 리스트 반환
+        String outputDocumentId = awsS3Service.updateRepofiles(documentId, files);
+
+        return ResponseEntity.ok(outputDocumentId);
+    }
 }

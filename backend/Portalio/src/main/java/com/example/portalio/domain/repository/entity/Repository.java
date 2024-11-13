@@ -59,18 +59,19 @@ public class Repository extends AuditableCreatedEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Repository(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Member member) {
+    private Repository(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Boolean repositoryIsPrimary, Member member) {
         this.repositoryTitle = repositoryTitle;
         this.repositoryContent = repositoryContent;
         this.startDate = startDate;
         this.endDate = endDate;
         this.repositoryFileKey = repositoryFileKey;
         this.repositoryPost = repositoryPost;
+        this.repositoryIsPrimary = repositoryIsPrimary;
         this.member = member;
     }
 
-    public static Repository of(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Member member) {
-        return new Repository(repositoryTitle, repositoryContent, startDate, endDate, repositoryFileKey, repositoryPost, member);
+    public static Repository of(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Boolean repositoryIsPrimary, Member member) {
+        return new Repository(repositoryTitle, repositoryContent, startDate, endDate, repositoryFileKey, repositoryPost, repositoryIsPrimary, member);
     }
 
     public void setRepositoryTitle(String repositoryTitle) { this.repositoryTitle = repositoryTitle; }

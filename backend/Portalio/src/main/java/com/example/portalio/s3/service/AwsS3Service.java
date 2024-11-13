@@ -129,6 +129,51 @@ public class AwsS3Service {
         return new ByteArrayInputStream(baos.toByteArray()); // 생성된 ZIP 파일의 InputStream 반환
     }
 
+    public String updateRepofiles(String documentId, List<MultipartFile> files) {
+
+        String folderName = "Repository";
+
+        FileDocument fileDocument = fileRepository.findFileUrlsAndFileNames(documentId)
+                .orElseThrow(() -> new RuntimeException("Document not found"));
+
+        List<String> fileUrls = new ArrayList<>(fileDocument.getFileUrls());
+        List<String> fileNames = new ArrayList<>(fileDocument.getFileNames());
+        System.out.println(fileUrls);
+
+        // S3에 각 파일을 업로드하고 URL 리스트 생성
+        files.forEach(file -> {
+            String realfileName = file.getOriginalFilename(); // 원본 파일 이름
+            fileNames.add(realfileName);
+            System.out.println(fileUrls);
+
+            String fileName = createFileNames(folderName, realfileName);
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(file.getSize());
+            objectMetadata.setContentType(file.getContentType());
+
+            try (InputStream inputStream = file.getInputStream()) {
+                amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata));
+            } catch (IOException e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+            }
+
+            String fileUrl = "https://" + bucketName + ".s3." + "ap-northeast-2.amazonaws.com/" + fileName;
+            fileUrls.add(fileUrl);
+        });
+        System.out.println(fileUrls);
+
+        fileDocument = new FileDocument(fileUrls, fileNames);
+
+        // URL 리스트를 MongoDB에 저장
+        FileDocument savedDocument = fileRepository.save(fileDocument);
+
+        System.out.println(savedDocument.getId());
+        System.out.println(savedDocument.getFileUrls());
+        System.out.println(savedDocument.getFileNames());
+        // 저장된 문서의 ID 반환
+        return savedDocument.getId();
+    }
+
     private String createFileNames(String folderName, String originalFilename) {
         return folderName + "/" + System.currentTimeMillis() + "_" + originalFilename;
     }
