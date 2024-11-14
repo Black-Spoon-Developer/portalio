@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 import { portfolioDetailLike } from "../../../api/PortfolioAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import "./PortfolioDetailMd.css";
+import { Viewer } from "@toast-ui/react-editor";
 
 interface PortfolioDetailMdProps {
   portfolioTitle: string;
@@ -61,9 +59,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
       <header className="flex justify-between items-center">
         <h1>{portfolioTitle}</h1>
       </header>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {portfolioContent}
-      </ReactMarkdown>
+      <Viewer initialValue={portfolioContent} key={portfolioContent} />
     </div>
   );
 };

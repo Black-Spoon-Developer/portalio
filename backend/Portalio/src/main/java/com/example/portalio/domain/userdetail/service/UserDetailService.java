@@ -27,7 +27,7 @@ public class UserDetailService {
 
     // userDetail 정보 저장 - 닉네임
     public UserDetailDTO saveUserDetail(UserDetailRequest request) {
-        String nickname = request.getNickname();
+        String nickname = request.getMemberNickname();
         String memberId = request.getMemberId();
         Long parseMemberId = Long.parseLong(memberId);
 
@@ -36,11 +36,13 @@ public class UserDetailService {
 
         UserDetail userDetail = userDetailRepository.findByMemberId(parseMemberId)
                 .orElseThrow(NoUserDetailException::new);
+        
 
         // 닉네임 설정
         userDetail.setUserNickname(nickname);
 
         UserDetail savedUserDetail = userDetailRepository.save(userDetail);
+        System.out.println(savedUserDetail.getUserNickname());
 
         return UserDetailDTO.from(savedUserDetail);
     }

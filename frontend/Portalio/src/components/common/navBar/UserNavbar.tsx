@@ -70,7 +70,7 @@ const UserNavbar: React.FC = () => {
           <div className="font-bold">{userTicket || 0}</div>
         </div>
         <div className="mx-5 font-bold">{userNickname || userName}</div>
-        <Tooltip title="Account settings">
+        <Tooltip title="프로필 메뉴">
           <IconButton onClick={handleMenuOpen} size="small" sx={{ ml: 2 }}>
             <Avatar
               src={

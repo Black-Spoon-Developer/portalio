@@ -24,6 +24,7 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.memberId = action.payload.memberId;
       state.memberName = action.payload.memberName;
+      state.memberNickname = action.payload.memberNickname;
       state.memberUsername = action.payload.memberUsername;
       state.memberPicture = action.payload.memberPicture;
       state.memberRole = action.payload.memberRole;

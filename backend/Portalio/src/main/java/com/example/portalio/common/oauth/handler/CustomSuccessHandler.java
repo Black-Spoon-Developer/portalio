@@ -68,7 +68,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         MemberDTO memberDTO = MemberDTO.from(member);
 
         // 유저 디테일 정보에 email, default 닉네임, 외래키 저장
-        UserDetail userDetail = userDetailRepository.findById(memberDTO.getMemberId())
+        UserDetail userDetail = userDetailRepository.findByMemberId(memberDTO.getMemberId())
                 .orElse(null);
 
         if (userDetail == null) {
