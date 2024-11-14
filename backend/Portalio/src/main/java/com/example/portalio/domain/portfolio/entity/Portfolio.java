@@ -37,11 +37,11 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_title", nullable = false, length = 50)
     private String portfolioTitle;
 
-    @Column(name = "portfolio_content", nullable = false, columnDefinition = "TEXT")
-    private String portfolioContent;
-
     @Column(name = "portfolio_description", nullable = false, columnDefinition = "TEXT")
     private String portfolioDescription;
+
+    @Column(name = "portfolio_content", nullable = false, columnDefinition = "TEXT")
+    private String portfolioContent;
 
     @Column(name = "portfolio_views", nullable = false)
     private Integer portfolioViews = 0;

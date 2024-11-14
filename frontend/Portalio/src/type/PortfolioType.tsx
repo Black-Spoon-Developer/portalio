@@ -1,5 +1,6 @@
 export interface PortfolioRequest {
   portfolioTitle: string;
+  portfolioDescription: string
   portfolioContent: string;
   portfolioThumbnailImg: string;
   portfolioPost: boolean;
