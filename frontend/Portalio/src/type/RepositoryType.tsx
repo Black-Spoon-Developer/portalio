@@ -1,5 +1,6 @@
 export interface RepositoryRequest {
   repositoryTitle: string;
+  repositoryDescription: string
   repositoryContent: string;
   startDate: string;
   endDate: string;
