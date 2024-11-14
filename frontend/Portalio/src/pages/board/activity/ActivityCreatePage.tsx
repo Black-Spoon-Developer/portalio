@@ -97,11 +97,10 @@ const ActivityCreatePage: React.FC = () => {
       activityBoardTitle: title,
       activityBoardContent: content,
       activityBoardDate: startDate,
+      repositoryId: repositoryId
     };
     
-    if (repositoryId) {
-      registerActivity(repositoryId, activityBoardData) 
-    }
+      registerActivity(activityBoardData) 
   };
   
   const [selectedRepository, setSelectedRepository] = useState<

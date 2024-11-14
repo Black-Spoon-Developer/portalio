@@ -97,6 +97,7 @@ const PortfolioEditPage: React.FC = () => {
       activityBoardTitle: title,
       activityBoardContent: content,
       activityBoardDate: boardDate,
+      repositoryId: repository_id,
     };
 
     if (repository_id && activity_id) {

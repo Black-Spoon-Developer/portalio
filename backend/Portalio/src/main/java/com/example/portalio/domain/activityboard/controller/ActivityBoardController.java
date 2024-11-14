@@ -87,10 +87,9 @@ public class ActivityBoardController {
     @PostMapping("/onlyactivity")
     public ResponseEntity<ActivityBoardResponse> registerActivityBoard(
             @RequestBody @Valid ActivityBoardRequest request,
-            @RequestBody @Valid Long repositoryId,
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        ActivityBoardResponse response = activityBoardService.registerActivityBoard(request, repositoryId, oauth2User);
+        ActivityBoardResponse response = activityBoardService.registerActivityBoard(request, oauth2User);
 
         return ResponseEntity.ok(response);
     }
