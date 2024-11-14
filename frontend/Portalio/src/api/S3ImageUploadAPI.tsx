@@ -50,3 +50,51 @@ export const uploadFilesAsZip = async (
     return null;
   }
 };
+
+export const uploadFilesToS3AndSaveToMongo = async (files: File[]): Promise<string | null> => {
+  try {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("multipartFile", file);
+    });
+
+    const response = await axios.post(`${BASE_URL}/api/v1/s3/repofiles`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data; // MongoDB 문서 ID 반환
+  } catch (error) {
+    console.error("S3 및 MongoDB 저장 오류:", error);
+    return null;
+  }
+};
+
+export const getmyfiles = async (documentId: String) => {
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/files/info/${documentId}`
+  );
+  return response.data;
+}
+
+export const repoupdate = async (documentId: String, files: File[]): Promise<string | null> => {
+  try {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    const response = await axios.post(`${BASE_URL}/api/v1/s3/repofiles/update/${documentId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data)
+
+    return response.data;
+  } catch (error) {
+    console.error("S3:", error);
+    return null;
+  }
+}

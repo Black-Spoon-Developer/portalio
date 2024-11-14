@@ -11,11 +11,10 @@ import UserPortfolioListPage from "./pages/auth/user/UserPortfolioListPage.tsx";
 import UserFreeListPage from "./pages/auth/user/UserFreeListPage";
 import UserRepositoryListPage from "./pages/auth/user/UserRepositoryListPage.tsx";
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
-import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
-// import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
+import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
 import PortfolioDetailPage from "./pages/board/portfolio/PortfolioDetailPage.tsx";
-// import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
+import PortfolioEditPage from "./pages/board/portfolio/PortfolioEditPage.tsx";
 import RepositoryEditPage from "./pages/board/repository/RepositoryEditPage.tsx";
 import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.tsx";
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
@@ -23,6 +22,9 @@ import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 import BoardPage from "./pages/board/board/BoardPage.tsx";
 import FreeDetailPage from "./pages/board/board/free/FreeDetailPage.tsx";
 import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.tsx";
+import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
+import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
+import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -75,16 +77,16 @@ const App: React.FC = () => {
           <Route path="edit/:question_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/activity" element={<Outlet />}>
-          <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":activity_id" element={<BoardDetailPage />} />
-          <Route path="edit/:activity_id" element={<BoardEditPage />} />
+          <Route path="create/:repository_id" element={<ActivityCreatePage />} />
+          <Route path=":activity_id" element={<ActivityDetailPage />} />
+          <Route path="edit/:repository_id/:activity_id" element={<ActivityEditPage />} />
         </Route>
 
         {/* Portfolio */}
         <Route path="/portfolio" element={<Outlet />}>
-          {/* <Route path="create" element={<PortfolioCreatePage />} /> */}
+          <Route path="create" element={<PortfolioCreatePage />} />
           <Route path=":portfolio_id" element={<PortfolioDetailPage />} />
-          {/* <Route path="edit/:portfolio_id" element={<PortfolioEditPage />} /> */}
+          <Route path="edit/:portfolio_id" element={<PortfolioEditPage />} />
         </Route>
 
         {/* Repository */}
