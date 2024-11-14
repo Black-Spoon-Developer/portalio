@@ -5,7 +5,7 @@ import { InterviewState } from "../../type/InterviewType";
 const initialState: InterviewState = {
   interviewId: 1,
   questions: [],
-  currentQuestionIndex: 1,
+  currentQuestionIndex: 0,
   isAnswering: false,
   isRecording: false,
   isLoading: true,

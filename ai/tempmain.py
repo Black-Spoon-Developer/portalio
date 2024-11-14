@@ -29,6 +29,7 @@ from typing import Dict
 # DB세션 의존성
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from urllib.parse import quote_plus
 
 load_dotenv()
 
@@ -138,7 +139,7 @@ async def analyze_video(video_file):
 
 
 # 데이터베이스 연결
-DATABASE_URL = "sqlite:///./test.db"  # 원하는 DB URL로 변경 가능
+DATABASE_URL = f"mysql+pymysql://{os.getenv('AI_DATABASE_USER')}:{quote_plus(os.getenv('AI_DATABASE_PASSWORD'))}@{os.getenv('AI_DATABASE_HOST')}:{os.getenv('AI_DATABASE_PORT')}/{os.getenv('AI_DATABASE_NAME')}"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -159,20 +160,20 @@ class AnalysisResult(BaseModel):
 class InterviewAnalysis(Base):
     __tablename__ = "interview_analysis"
 
-    id = Column(Integer, primary_key=True, index=True)
+    interview_analysis_id = Column(Integer, primary_key=True, index=True)
     interview_id = Column(Integer, index=True)
     question_id = Column(Integer)
-    current_emotion = Column(String, default="중립")
+    current_emotion = Column(String(50), default="중립")
     movement_focus = Column(Float, default=100)
     gaze_focus = Column(Float, default=100)
 
 class TimeSeriesData(Base):
     __tablename__ = "time_series_data"
     
-    id = Column(Integer, primary_key=True, index=True)
+    time_series_data_id = Column(Integer, primary_key=True, index=True)
     analysis_id = Column(Integer, ForeignKey('interview_analysis.id'))
     time = Column(Integer)
-    emotion = Column(String)
+    emotion = Column(String(50))
     movement_focus = Column(Float)
     gaze_focus = Column(Float)
 

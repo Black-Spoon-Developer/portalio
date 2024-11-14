@@ -370,10 +370,10 @@ async def get_analysis(interview_id: int):
     # 데이터 형식 맞춤
     analysis_data = analysis_results[interview_id]
     print("------------------------")
-    print(analysis_data)
+    
 
     results = {
-        int(question_id): AnalysisResult(
+        int(question_id) : AnalysisResult(
             current_emotion=data.get("current_emotion", "중립"),
             movement_focus=data.get("movement_focus", 100),
             gaze_focus=data.get("gaze_focus", 100),
@@ -389,6 +389,7 @@ async def get_analysis(interview_id: int):
         )
         for question_id, data in analysis_data.items()
     }
+    print(results)
     
     return results
 
