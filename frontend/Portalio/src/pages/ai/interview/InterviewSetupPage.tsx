@@ -1,8 +1,8 @@
 // src/pages/interview/InterviewSetupPage.tsx
 import React, { useState, useEffect } from "react";
-import CameraPreview from "../../components/ai/Preview/CameraPreview";
+import CameraPreview from "../../../components/ai/setup/CameraSetup";
 import { useNavigate } from "react-router-dom";
-import ButtonComponent from "../../components/ai/button/InterviewProcessBtn";
+import ButtonComponent from "../../../components/ai/button/InterviewProcessBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideo, faMicrophone, faKeyboard } from "@fortawesome/free-solid-svg-icons";
 

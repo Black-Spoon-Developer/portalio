@@ -1,10 +1,10 @@
 // src/pages/interview/InterviewIntroPage.tsx
 import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import IntroImage1 from "../../assets/Interview/IntroImage1.webp";
-import IntroImage2 from "../../assets/Interview/IntroImage2.webp";
-import IntroImage3 from "../../assets/Interview/IntroImage3.webp";
-import IntroImage4 from "../../assets/Interview/IntroImage4.webp";
+import IntroImage1 from "../../../assets/Interview/IntroImage1.webp"
+import IntroImage2 from "../../../assets/Interview/IntroImage2.webp";
+import IntroImage3 from "../../../assets/Interview/IntroImage3.webp";
+import IntroImage4 from "../../../assets/Interview/IntroImage4.webp";
 
 const InterviewIntroPage: React.FC = () => {
   const navigate = useNavigate();

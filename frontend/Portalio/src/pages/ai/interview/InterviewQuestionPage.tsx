@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchQuestionsApi } from "../../api/InterviewAPI";
-import { interviewActions } from "../../store/interview/InterviewSlice";
+import { fetchQuestionsApi } from "../../../api/InterviewAPI";
+import { interviewActions } from "../../../store/interview/InterviewSlice";
 
 const InterviewQuestionPage: React.FC = () => {
   const dispatch = useDispatch();

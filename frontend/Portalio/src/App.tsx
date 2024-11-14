@@ -27,12 +27,12 @@ import { useNavigate } from "react-router-dom";
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
 
 // AI (주석 처리 - 현재 계획 없음)
-import InterviewIntroPage from "./pages/ai/InterviewIntroPage.tsx";
-import InterviewProcessPage from "./pages/ai/InterviewProcesspage.tsx"
-import InterviewTextPage  from "./pages/ai/InterviewTextpage.tsx";
-import InterviewQuestionPage from "./pages/ai/InterviewQuestionPage.tsx";
-import InterviewSetupPage from "./pages/ai/InterviewSetupPage.tsx";
-import AnalysisResultPage from "./pages/ai/AnalysisResultPage.tsx";
+import InterviewIntroPage from "./pages/ai/interview/InterviewIntroPage.tsx";
+import InterviewProcessPage from "./pages/ai/interview/InterviewProcesspage.tsx"
+import InterviewTextPage  from "./pages/ai/interview/InterviewTextpage.tsx";
+import InterviewQuestionPage from "./pages/ai/interview/InterviewQuestionPage.tsx";
+import InterviewSetupPage from "./pages/ai/interview/InterviewSetupPage.tsx";
+import AnalysisResultPage from "./pages/ai/analysis/AnalysisResultPage.tsx";
 
 
 const App: React.FC = () => {

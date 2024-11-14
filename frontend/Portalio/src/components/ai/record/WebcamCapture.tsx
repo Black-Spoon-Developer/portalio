@@ -63,7 +63,7 @@
 // export default WebcamCapture; 
 // src/components/ai/WebcamCapture.tsx
 import React, { useRef, useEffect, useState } from 'react';
-import { WebcamCaptureProps } from '../../type/InterviewType';
+import { WebcamCaptureProps } from '../../../type/InterviewType';
 
 const WebcamCapture: React.FC<WebcamCaptureProps> = ({ isRecording, onRecordingComplete }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
