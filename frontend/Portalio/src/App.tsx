@@ -11,7 +11,6 @@ import UserPortfolioListPage from "./pages/auth/user/UserPortfolioListPage.tsx";
 import UserFreeListPage from "./pages/auth/user/UserFreeListPage";
 import UserRepositoryListPage from "./pages/auth/user/UserRepositoryListPage.tsx";
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
-import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
 import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
 import PortfolioDetailPage from "./pages/board/portfolio/PortfolioDetailPage.tsx";
