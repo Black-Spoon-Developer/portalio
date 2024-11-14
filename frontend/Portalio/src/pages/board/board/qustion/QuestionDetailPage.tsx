@@ -76,6 +76,7 @@ const QuestionDetailPage: React.FC = () => {
           QuestionContent={post?.boardContent ?? ""}
           isLiked={post?.isLiked ?? false}
           memberId={post?.memberId ?? 0}
+          solved={post?.boardSolve ?? false}
           setUpdateDetailTrigger={setUpdateDetailTrigger}
         />
         <QuestionDetailCommentsInput

@@ -4,6 +4,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 import { getBoardList, searchBoardList } from "../../../api/BoardAPI";
 import { BoardLikeResponse } from "../../../interface/board/BoardInterface";
+import {
+  IoCheckmarkCircleOutline,
+  IoCheckmarkCircleSharp,
+} from "react-icons/io5";
 import QuestionSearch from "./QuestionSearch";
 
 const QuestionPosts: React.FC = () => {
@@ -122,20 +126,34 @@ const QuestionPosts: React.FC = () => {
               onClick={() => handlePostClick(post.boardId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-5">
-                {/* 이 부분 수정해야함 */}
-                <img
-                  src={post.picture}
-                  alt="프로필 이미지"
-                  className="w-10 h-10 rounded-full mr-4"
-                />
-                <div>
-                  <p className="font-semibold">{post.memberNickname}</p>
-                  <p className="text-gray-500 text-sm">
-                    {formatTimeAgo(post.created)}
-                  </p>
+              <section className="flex justify-between items-center mb-5">
+                <div className="flex items-center">
+                  <img
+                    src={post.picture}
+                    alt="프로필 이미지"
+                    className="w-10 h-10 rounded-full mr-4"
+                  />
+                  <div>
+                    <p className="font-semibold">{post.memberNickname}</p>
+                    <p className="text-gray-500 text-sm">
+                      {formatTimeAgo(post.created)}
+                    </p>
+                  </div>
                 </div>
-              </div>
+                {post.boardSolve ? (
+                  <div className="flex items-center">
+                    <IoCheckmarkCircleSharp className="text-conceptSkyBlue mr-1 size-6" />
+                    <text className="font-bold">해 결</text>
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <IoCheckmarkCircleOutline className="text-conceptGrey size-6 mr-1" />
+                    <text className="text-conceptGrey font-bold tracking-widest">
+                      미해결
+                    </text>
+                  </div>
+                )}
+              </section>
               {/* 제목 또는 내용 */}
               <p className="text-gray-700 mb-4">{post.boardContent}</p>
               <div className="flex justify-evenly text-gray-500 text-sm">

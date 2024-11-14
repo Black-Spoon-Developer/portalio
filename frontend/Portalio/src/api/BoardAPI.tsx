@@ -3,7 +3,6 @@ import store, { RootState } from "../store";
 import { BoardRequest, BoardResponse } from "../type/BoardType";
 import { BASE_URL } from "./BaseVariable";
 
-
 // 자유/질문게시판 글쓰기
 export const createBoard = async (
   boardData: BoardRequest
@@ -164,7 +163,12 @@ export const questionBoardSolve = async (boardId: string) => {
 };
 
 // 자유/질문게시판 글 전체보기(내 것만)
-export const getMyBoards = async (username: string, skip: number, limit: number, boardCategory: string) => {
+export const getMyBoards = async (
+  username: string,
+  skip: number,
+  limit: number,
+  boardCategory: string
+) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.get(`${BASE_URL}/api/v1/boards/my/${username}`, {
@@ -182,18 +186,45 @@ export const getMyBoards = async (username: string, skip: number, limit: number,
 };
 
 // 활동게시판 글 전체보기(내 것만)
-export const getMyActivities = async (username: string, skip: number, limit: number) => {
+export const getMyActivities = async (
+  username: string,
+  skip: number,
+  limit: number
+) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
-  const response = await axios.get(`${BASE_URL}/api/v1/activity/my/${username}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    params: {
-      skip: skip,
-      limit: limit,
-    },
-  });
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/activity/my/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        skip: skip,
+        limit: limit,
+      },
+    }
+  );
 
   return response;
-}
+};
+
+// 질문 게시판 해결 처리
+export const patchSolveBoard = async (boardID: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  try {
+    await axios.patch(
+      `${BASE_URL}/api/v1/boards/${boardID}/solve`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    alert(error);
+  }
+};
