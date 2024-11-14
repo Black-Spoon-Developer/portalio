@@ -23,7 +23,7 @@ async def correct_text(request: TextCorrectionRequestDTO):
     #     raise HTTPException(status_code=400, detail=f"Text formatting error: {str(e)}")
 
     try:
-        correction_result = check_spelling_and_grammar(request.content)
+        correction_result = await check_spelling_and_grammar(request.content)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Spell check error: {str(e)}")
 

@@ -4,7 +4,7 @@ import openai
 from sqlalchemy.ext.asyncio import AsyncSession
 from models import Chatbot
 from datetime import datetime
-from schemas import ChatbotRequestDTO, ChatbotResponseDTO
+from ai.chatbot.schemas import ChatbotRequestDTO, ChatbotResponseDTO
 import os
 
 openai.api_key = os.getenv("OPENAI_API_KEY")

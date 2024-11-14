@@ -1,5 +1,7 @@
 # sqlalchemy, etc, ... setting
-from sqlalchemy import JSON, Column, String, Integer, BigInteger, Enum, DateTime, ForeignKey, Float, Boolean, Text
+import enum
+from sqlalchemy import Enum as SQLAlchemyEnum
+from sqlalchemy import JSON, Column, Double, String, Integer, BigInteger, Enum, DateTime, ForeignKey, Float, Boolean, Text
 from sqlalchemy.orm import relationship, Session
 from datetime import datetime
 
@@ -17,11 +19,11 @@ class Member(Base):
     portfolios = relationship("Portfolio", back_populates="member")
     repositories = relationship("Repository", back_populates="member")
     user_detail = relationship("UserDetail", back_populates="member", uselist=False)
-    member_job = relationship("MemberJob", back_populates="member")
+    member_jobs = relationship("MemberJob", back_populates="member", cascade="all, delete-orphan")
     interviews = relationship("Interview", back_populates="member", cascade="all, delete-orphan")
     answers = relationship("Answer", back_populates="member", cascade="all, delete-orphan")
     reports = relationship("Report", back_populates="member", cascade="all, delete-orphan")
-    chatbot_entries = relationship("ChatBot", back_populates="member")
+    chatbot_entries = relationship("Chatbot", back_populates="member")
 
 
 class Portfolio(Base):
@@ -103,32 +105,44 @@ class MemberJob(Base):
     job_id = Column(BigInteger, ForeignKey('job_sub_category.job_id'), primary_key=True)
     member_id = Column(BigInteger, ForeignKey('member.member_id'), primary_key=True)
 
-    member = relationship("Member", back_populates="member_job")
+    member = relationship("Member", back_populates="member_jobs")
     job = relationship("JobSubCategory", back_populates="member_job")
 
+class InterviewType(enum.Enum):
+    video = "video"
+    audio = "audio"
+    text = "text"
+    undefined = "undefined"  # 디폴트 상태로 추가
+
+class QuestionTag(str, enum.Enum):
+    role = "직무"
+    exp = "경험"
+    fit = "인성"
+    ready = "준비"  # 디폴트 상태로 추가
 
 class Interview(Base):
     __tablename__ = 'interview'
 
     interview_id = Column(BigInteger, primary_key=True, autoincrement=True)
     member_id = Column(BigInteger, ForeignKey('member.member_id'), nullable=False)
-    interview_type = Column(Enum('video', 'audio', 'text'), nullable=False)
+    interview_type = Column(Enum(InterviewType), default=InterviewType.undefined.value, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # 관계 설정
     member = relationship("Member", back_populates="interviews")
     questions = relationship("Question", back_populates="interview", cascade="all, delete-orphan")
-
+    reports = relationship("Report", back_populates="interview", cascade="all, delete-orphan")
 
 class Question(Base):
     __tablename__ = 'question'
 
     question_id = Column(BigInteger, primary_key=True, autoincrement=True)
     interview_id = Column(BigInteger, ForeignKey('interview.interview_id'), nullable=False)
-    question_tag = Column(Enum('직무', '경험', '인성'), nullable=False)
+    # SQLAlchemyEnum으로 변경
+    question_tag = Column(SQLAlchemyEnum(QuestionTag, values_callable=lambda obj: [e.value for e in obj]), nullable=False)
     question_intent = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
-    audio_s3_key = Column(String(255))  # 오디오 파일 키 저장
+    audio_s3_key = Column(String(255), default='ready')
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # 관계 설정
@@ -142,15 +156,16 @@ class Answer(Base):
     question_id = Column(BigInteger, ForeignKey('question.question_id'), nullable=False)
     member_id = Column(BigInteger, ForeignKey('member.member_id'), nullable=False)
     content = Column(Text)
-    interview_type = Column(Enum('video', 'audio', 'text'), nullable=False)  # 인터뷰 타입
-    video_s3_key = Column(String(255))  # 비디오 파일 키 저장
-    audio_s3_key = Column(String(255))  # 오디오 파일 키 저장
+    interview_type = Column(Enum(InterviewType), default=InterviewType.undefined.value, nullable=False)  # 인터뷰 타입
+    video_s3_key = Column(String(255), default='ready')  # 비디오 파일 키 저장
+    audio_s3_key = Column(String(255), default='ready')  # 오디오 파일 키 저장
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # 관계 설정
     question = relationship("Question", back_populates="answers")
     member = relationship("Member", back_populates="answers")
-    feedback = relationship("Feedback", back_populates="answer", uselist=False, cascade="all, delete-orphan")
+    feedbacks = relationship("Feedback", back_populates="answer", uselist=False, cascade="all, delete-orphan")
+    analyze_audio = relationship("Analyze", back_populates="answer", uselist=False)
     
 class Report(Base):
     __tablename__ = 'report'
@@ -211,3 +226,20 @@ class Feedback(Base):
     
     # 관계 설정
     answer = relationship("Answer", back_populates="feedbacks")
+
+class Analyze(Base):
+    __tablename__ = 'analyze_audio'
+
+    analyze_id = Column(BigInteger, primary_key=True, autoincrement=True)
+    answer_id = Column(BigInteger, ForeignKey('answer.answer_id', ondelete="CASCADE"), nullable=False)
+    transcript = Column(Text, nullable=True)                  # 변환된 텍스트
+    speech_rate = Column(Double, nullable=True)               # 말하는 속도 (BPM)
+    volume_variation = Column(Double, nullable=True)          # 볼륨 떨림 정도 (RMS 표준편차)
+    silence_ratio = Column(Double, nullable=True)             # 무음 비율
+    fluency_score = Column(Double, nullable=True)             # 유창성 점수
+    pronunciation_issues = Column(JSON, nullable=True)        # 발음 문제 JSON
+    word_timestamps = Column(JSON, nullable=True)             # 단어별 타임스탬프 JSON
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # 관계 설정
+    answer = relationship("Answer", back_populates="analyze_audio")

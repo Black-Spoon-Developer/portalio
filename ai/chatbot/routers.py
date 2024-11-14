@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-from schemas import ChatbotRequestDTO, ChatbotResponseDTO, ChatbotHistoryDTO
-from services import generate_chatbot_response, get_chatbot_history
+from ai.chatbot.schemas import ChatbotRequestDTO, ChatbotResponseDTO, ChatbotHistoryDTO
+from ai.chatbot.services import generate_chatbot_response, get_chatbot_history
 from utils.dependencies import get_current_member
 
 router = APIRouter()

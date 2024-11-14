@@ -58,3 +58,4 @@ pyaudio
 python-jose
 itsdangerous
 aiomysql
+asyncmy
