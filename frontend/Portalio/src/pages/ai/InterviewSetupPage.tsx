@@ -23,7 +23,11 @@ const InterviewSetupPage: React.FC = () => {
   }, []);
 
   const startInterview = (type: "video" | "audio" | "text") => {
-    navigate("/ai/interview/process", { state: { interviewType: type } });
+    if (type === "text") {
+      navigate("/ai/interview/text");
+    } else {
+      navigate("/ai/interview/process", { state: { interviewType: type } });
+    }
   };
 
   // 버튼 활성화 여부 설정

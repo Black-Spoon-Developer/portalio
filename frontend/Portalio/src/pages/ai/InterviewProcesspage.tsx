@@ -90,7 +90,7 @@ const InterviewProcessPage: React.FC = () => {
             <div
               key={index}
               className={`w-12 h-12 flex items-center justify-center font-bold text-white rounded transform rotate-45 ${
-                index <= currentQuestionIndex ? "bg-blue-600" : "bg-gray-300"
+                index <= currentQuestionIndex ? "bg-[#57D4E2]" : "bg-gray-300"
               }`}
             >
               <span className="transform -rotate-45">{index + 1}</span>
@@ -121,9 +121,6 @@ const InterviewProcessPage: React.FC = () => {
               <WebcamCapture isRecording={isRecording} onRecordingComplete={handleRecordingComplete} />
             )}
             {interviewType === "audio" && <img src="/path/to/default-image.png" alt="음성 면접 이미지" />}
-            {interviewType === "text" && (
-              <p className="text-gray-500">텍스트 면접에서는 질문에 텍스트로 답변하세요.</p>
-            )}
           </div>
         </div>
 
@@ -139,7 +136,7 @@ const InterviewProcessPage: React.FC = () => {
           <button
             onClick={isPreparationTime ? handlePreparationEnd : handleAnswerEnd}
             className={`w-full py-3 text-white rounded-lg text-lg absolute bottom-0 transition ${
-              isPreparationTime ? "bg-teal-500 hover:bg-teal-600" : "bg-red-500 hover:bg-red-600"
+              isPreparationTime ? "bg-teal-500 hover:bg-[#57D4E2]" : "bg-red-500 hover:bg-red-600"
             }`}
           >
             {isPreparationTime ? "답변하기" : "답변 완료"}

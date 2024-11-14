@@ -27,12 +27,13 @@ import { useNavigate } from "react-router-dom";
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
 
 // AI (주석 처리 - 현재 계획 없음)
-import InterviewIntroPage from "./pages/ai/InterviewIntroPage.tsx"
-import InterviewProcessPage  from "./pages/ai/InterviewProcesspage.tsx";
+import InterviewIntroPage from "./pages/ai/InterviewIntroPage.tsx";
+import InterviewProcessPage from "./pages/ai/InterviewProcesspage.tsx"
+import InterviewTextPage  from "./pages/ai/InterviewTextpage.tsx";
 import InterviewQuestionPage from "./pages/ai/InterviewQuestionPage.tsx";
 import InterviewSetupPage from "./pages/ai/InterviewSetupPage.tsx";
 import AnalysisResultPage from "./pages/ai/AnalysisResultPage.tsx";
-// import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
+
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -119,6 +120,7 @@ const App: React.FC = () => {
         { <Route path="/ai" element={<Outlet />}>
           <Route path="introduce" element={<InterviewIntroPage />} />
           <Route path="interview/process" element={<InterviewProcessPage  />} />
+          <Route path="interview/text" element={<InterviewTextPage  />} />
           <Route path="interview/setup" element={<InterviewSetupPage />} />
           <Route path="interview/questions" element={<InterviewQuestionPage />} />
           <Route path="analyze/1" element={<AnalysisResultPage />} />
