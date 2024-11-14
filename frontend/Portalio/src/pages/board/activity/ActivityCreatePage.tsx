@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -17,7 +16,7 @@ import { RepositoryResponse } from '../../../type/RepositoryType';
 import { useSelector } from 'react-redux';
 
 const ActivityCreatePage: React.FC = () => {
-  const { repository_id } = useParams<{ repository_id: string }>();
+  const [repositoryId, setRepositoryId] = useState<number>(0)
   const today = new Date().toISOString().split('T')[0];
   const editorRef = useRef<Editor>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,8 +99,8 @@ const ActivityCreatePage: React.FC = () => {
       activityBoardDate: startDate,
     };
     
-    if (repository_id) {
-      registerActivity(repository_id, activityBoardData) 
+    if (repositoryId) {
+      registerActivity(repositoryId, activityBoardData) 
     }
   };
   
@@ -112,6 +111,7 @@ const ActivityCreatePage: React.FC = () => {
 const handleRepositoryChange = (event: SelectChangeEvent<number>) => {
   const mainRepositoryId = Number(event.target.value);
   setSelectedRepository(mainRepositoryId);
+  setRepositoryId(mainRepositoryId)
 };
 
 return (
@@ -140,7 +140,7 @@ return (
               레포지토리 선택
               </MenuItem>
               {items.map((item) => (
-                <MenuItem key={item.repositoryId}>
+                <MenuItem key={item.repositoryId} value={item.repositoryId}>
                   {item.repositoryTitle}
                 </MenuItem>
               ))}

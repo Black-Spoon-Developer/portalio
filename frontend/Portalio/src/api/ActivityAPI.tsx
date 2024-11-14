@@ -30,7 +30,7 @@ export const fetchDetailActivity = async (activityId: number) => {
   return response.data;
 };
 
-export const registerActivity = async (repository_id: string, activityData: ActivityRequest) => {
+export const registerActivity = async (repository_id: number, activityData: ActivityRequest) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post(
@@ -49,7 +49,7 @@ export const getActivityBoard = async (activity_id: string) => {
   const response = await axios.get(
     `${BASE_URL}/api/v1/activity/${activity_id}`,
   );
-  return response.data
+  return response
 }
 
 export const patchActivityBoard = async (repository_id: string, activity_id: string, activityData: ActivityRequest) => {
