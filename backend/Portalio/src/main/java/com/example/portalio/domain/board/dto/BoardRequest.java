@@ -22,4 +22,6 @@ public class BoardRequest {
 
     @NotNull(message = "empty board content")
     private String boardContent;
+
+    private String boardThumbnailImg;
 }
