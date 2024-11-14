@@ -15,6 +15,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { MdLogout } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
 import ticketIcon from "../../../assets/ticket_icon.png";
+import { sideNavActions } from "../../../store/nav/SideNavSlice";
 
 const UserNavbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const UserNavbar: React.FC = () => {
   const userTicket = useSelector((state: RootState) => state.auth.memberTicket);
 
   const goToMainPage = () => {
+    dispatch(sideNavActions.selectFeed());
     navigate("/");
   };
 

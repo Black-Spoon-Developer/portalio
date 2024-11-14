@@ -45,27 +45,26 @@ const UserSignupPage: React.FC = () => {
           if (response) {
             const newAccessToken = response.data.access;
 
-            console.log(newAccessToken);
             // accessToken을 발급받았을 경우
             if (newAccessToken) {
-              // 유저 정보 저장
-              const memberId = response.data.memberId;
-              const name = response.data.name;
-              const username = response.data.username;
-              const picture = response.data.picture;
-              const role = response.data.role;
+              let memberAuth: boolean = false;
 
+              if (response.data.auth === "1") {
+                memberAuth = true;
+              }
+
+              // 로그인을 통해 유저 정보 저장
               const userInfo: UserInfo = {
                 accessToken: newAccessToken,
-                memberId,
-                memberName: name,
-                memberUsername: username,
-                memberNickname: null,
-                memberPicture: picture,
-                memberRole: role,
+                memberId: response.data.memberId,
+                memberName: response.data.name,
+                memberUsername: response.data.username,
+                memberNickname: response.data.nickname,
+                memberPicture: response.data.picture,
+                memberRole: response.data.role,
                 memberTicket: 0,
-                memberAuth: false,
-                memberJob: null,
+                memberAuth: memberAuth,
+                memberJob: response.data.jobSubCategoryId,
               };
 
               dispatch(authActions.login(userInfo));
@@ -144,6 +143,11 @@ const UserSignupPage: React.FC = () => {
         // 저장이 성공적으로 되면 user 인증 처리
         await authUser();
 
+        // 회원 정보를 저장했으므로 티켓 5개를 지급 - test 시 100개
+        await userTicketUpdate(100);
+
+        // storage 값도 변경하기
+        dispatch(authActions.successMemberAuth());
         // 저장 후 memberNickname과 memberJob 저장하기
         const userDetailInfo: UserDetailInfo = {
           memberNickname: nickname,
@@ -151,12 +155,6 @@ const UserSignupPage: React.FC = () => {
         };
 
         dispatch(authActions.setUserInfo(userDetailInfo));
-
-        // 회원 정보를 저장했으므로 티켓 5개를 지급
-        const response = await userTicketUpdate(5);
-
-        // 받아온 유저의 티켓 정보를 redux에 저장
-        dispatch(authActions.updateTicket(response.userTicket));
 
         alert("닉네임, 이메일과 직무가 성공적으로 저장되었습니다.");
         navigate("/");

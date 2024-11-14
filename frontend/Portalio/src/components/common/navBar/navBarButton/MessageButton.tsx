@@ -7,7 +7,7 @@ import { sideNavActions } from "../../../../store/nav/SideNavSlice";
 const MessageButton: React.FC = () => {
   const dispatch = useDispatch();
 
-  const selectState = useSelector((state: RootState) => state.sideTab.tabState);
+  const selectState = useSelector((state: RootState) => state.sideNav.tabState);
 
   // 탭 상태 변환
   const onClick = () => {

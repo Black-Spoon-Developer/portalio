@@ -51,9 +51,14 @@ const authSlice = createSlice({
       state.memberJob = action.payload.memberJob;
     },
 
+    // 회원 정보 입력 성공 시 memberAuth 값 변경
+    successMemberAuth(state) {
+      state.memberAuth = true;
+    },
+
     // 티켓 로직 - 티켓 증감시 서버에서 오는 티켓 수를 저장하기
     updateTicket(state, action) {
-      state.memberTicket = action.payload.memberTicket;
+      state.memberTicket = action.payload;
     },
   },
 });

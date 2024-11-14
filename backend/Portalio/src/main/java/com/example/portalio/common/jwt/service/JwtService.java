@@ -4,14 +4,20 @@ import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.common.jwt.repository.RefreshRepository;
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.common.oauth.dto.UserResponseDTO;
+import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
+import com.example.portalio.domain.jobsubcategory.repository.JobSubCategoryRepository;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
+import com.example.portalio.domain.userdetail.error.NoUserDetailException;
+import com.example.portalio.domain.userdetail.repository.UserDetailRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +28,13 @@ public class JwtService {
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final MemberRepository memberRepository;
+    private final UserDetailRepository userDetailRepository;
 
-    public JwtService(JwtUtil jwtUtil, RefreshRepository refreshRepository, MemberRepository memberRepository) {
+    public JwtService(JwtUtil jwtUtil, RefreshRepository refreshRepository, MemberRepository memberRepository, UserDetailRepository userDetailRepository, JobSubCategoryRepository jobSubCategoryRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
         this.memberRepository = memberRepository;
+        this.userDetailRepository = userDetailRepository;
     }
 
     public ResponseEntity<?> issue(HttpServletRequest request, HttpServletResponse response) {
@@ -87,22 +95,44 @@ public class JwtService {
 
         // access 토큰 발급
         String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", email, role, 2592000000L);
+        
+        // memberId로 그 회원의 userDetail 정보 가져오기
+        UserDetail userDetail = userDetailRepository.findByMemberId(memberId)
+                .orElseThrow(NoUserDetailException::new);
 
-        // access 토큰 및 유저 정보도 같이 반환 - 정보 추가 이거 왜 썼지...?
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setMemberId(memberId);
-        userResponseDTO.setName(name);
-        userResponseDTO.setUsername(username);
-        userResponseDTO.setPicture(picture);
-        userResponseDTO.setRole(role);
+        String userNickname = userDetail.getUserNickname();
+        String userEmail = userDetail.getUserEmail();
+        Integer userTickets = userDetail.getUserTicket();
+
+         Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+         boolean memberAuth = member.isMemberAuth();
+
+        List<JobSubCategory> jobSubCategories = member.getJobSubCategories();
 
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("access", newAccess);
-        responseBody.put("memberId", String.valueOf(memberId));
+        responseBody.put("memberId", memberId.toString());
         responseBody.put("name", name);
         responseBody.put("username", username);
+        responseBody.put("nickname", userNickname);
+        responseBody.put("userEmail", userEmail);
         responseBody.put("picture", picture);
+        responseBody.put("tickets", userTickets.toString());
         responseBody.put("role", role);
+
+        if (jobSubCategories.isEmpty()) {
+            responseBody.put("jobSubCategoryId", "0");
+        } else {
+            JobSubCategory jobSubCategory = jobSubCategories.get(0);
+            responseBody.put("jobSubCategoryId", jobSubCategory.getJobId().toString());
+        }
+
+        if (memberAuth) {
+            responseBody.put("auth", "1");
+        } else {
+            responseBody.put("auth", "0");
+        }
 
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
 
