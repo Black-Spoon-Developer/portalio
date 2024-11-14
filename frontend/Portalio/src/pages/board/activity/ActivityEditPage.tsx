@@ -66,8 +66,7 @@ const PortfolioEditPage: React.FC = () => {
       if (username) {
         try {
           const response = await getMyRepositoryList(username);
-          const data = response.data
-          setItems(data.items);
+          setItems(response.items);
 
         } catch (error) {
           console.error("레포지토리 리스트 불러오기 오류:", error)
