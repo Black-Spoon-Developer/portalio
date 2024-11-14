@@ -40,6 +40,9 @@ public class Portfolio extends AuditableCreatedEntity {
     @Column(name = "portfolio_content", nullable = false, columnDefinition = "TEXT")
     private String portfolioContent;
 
+    @Column(name = "portfolio_description", nullable = false, columnDefinition = "Text")
+    private String portfolioDescription;
+
     @Column(name = "portfolio_views", nullable = false)
     private Integer portfolioViews = 0;
 
@@ -69,7 +72,7 @@ public class Portfolio extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioRecom> portfolioRecoms = new ArrayList<>();
 
-    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, Boolean portfolioIsPrimary, JobSubCategory jobSubCategory, Member member) {
+    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, Boolean portfolioIsPrimary, JobSubCategory jobSubCategory, Member member, String portfolioDescription) {
         this.portfolioTitle = portfolioTitle;
         this.portfolioContent = portfolioContent;
         this.portfolioThumbnailImg = portfolioThumbnailImg;
@@ -77,10 +80,11 @@ public class Portfolio extends AuditableCreatedEntity {
         this.portfolioIsPrimary = portfolioIsPrimary;
         this.jobSubCategory = jobSubCategory;
         this.member = member;
+        this.portfolioDescription = portfolioDescription;
     }
 
-    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, Boolean portfolioIsPrimary, JobSubCategory jobSubCategory, Member member) {
-        return new Portfolio(portfolioTitle, portfolioContent, portfolioThumbnailImg, portfolioPost, portfolioIsPrimary, jobSubCategory, member);
+    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, Boolean portfolioIsPrimary, JobSubCategory jobSubCategory, Member member, String portfolioDescription) {
+        return new Portfolio(portfolioTitle, portfolioContent, portfolioThumbnailImg, portfolioPost, portfolioIsPrimary, jobSubCategory, member, portfolioDescription);
     }
 
     public void setPortfolioTitle(String portfolioTitle) { this.portfolioTitle = portfolioTitle; }
@@ -98,4 +102,6 @@ public class Portfolio extends AuditableCreatedEntity {
     public void setPortfolioRecommendationCount(Integer portfolioRecommendationCount) { this.portfolioRecommendationCount = portfolioRecommendationCount; }
 
     public void setPortfolioIsPrimary(Boolean portfolioIsPrimary) { this.portfolioIsPrimary = portfolioIsPrimary; }
+
+    public void setPortfolioDescription(String portfolioDescription) { this.portfolioDescription = portfolioDescription; }
 }
