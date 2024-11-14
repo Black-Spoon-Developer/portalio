@@ -30,6 +30,4 @@ public class RepositoryRequest {
 
     @NotNull(message = "empty repository post")
     private Boolean repositoryPost;
-
-    private Boolean repositoryIsPrimary;
 }
