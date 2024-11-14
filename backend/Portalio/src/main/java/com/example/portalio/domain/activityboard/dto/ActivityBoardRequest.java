@@ -22,4 +22,7 @@ public class ActivityBoardRequest {
 
     @NotNull(message = "empty activity board date")
     private LocalDate activityBoardDate = LocalDate.now();
+
+    @NotNull(message = "empty repository id")
+    private Long repositoryId;
 }
