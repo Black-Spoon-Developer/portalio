@@ -34,8 +34,8 @@ export const registerActivity = async (repository_id: number, activityData: Acti
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post(
-    `${BASE_URL}/api/v1/activity/onlyactivity/${repository_id}`,
-    activityData,
+    `${BASE_URL}/api/v1/activity/onlyactivity`,
+    { activityData , repository_id },
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

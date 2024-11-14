@@ -110,7 +110,7 @@ public class BoardService {
 
         Member member = findMember(oauth2User.getMemberId());
         // BoardRequest를 Board 엔티티로 변환
-        Board board = Board.of(request.getBoardCategory(), request.getBoardTitle(), request.getBoardContent(),
+        Board board = Board.of(request.getBoardCategory(), request.getBoardTitle(), request.getBoardContent(), request.getBoardThumbnailImg(),
                  member);
 
         boardRepository.save(board);
@@ -135,6 +135,9 @@ public class BoardService {
         }
         if (request.getBoardContent() != null) {
             board.setBoardContent(request.getBoardContent());
+        }
+        if (request.getBoardThumbnailImg() != null) {
+            board.setBoardThumbnailImg(request.getBoardThumbnailImg());
         }
 
         boardRepository.save(board);

@@ -28,6 +28,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "board")
 public class Board extends AuditableCreatedEntity {
 
+    private static final String DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/157494028?v=4";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
@@ -48,6 +50,9 @@ public class Board extends AuditableCreatedEntity {
     @Column(name = "board_views", nullable = false)
     private Integer boardViews = 0;
 
+    @Column(name = "board_thumbnail_img", nullable = false, columnDefinition = "TEXT")
+    private String boardThumbnailImg = DEFAULT_IMAGE_URL;
+
     @Column(name = "board_recommendation_count", nullable = false)
     private Integer boardRecommendationCount = 0;
 
@@ -58,15 +63,16 @@ public class Board extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
-    private Board(BoardRole boardCategory, String boardTitle, String boardContent, Member member) {
+    private Board(BoardRole boardCategory, String boardTitle, String boardContent, String boardThumbnailImg, Member member) {
         this.boardCategory = boardCategory;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
+        this.boardThumbnailImg = boardThumbnailImg;
         this.member = member;
     }
 
-    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent, Member member) {
-        return new Board(boardCategory, boardTitle, boardContent, member);
+    public static Board of(BoardRole boardCategory, String boardTitle, String boardContent, String boardThumbnailImg, Member member) {
+        return new Board(boardCategory, boardTitle, boardContent, boardThumbnailImg, member);
     }
 
     public void setBoardCategory(BoardRole boardCategory) {
@@ -82,6 +88,8 @@ public class Board extends AuditableCreatedEntity {
     }
 
     public void setBoardSolve(Boolean boardSolve) { this.boardSolve = boardSolve; }
+
+    public void setBoardThumbnailImg(String boardThumbnailImg) { this.boardThumbnailImg = boardThumbnailImg; }
 
     public void setMember(Member member) { this.member = member; }
 
