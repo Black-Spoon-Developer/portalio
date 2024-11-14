@@ -15,7 +15,7 @@ import { ActivityRequest } from '../../../type/ActivityType';
 import { RepositoryResponse } from '../../../type/RepositoryType';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { getMyRepository } from '../../../api/RepositoryAPI';
+import { getMyRepositoryList } from '../../../api/RepositoryAPI';
 
 const PortfolioEditPage: React.FC = () => {
   const { repository_id } = useParams<{ repository_id: string }>();
@@ -65,7 +65,7 @@ const PortfolioEditPage: React.FC = () => {
     const fetchMyRepository = async () => {
       if (username) {
         try {
-          const response = await getMyRepository(username);
+          const response = await getMyRepositoryList(username);
           const data = response.data
           setItems(data.items);
 

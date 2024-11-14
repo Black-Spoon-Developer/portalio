@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { createRepository, getRepositoryDetail } from "../../../api/RepositoryAPI";
+import { getRepositoryDetail, patchRepository } from "../../../api/RepositoryAPI";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { useDropzone } from 'react-dropzone';
 import { getmyfiles, repoupdate } from '../../../api/S3ImageUploadAPI'
@@ -131,8 +131,9 @@ const RepositoryEditPage: React.FC = () => {
       repositoryFileKey: mongoDocumentId,
       repositoryPost: isPublished
     };
-
-    createRepository(repositoryData);
+    if (repository_id) {
+      patchRepository(repository_id, repositoryData);
+    }
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {

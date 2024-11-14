@@ -1,7 +1,7 @@
 import axios from "axios";
 import store, { RootState } from "../store";
 import { BASE_URL } from "./BaseVariable";
-import { RepositoryItem, RepositoryRequest, RepositoryResponse } from "../type/RepositoryType"
+import { RepositoryRequest, RepositoryResponse } from "../type/RepositoryType"
 
 
 
@@ -83,34 +83,3 @@ export const getRepository = async (repositoryId: number) => {
 
   return response.data;
 };
-
-// 내 레포지토리 조회하기
-export const getMyRepositories = async (username: string) => {
-  const state: RootState = store.getState();
-  const accessToken = state.auth.accessToken;
-  const response = await axios.get(
-    `${BASE_URL}/api/v1/repository/${username}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  return response.data;
-};
-
-// 내 레포지토리 상세보기
-export const getMyRepository = async (username: string) => {
-  const state: RootState = store.getState();
-  const accessToken = state.auth.accessToken;
-  const response = await axios.get<RepositoryItem>(
-    `${BASE_URL}/api/v1/repository/${username}/detail`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-  return response
-}
