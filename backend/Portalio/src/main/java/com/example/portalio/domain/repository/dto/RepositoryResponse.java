@@ -11,6 +11,7 @@ import lombok.Getter;
 public class RepositoryResponse {
     private Long repositoryId;
     private String repositoryTitle;
+    private String repositoryDescription;
     private String repositoryContent;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
@@ -27,6 +28,7 @@ public class RepositoryResponse {
         return RepositoryResponse.builder()
                 .repositoryId(repository.getRepositoryId())
                 .repositoryTitle(repository.getRepositoryTitle())
+                .repositoryDescription(repository.getRepositoryDescription())
                 .repositoryContent(repository.getRepositoryContent())
                 .startDate(repository.getStartDate())
                 .endDate(repository.getEndDate())
