@@ -16,15 +16,18 @@ import librosa
 from pydantic import BaseModel
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import json
+from typing import Dict, List, Any
 
 # DB sqlalchemy
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.dialects.postgresql import JSON
 import os
 
 # 딕셔너리로
-from typing import Dict
+
 
 # DB세션 의존성
 from fastapi import Depends
@@ -138,7 +141,7 @@ async def analyze_video(video_file):
     return result
 
 
-# 데이터베이스 연결
+# SQLAlchemy 기본 설정
 DATABASE_URL = f"mysql+pymysql://{os.getenv('AI_DATABASE_USER')}:{quote_plus(os.getenv('AI_DATABASE_PASSWORD'))}@{os.getenv('AI_DATABASE_HOST')}:{os.getenv('AI_DATABASE_PORT')}/{os.getenv('AI_DATABASE_NAME')}"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -154,7 +157,9 @@ class AnalysisResult(BaseModel):
     current_emotion: str
     movement_focus: float
     gaze_focus: float
-    time_series_data: list[TimeSeriesData]
+    time_series_data: List[Dict[str, Any]]
+    class Config:
+        orm_mode = True
 
 # 모델 정의
 class InterviewAnalysis(Base):
@@ -171,17 +176,19 @@ class TimeSeriesData(Base):
     __tablename__ = "time_series_data"
     
     time_series_data_id = Column(Integer, primary_key=True, index=True)
-    analysis_id = Column(Integer, ForeignKey('interview_analysis.id'))
-    time = Column(Integer)
-    emotion = Column(String(50))
-    movement_focus = Column(Float)
-    gaze_focus = Column(Float)
+    analysis_id = Column(Integer, ForeignKey('interview_analysis.interview_analysis_id'))
+    time_data = Column(Text)  # JSON 데이터를 문자열로 저장
 
     analysis = relationship("InterviewAnalysis", back_populates="time_series")
 
 InterviewAnalysis.time_series = relationship("TimeSeriesData", back_populates="analysis")
 
-# 데이터베이스 초기화
+InterviewAnalysis.time_series = relationship("TimeSeriesData", back_populates="analysis")
+
+
+# 기존 테이블 삭제
+Base.metadata.drop_all(bind=engine)
+# 새 테이블 생성
 Base.metadata.create_all(bind=engine)
 
 
@@ -383,6 +390,7 @@ async def upload_audio(interview_id: int, question_id: int, file: UploadFile = F
 
 
 
+# 데이터 저장 시 JSON 문자열로 변환하여 저장
 @app.post("/api/v1/ai/interview/{interview_id}/questions/{question_id}/upload-video")
 async def upload_video(interview_id: int, question_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
     temp_video_file = f"temp_{interview_id}_{question_id}.mp4"
@@ -403,15 +411,23 @@ async def upload_video(interview_id: int, question_id: int, file: UploadFile = F
     db.add(video_analysis)
     db.commit()
 
-    for entry in analysis_result["time_series_data"]:
-        time_data = TimeSeriesData(
-            analysis_id=video_analysis.id,
-            time=entry["time"],
-            emotion=entry["emotion"],
-            movement_focus=entry["movement_focus"],
-            gaze_focus=entry["gaze_focus"]
-        )
-        db.add(time_data)
+    # JSON 형식으로 저장할 time_series_data 구성 후 문자열로 변환
+    time_series_data = json.dumps([
+        {
+            "time": entry["time"],
+            "current_emotion": entry["emotion"],
+            "movement_focus": entry["movement_focus"],
+            "gaze_focus": entry["gaze_focus"]
+        }
+        for entry in analysis_result["time_series_data"]
+    ])
+
+    # TimeSeriesData를 문자열(JSON 형태)로 DB에 저장
+    time_data = TimeSeriesData(
+        analysis_id=video_analysis.interview_analysis_id,
+        time_data=time_series_data  # JSON 문자열로 저장
+    )
+    db.add(time_data)
     db.commit()
 
     return {
@@ -422,6 +438,30 @@ async def upload_video(interview_id: int, question_id: int, file: UploadFile = F
     }
 
 
+# @app.get("/api/v1/ai/analysis/{interview_id}", response_model=Dict[int, AnalysisResult])
+# async def get_analysis(interview_id: int, db: Session = Depends(get_db)):
+#     analyses = db.query(InterviewAnalysis).filter(InterviewAnalysis.interview_id == interview_id).all()
+#     if not analyses:
+#         raise HTTPException(status_code=404, detail="Analysis not found for this interview")
+
+#     results = {}
+#     for analysis in analyses:
+#         time_series_data = db.query(TimeSeriesData).filter(TimeSeriesData.analysis_id == analysis.id).all()
+#         results[analysis.question_id] = AnalysisResult(
+#             current_emotion=analysis.current_emotion,
+#             movement_focus=analysis.movement_focus,
+#             gaze_focus=analysis.gaze_focus,
+#             time_series_data=[
+#                 TimeSeriesData(
+#                     time=data.time,
+#                     emotion=data.emotion,
+#                     movement_focus=data.movement_focus,
+#                     gaze_focus=data.gaze_focus
+#                 )
+#                 for data in time_series_data
+#             ]
+#         )
+#     return results
 @app.get("/api/v1/ai/analysis/{interview_id}", response_model=Dict[int, AnalysisResult])
 async def get_analysis(interview_id: int, db: Session = Depends(get_db)):
     analyses = db.query(InterviewAnalysis).filter(InterviewAnalysis.interview_id == interview_id).all()
@@ -430,21 +470,19 @@ async def get_analysis(interview_id: int, db: Session = Depends(get_db)):
 
     results = {}
     for analysis in analyses:
-        time_series_data = db.query(TimeSeriesData).filter(TimeSeriesData.analysis_id == analysis.id).all()
+        # 여기에서 analysis.id 대신 analysis.interview_analysis_id를 사용합니다.
+        time_series_data_record = db.query(TimeSeriesData).filter(TimeSeriesData.analysis_id == analysis.interview_analysis_id).first()
+        
+        # JSON 문자열을 파싱하여 리스트로 변환
+        time_series_data = json.loads(time_series_data_record.time_data)
+
         results[analysis.question_id] = AnalysisResult(
             current_emotion=analysis.current_emotion,
             movement_focus=analysis.movement_focus,
             gaze_focus=analysis.gaze_focus,
-            time_series_data=[
-                TimeSeriesData(
-                    time=data.time,
-                    emotion=data.emotion,
-                    movement_focus=data.movement_focus,
-                    gaze_focus=data.gaze_focus
-                )
-                for data in time_series_data
-            ]
+            time_series_data=time_series_data
         )
     return results
+
 
 
