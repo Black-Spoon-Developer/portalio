@@ -30,12 +30,12 @@ export const fetchDetailActivity = async (activityId: number) => {
   return response.data;
 };
 
-export const registerActivity = async (repository_id: number, activityData: ActivityRequest) => {
+export const registerActivity = async (activityData: ActivityRequest) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post(
     `${BASE_URL}/api/v1/activity/onlyactivity`,
-    { activityData , repository_id },
+    activityData,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

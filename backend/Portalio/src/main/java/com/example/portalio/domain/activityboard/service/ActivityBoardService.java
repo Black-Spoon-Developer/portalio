@@ -78,11 +78,11 @@ public class ActivityBoardService {
 
     // 활동게시판 게시글 등록
     @Transactional
-    public ActivityBoardResponse registerActivityBoard(ActivityBoardRequest request, Long repositoryId, CustomOAuth2User oauth2User) {
+    public ActivityBoardResponse registerActivityBoard(ActivityBoardRequest request, CustomOAuth2User oauth2User) {
 
         Member member = findMember(oauth2User.getMemberId());
 
-        Repository repository = findMyRepository(repositoryId, member.getMemberId());
+        Repository repository = findMyRepository(request.getRepositoryId(), member.getMemberId());
 
         ActivityBoard activityBoard = ActivityBoard.of(request.getActivityBoardTitle(), request.getActivityBoardContent(), request.getActivityBoardDate());
 

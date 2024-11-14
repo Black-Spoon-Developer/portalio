@@ -2,6 +2,7 @@ export interface ActivityRequest {
   activityBoardTitle: string;
   activityBoardContent: string;
   activityBoardDate: string;
+  repositoryId: any;
 }
 
 export interface ActivityResponse {
