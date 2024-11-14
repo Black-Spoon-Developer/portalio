@@ -24,6 +24,7 @@ const PortfolioEditPage: React.FC = () => {
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [description, setDescription] = useState("")
 
   const BASE_URL = "https://k11d202.p.ssafy.io";
   // const BASE_URL = "http://localhost:8080/";
@@ -133,6 +134,7 @@ const PortfolioEditPage: React.FC = () => {
     
     const portfolioData: PortfolioRequest = {
       portfolioTitle: title,
+      portfolioDescription: description,
       portfolioContent: content,
       portfolioThumbnailImg: thumbnailUrl,
       portfolioPost: isPublished,
@@ -164,6 +166,10 @@ const handleSubCategoryChange = (event: SelectChangeEvent<number>) => {
 const filteredSubCategories = subCategories.filter(
   (subCategory) => subCategory.parentId === selectedMainCategory
 );
+
+const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  setDescription(event.target.value);
+};
 
   return (
     <div>
@@ -265,7 +271,17 @@ const filteredSubCategories = subCategories.filter(
                 className="hidden"
               />
             </div>
-
+            <div>
+              <textarea
+                id="textArea"
+                value={description}
+                onChange={handleChange}
+                rows={5}
+                cols={40}
+                placeholder="당신의 포스트를 짧게 소개해보세요."
+                className="w-full max-w-lg p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              />
+            </div>
             <div className="mb-5">
               <label className="block text-gray-700">게시 여부</label>
               <button 

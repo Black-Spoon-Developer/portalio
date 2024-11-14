@@ -21,6 +21,7 @@ const PortfolioCreatePage: React.FC = () => {
   const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [description, setDescription] = useState("")
   const BASE_URL = "https://k11d202.p.ssafy.io";
 
 
@@ -114,6 +115,7 @@ const PortfolioCreatePage: React.FC = () => {
     
     const portfolioData = {
       portfolioTitle: title,
+      portfolioDescription: description,
       portfolioContent: content,
       portfolioThumbnailImg: thumbnailUrl,
       portfolioPost: isPublished,
@@ -143,6 +145,10 @@ const PortfolioCreatePage: React.FC = () => {
   const filteredSubCategories = subCategories.filter(
     (subCategory) => subCategory.parentId === selectedMainCategory
   );
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(event.target.value);
+  };
 
   return (
     <div>
@@ -240,6 +246,17 @@ const PortfolioCreatePage: React.FC = () => {
                 ref={fileInputRef} 
                 onChange={handleThumbnailChange} 
                 className="hidden"
+              />
+            </div>
+            <div>
+              <textarea
+                id="textArea"
+                value={description}
+                onChange={handleChange}
+                rows={5}
+                cols={40}
+                placeholder="당신의 포스트를 짧게 소개해보세요."
+                className="w-full max-w-lg p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
             </div>
 
