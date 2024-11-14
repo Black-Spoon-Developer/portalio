@@ -24,6 +24,7 @@ public class PortfolioLikeResponse {
     private String memberNickname;
     private String picture;
     private Boolean isLiked;
+    private String portfolioDescription;
 
     public static PortfolioLikeResponse from(Portfolio portfolio, Boolean isLiked) {
 
@@ -43,6 +44,7 @@ public class PortfolioLikeResponse {
                 .memberNickname(portfolio.getMember().getUserDetail().getUserNickname())
                 .picture(portfolio.getMember().getMemberPicture())
                 .isLiked(isLiked)
+                .portfolioDescription(portfolio.getPortfolioDescription())
                 .build();
     }
 }
