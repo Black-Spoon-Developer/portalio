@@ -10,6 +10,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { Categories } from "../../../assets/JobCategory";
 import { useParams } from 'react-router-dom';
 import { BoardRequest } from '../../../type/BoardType';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BoardEditPage: React.FC = () => {
   const { board_id } = useParams<{ board_id: string }>();
@@ -24,6 +26,10 @@ const BoardEditPage: React.FC = () => {
   const [category, setCategory] = useState("")
   const [solve, setSolve] = useState(false)
   const BASE_URL = "https://k11d202.p.ssafy.io";
+
+  const notifyfail = () => {
+    toast.error("게시글 내용이 부족합니다.")
+  };
 
   useEffect(() => {
     // 포트폴리오 데이터 불러오기
@@ -118,7 +124,7 @@ const BoardEditPage: React.FC = () => {
 
   const handleModalSave = async () => {
     if (!title || !content) {
-      console.error("모든 필드가 입력되어야 합니다.");
+      notifyfail()
       
       return;
     }
@@ -221,6 +227,7 @@ const BoardEditPage: React.FC = () => {
           <div className="flex justify-end space-x-3">
             <button onClick={handleModalClose} className="px-4 py-2 bg-gray-300 rounded-lg">취소</button>
             <button onClick={handleModalSave} className="px-4 py-2 bg-blue-500 text-white rounded-lg">저장</button>
+            <ToastContainer />
           </div>
         </div>
       </div>

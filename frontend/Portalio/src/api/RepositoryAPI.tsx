@@ -1,6 +1,6 @@
 import axios from "axios";
 import store, { RootState } from "../store";
-import { RepositoryRequest, RepositoryResponse } from "../type/RepositoryType"
+import { RepositoryItem, RepositoryRequest, RepositoryResponse } from "../type/RepositoryType"
 
 
 // const BASE_URL = "http://localhost:8080";
@@ -47,4 +47,19 @@ export const getRepositoryDetail = async (repositoryID: string) => {
   );
 
   return response;
+}
+
+// 내 레포지토리 상세보기
+export const getMyRepository = async (username: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get<RepositoryItem>(
+    `${BASE_URL}/api/v1/repository/${username}/detail`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  return response
 }

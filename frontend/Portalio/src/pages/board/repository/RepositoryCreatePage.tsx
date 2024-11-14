@@ -2,26 +2,24 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { createRepository } from "../../../api/RepositoryAPI";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { useDropzone } from 'react-dropzone';
-import { uploadFilesAsZip } from '../../../api/S3ImageUploadAPI'
+import { uploadFilesToS3AndSaveToMongo } from '../../../api/S3ImageUploadAPI'
 import { FaFilePdf, FaFileImage, FaFileVideo, FaFileAudio, FaFile } from 'react-icons/fa'; // 아이콘 추가
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
 import TextField from "@mui/material/TextField";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RepositoryCreatePage: React.FC = () => {
   const editorRef = useRef<Editor>(null);
-  const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [_, setThumbnail] = useState<File | null>(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg);
   const [isPublished, setIsPublished] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
-  const [uploadedZipUrl, setUploadedZipUrl] = useState<string | null>(null);
+  const [mongoDocumentId, setMongoDocumentId] = useState<string>(""); // MongoDB 문서 ID 상태
   const BASE_URL = "https://k11d202.p.ssafy.io";
   // const BASE_URL = "http://localhost:8080";
 
@@ -60,47 +58,19 @@ const RepositoryCreatePage: React.FC = () => {
       setIsModalOpen(true);
     }
   };
-
   
   const handlePublishToggle = () => {
     setIsPublished((prev) => !prev);
   };
 
-  const handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setThumbnail(file);
-
-      const formData = new FormData();
-      formData.append("multipartFile", file);
-      formData.append("folderName", "Repository");
-
-      try {
-        const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        setThumbnailUrl(response.data);
-      } catch (error) {
-        console.error("썸네일 업로드 오류:", error);
-      }
-    }
-  };
-
-  const openFileExplorer = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setThumbnailUrl(defaultImg);
     setIsPublished(false);
   };
 
   const handleModalSave = async () => {
     if (!title || !content || !startDate || !endDate) {
-      console.error("모든 필드가 입력되어야 합니다.");
+      notifyfail()
       return;
     }
     
@@ -109,7 +79,7 @@ const RepositoryCreatePage: React.FC = () => {
       repositoryContent: content,
       startDate: startDate,
       endDate: endDate,
-      repositoryFileKey: uploadedZipUrl,
+      repositoryFileKey: mongoDocumentId,
       repositoryPost: isPublished
     };
     console.log(repositoryData)
@@ -129,21 +99,12 @@ const RepositoryCreatePage: React.FC = () => {
   
     // 업로드 버튼 클릭 시 실행되는 함수
     const handleUpload = async () => {
-      if (files.length === 0) return;
-  
-      // ZIP 파일로 업로드
-      const folderName = "Repository"; // 업로드할 폴더 이름
-      const zipUrl = await uploadFilesAsZip(files, folderName);
-  
-      if (zipUrl) {
-        setUploadedZipUrl(zipUrl);
-        console.log(`업로드된 ZIP 파일 URL: ${zipUrl}`);
-      } else {
-        console.error("ZIP 파일 업로드 실패");
+      const documentId = await uploadFilesToS3AndSaveToMongo(files);
+      if (documentId) {
+        console.log(`MongoDB에 저장된 문서 ID: ${documentId}`);
+        setMongoDocumentId(documentId);
+        notify();
       }
-  
-      // 업로드 완료 후 파일 목록 초기화
-      setFiles([]);
     };
   
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -172,7 +133,15 @@ const RepositoryCreatePage: React.FC = () => {
           return <FaFile style={{ color: 'gray' }} />;
       }
   };
+
+  const notify = () => {
+    toast.success("파일 업로드 성공!");
+  };
   
+  const notifyfail = () => {
+    toast.error("게시글 내용이 부족합니다.")
+  };
+
   return (
     <div> 
       <div className="flex mb-5">
@@ -270,7 +239,7 @@ const RepositoryCreatePage: React.FC = () => {
                     cursor: 'pointer',
                   }}
                 >
-                  x
+                  X
                 </button>
               </li>
             ))}
@@ -283,21 +252,12 @@ const RepositoryCreatePage: React.FC = () => {
       {/* 오른쪽 빈 공간 */}
       <div></div>
 
-      {/* 업로드된 ZIP 파일 URL */}
-      {uploadedZipUrl && (
-        <div className="mt-3" style={{ gridColumn: '2 / 3' }}>
-          <p>업로드된 ZIP 파일:</p>
-          <a href={uploadedZipUrl} target="_blank" rel="noopener noreferrer">
-            {uploadedZipUrl}
-          </a>
-        </div>
-      )}
-
       {/* 업로드 버튼 */}
       <button onClick={handleUpload} disabled={files.length === 0} className="mt-3" style={{ gridColumn: '2 / 3' }}>
-        ZIP 파일로 업로드
+          파일 업로드
       </button>
-      </div>
+          <ToastContainer />
+</div>
       <button 
         onClick={handleSave} 
         className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
@@ -308,27 +268,6 @@ const RepositoryCreatePage: React.FC = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-5 rounded-lg w-1/3">
-            <h2 className="text-xl font-semibold mb-3">썸네일 설정</h2>
-            
-            <div className="mb-3">
-              <div 
-                onClick={openFileExplorer}
-                className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
-              >
-                {thumbnailUrl ? (
-                  <img src={thumbnailUrl} alt="Thumbnail Preview" className="w-full h-full object-cover rounded" />
-                ) : (
-                  <p className="text-gray-500">클릭하여 이미지를 선택하세요</p>
-                )}
-              </div>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleThumbnailChange} 
-                className="hidden"
-              />
-            </div>
-
             <div className="mb-5">
               <label className="block text-gray-700">게시 여부</label>
               <button 
