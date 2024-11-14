@@ -18,7 +18,3 @@ export interface RepositoryResponse {
   repositoryPost: boolean;
   memberId: number;
 }
-
-export interface RepositoryItem {
-  items: RepositoryResponse[];
-}

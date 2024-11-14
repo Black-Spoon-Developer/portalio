@@ -9,7 +9,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getMyRepository } from '../../../api/RepositoryAPI'
+import { getMyRepositoryList } from '../../../api/RepositoryAPI'
 import { RootState } from "../../../store";
 import { registerActivity } from '../../../api/ActivityAPI';
 import TextField from "@mui/material/TextField";
@@ -39,7 +39,7 @@ const ActivityCreatePage: React.FC = () => {
     const fetchMyRepository = async () => {
       if (username) {
         try {
-          const response = await getMyRepository(username);
+          const response = await getMyRepositoryList(username);
           const data = response.data
           setItems(data.items);
 

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { createBoard, getBoard } from "../../../api/BoardAPI"
+import { getBoard, patchBoard } from "../../../api/BoardAPI"
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
@@ -136,8 +136,9 @@ const BoardEditPage: React.FC = () => {
       boardSolve: solve,
       boardThumbnailImg: thumbnailUrl,
     };
-
-    createBoard(boardData) 
+    if (board_id) {
+      patchBoard(board_id, boardData) 
+    }
   };
 
   const handleMainCategoryChange = (event: SelectChangeEvent) => {

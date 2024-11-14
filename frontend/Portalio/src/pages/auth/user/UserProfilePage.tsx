@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { getMyPortfolios } from "../../../api/PortfolioAPI";
 import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
-import { getRepository, getMyRepositories } from "./../../../api/RepositoryAPI";
+import { getRepository, getMyRepositoryList } from "./../../../api/RepositoryAPI";
 
 interface Free {
   boardId: number;
@@ -92,7 +92,7 @@ const UserProfilePage: React.FC = () => {
             limit
           );
           const portfoliosResponse = await getMyPortfolios(username, 0, 100);
-          const repositoryResponse = await getMyRepositories(username);
+          const repositoryResponse = await getMyRepositoryList(username);
           console.log("repositoryResponse: ", repositoryResponse);
           const activitiesWithRepositoryNames = await Promise.all(
             activitiesResponse.data.items.map(async (activity: Activity) => {
