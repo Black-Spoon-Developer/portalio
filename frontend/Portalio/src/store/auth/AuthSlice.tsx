@@ -4,10 +4,14 @@ import { UserInfo } from "../../type/UserType";
 const initialState: UserInfo = {
   accessToken: null,
   memberId: null,
-  name: null,
-  username: null,
-  picture: null,
-  role: null,
+  memberName: null,
+  memberUsername: null,
+  memberNickname: null,
+  memberPicture: null,
+  memberRole: null,
+  memberTicket: null,
+  memberAuth: null,
+  memberJob: null,
 };
 
 const authSlice = createSlice({
@@ -19,18 +23,37 @@ const authSlice = createSlice({
     login(state, action) {
       state.accessToken = action.payload.accessToken;
       state.memberId = action.payload.memberId;
-      state.name = action.payload.name;
-      state.username = action.payload.username;
-      state.picture = action.payload.picture;
-      state.role = action.payload.role;
+      state.memberName = action.payload.memberName;
+      state.memberUsername = action.payload.memberUsername;
+      state.memberPicture = action.payload.memberPicture;
+      state.memberRole = action.payload.memberRole;
+      state.memberTicket = action.payload.memberTicket;
+      state.memberAuth = action.payload.memberAuth;
+      state.memberJob = action.payload.memberJob;
     },
+
     logout(state) {
       state.accessToken = null;
       state.memberId = null;
-      state.name = null;
-      state.username = null;
-      state.picture = null;
-      state.role = null;
+      state.memberName = null;
+      state.memberUsername = null;
+      state.memberPicture = null;
+      state.memberRole = null;
+      state.memberAuth = null;
+      state.memberJob = null;
+      state.memberNickname = null;
+      state.memberTicket = null;
+    },
+
+    // 회원 정보 입력 시 정보 저장 - 닉네임, 직무
+    setUserInfo(state, action) {
+      state.memberNickname = action.payload.memberNickname;
+      state.memberJob = action.payload.memberJob;
+    },
+
+    // 티켓 로직 - 티켓 증감시 서버에서 오는 티켓 수를 저장하기
+    updateTicket(state, action) {
+      state.memberTicket = action.payload.memberTicket;
     },
   },
 });

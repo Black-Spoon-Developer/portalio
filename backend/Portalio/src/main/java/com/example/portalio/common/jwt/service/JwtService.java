@@ -88,7 +88,7 @@ public class JwtService {
         // access 토큰 발급
         String newAccess = jwtUtil.createJwt(memberId, name, username, picture, "access", email, role, 2592000000L);
 
-        // access 토큰 및 유저 정보도 같이 반환
+        // access 토큰 및 유저 정보도 같이 반환 - 정보 추가 이거 왜 썼지...?
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setMemberId(memberId);
         userResponseDTO.setName(name);

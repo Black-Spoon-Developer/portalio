@@ -77,9 +77,15 @@ const App: React.FC = () => {
           <Route path="edit/:question_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/activity" element={<Outlet />}>
-          <Route path="create/:repository_id" element={<ActivityCreatePage />} />
+          <Route
+            path="create/:repository_id"
+            element={<ActivityCreatePage />}
+          />
           <Route path=":activity_id" element={<ActivityDetailPage />} />
-          <Route path="edit/:repository_id/:activity_id" element={<ActivityEditPage />} />
+          <Route
+            path="edit/:repository_id/:activity_id"
+            element={<ActivityEditPage />}
+          />
         </Route>
 
         {/* Portfolio */}

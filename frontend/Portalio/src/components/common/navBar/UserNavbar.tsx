@@ -14,6 +14,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { AiOutlineSetting } from "react-icons/ai";
 import { MdLogout } from "react-icons/md";
 import { FaUserCircle } from "react-icons/fa";
+import ticketIcon from "../../../assets/ticket_icon.png";
 
 const UserNavbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,15 @@ const UserNavbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const userProfile = useSelector((state: RootState) => state.auth.picture);
-  const userNickname = useSelector((state: RootState) => state.auth.name);
+  const userProfile = useSelector(
+    (state: RootState) => state.auth.memberPicture
+  );
+
+  const userName = useSelector((state: RootState) => state.auth.memberName);
+  const userNickname = useSelector(
+    (state: RootState) => state.auth.memberNickname
+  );
+  const userTicket = useSelector((state: RootState) => state.auth.memberTicket);
 
   const goToMainPage = () => {
     navigate("/");
@@ -55,7 +63,11 @@ const UserNavbar: React.FC = () => {
 
       {/* 프로필 및 메뉴 */}
       <div className="flex items-center p-3 relative">
-        <div className="mx-5 font-bold">{userNickname}</div>
+        <div className="flex items-center mx-5">
+          <img src={ticketIcon} alt="no-image" className="size-8 mr-3" />
+          <div className="font-bold">{userTicket || 0}</div>
+        </div>
+        <div className="mx-5 font-bold">{userNickname || userName}</div>
         <Tooltip title="Account settings">
           <IconButton onClick={handleMenuOpen} size="small" sx={{ ml: 2 }}>
             <Avatar

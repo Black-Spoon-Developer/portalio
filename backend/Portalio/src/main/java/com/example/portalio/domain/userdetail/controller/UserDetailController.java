@@ -42,7 +42,7 @@ public class UserDetailController {
     @Operation(summary = "티켓 추가", description = "활동으로 티켓 추가")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
-    @PatchMapping("/ticket/{ticketCount}")
+    @PatchMapping("/ticket/update")
     public ResponseEntity<TicketResponse> updateTicket(
             @RequestParam Integer ticketCount,
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {

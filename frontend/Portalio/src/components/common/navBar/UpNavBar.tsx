@@ -7,7 +7,7 @@ import { RootState } from "../../../store";
 
 const NavBar: React.FC = () => {
   // authSlice에서 role 값 가져오기
-  const role = useSelector((state: RootState) => state.auth.role);
+  const role = useSelector((state: RootState) => state.auth.memberRole);
 
   return (
     <>

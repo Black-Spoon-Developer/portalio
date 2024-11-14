@@ -64,8 +64,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
-        
-
 
         MemberDTO memberDTO = MemberDTO.from(member);
 
@@ -77,13 +75,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             userDetailRepository.save(UserDetail.of(customUserDetails.getEmail(), "no nickname", member));
         }
 
-
-
         // 로그인 중에 만약 발급된 refresh 토큰이 있다면 DB에서 찾아서 검증 후 토큰이 만료 되었으면 새로운 토큰 발급하고 아니면
         // 토큰 값을 조회해서 그대로 쿠키에 담아서 그냥 보내주기
         String refreshToken = memberDTO.getRefreshToken();
-
-
 
         if (refreshToken != null) {
             boolean isExired = jwtUtil.isExpired(refreshToken);
@@ -112,8 +106,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 response.addCookie(createCookie("refresh", refresh));
                 response.setStatus(HttpStatus.OK.value());
             }
-
-
         } else {
             // 유저 정보 추출
             Long memberId = member.getMemberId();
@@ -141,11 +133,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 가입 시 회원정보를 입력하지 않은 회원이면 회원정보 입력 페이지로 리다이렉트
         if (!isAuth) {
-            response.sendRedirect("https://k11d202.p.ssafy.io/users/signup");
-//            response.sendRedirect("http://localhost:5173/users/signup");
+//            response.sendRedirect("https://k11d202.p.ssafy.io/users/signup");
+            response.sendRedirect("http://localhost:5173/users/signup");
         } else {
-            response.sendRedirect("https://k11d202.p.ssafy.io/");
-//            response.sendRedirect("http://localhost:5173/");
+//            response.sendRedirect("https://k11d202.p.ssafy.io/");
+            response.sendRedirect("http://localhost:5173/");
         }
     }
 

@@ -9,10 +9,11 @@ import {
 } from "../../../api/MemberAPI";
 import { mainCategories, subCategories } from "../../../assets/JobCategory";
 import { issueAccessToken } from "../../../api/AuthAPI";
-import { UserInfo } from "../../../type/UserType";
+import { UserInfo, UserDetailInfo } from "../../../type/UserType";
 import { authActions } from "../../../store/auth/AuthSlice";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../../store";
+import { userTicketUpdate } from "../../../api/TicketAPI";
 
 // Category 타입 정의
 type Category = {
@@ -44,10 +45,11 @@ const UserSignupPage: React.FC = () => {
           if (response) {
             const newAccessToken = response.data.access;
 
+            console.log(newAccessToken);
             // accessToken을 발급받았을 경우
             if (newAccessToken) {
               // 유저 정보 저장
-              const memberId = response.data.memberId.toString();
+              const memberId = response.data.memberId;
               const name = response.data.name;
               const username = response.data.username;
               const picture = response.data.picture;
@@ -56,10 +58,14 @@ const UserSignupPage: React.FC = () => {
               const userInfo: UserInfo = {
                 accessToken: newAccessToken,
                 memberId,
-                name,
-                username,
-                picture,
-                role,
+                memberName: name,
+                memberUsername: username,
+                memberNickname: null,
+                memberPicture: picture,
+                memberRole: role,
+                memberTicket: 0,
+                memberAuth: false,
+                memberJob: null,
               };
 
               dispatch(authActions.login(userInfo));
@@ -125,7 +131,7 @@ const UserSignupPage: React.FC = () => {
       selectedSubCategory
     ) {
       try {
-        // 닉네임과 이메일을 함께 설정하는 API 호출
+        // 닉네임과 직무 정보 설정하는 API 호출
         const userInfoResponse = await saveUserDetail(nickname);
         if (!userInfoResponse) {
           alert("에러가 발생했습니다.");
@@ -137,6 +143,20 @@ const UserSignupPage: React.FC = () => {
 
         // 저장이 성공적으로 되면 user 인증 처리
         await authUser();
+
+        // 저장 후 memberNickname과 memberJob 저장하기
+        const userDetailInfo: UserDetailInfo = {
+          memberNickname: nickname,
+          memberJob: selectedSubCategory,
+        };
+
+        dispatch(authActions.setUserInfo(userDetailInfo));
+
+        // 회원 정보를 저장했으므로 티켓 5개를 지급
+        const response = await userTicketUpdate(5);
+
+        // 받아온 유저의 티켓 정보를 redux에 저장
+        dispatch(authActions.updateTicket(response.userTicket));
 
         alert("닉네임, 이메일과 직무가 성공적으로 저장되었습니다.");
         navigate("/");
