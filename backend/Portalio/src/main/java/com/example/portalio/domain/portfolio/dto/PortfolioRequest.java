@@ -27,7 +27,6 @@ public class PortfolioRequest {
     @NotNull(message = "empty Post")
     private Boolean portfolioPost;
 
-    @NotNull(message = "empty Post")
     private Boolean portfolioIsPrimary;
 
     @NotNull(message = "empty portfolio job")
