@@ -17,36 +17,45 @@ const PortfolioSearch: React.FC<PortfolioSearchProps> = ({
   onSearch,
   onReset,
 }) => {
+  // 검색어 상태
   const [searchTerm, setSearchTerm] = useState("");
+  // 메인 카테고리 상태
   const [selectedMainCategory, setSelectedMainCategory] = useState<
     number | null
   >(null);
+  // 서브 카테고리 상태
   const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
     null
   );
 
+  // 검색어 핸들러 함수
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
+  // 메인 카테고리 선택 핸들러 함수
   const handleMainCategoryChange = (event: SelectChangeEvent<number>) => {
     const mainCategoryId = Number(event.target.value);
     setSelectedMainCategory(mainCategoryId);
     setSelectedSubCategory(null); // 메인 카테고리가 변경될 때 서브 카테고리 초기화
   };
 
+  // 서브 카테고리 핸들러 함수
   const handleSubCategoryChange = (event: SelectChangeEvent<number>) => {
     setSelectedSubCategory(Number(event.target.value));
   };
 
+  // 카테고리 필터
   const filteredSubCategories = subCategories.filter(
     (subCategory) => subCategory.parentId === selectedMainCategory
   );
 
+  // 검색 핸들러 함수
   const handleSearch = () => {
     onSearch(searchTerm, selectedSubCategory);
   };
 
+  // 리셋 핸들러 함수
   const handleReset = () => {
     setSearchTerm("");
     setSelectedMainCategory(null);

@@ -7,9 +7,9 @@ import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
 import UserProfilePage from "./pages/auth/user/UserProfilePage.tsx";
 import UserSettingPage from "./pages/auth/user/UserSettingPage.tsx";
-import UserPortfolioPage from "./pages/auth/user/UserPortfolioPage.tsx";
-import UserBoardListPage from "./pages/auth/user/UserBoardListPage.tsx";
-import UserRepositoryPage from "./pages/auth/user/UserRepositoryPage.tsx";
+import UserPortfolioListPage from "./pages/auth/user/UserPortfolioListPage.tsx";
+import UserFreeListPage from "./pages/auth/user/UserFreeListPage";
+import UserRepositoryListPage from "./pages/auth/user/UserRepositoryListPage.tsx";
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
 import BoardDetailPage from "./pages/board/board/BoardDetailPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
@@ -21,6 +21,8 @@ import RepositoryDetailPage from "./pages/board/repository/RepositoryDetailPage.
 import RepositoryCreatePage from "./pages/board/repository/RepositoryCreatePage.tsx";
 import NotFoundPage from "./pages/auth/NotFoundPage.tsx";
 import BoardPage from "./pages/board/board/BoardPage.tsx";
+import FreeDetailPage from "./pages/board/board/free/FreeDetailPage.tsx";
+import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.tsx";
 import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
 import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
@@ -57,22 +59,22 @@ const App: React.FC = () => {
           <Route path="signup" element={<UserSignupPage />} />
           <Route path="profile/:user_id" element={<Outlet />}>
             <Route index element={<UserProfilePage />} />
-            <Route path="board" element={<UserBoardListPage />} />
+            <Route path="free" element={<UserFreeListPage />} />
             <Route path="setting" element={<UserSettingPage />} />
-            <Route path="portfolio" element={<UserPortfolioPage />} />
-            <Route path="repository" element={<UserRepositoryPage />} />
+            <Route path="portfolio" element={<UserPortfolioListPage />} />
+            <Route path="repository" element={<UserRepositoryListPage />} />
           </Route>
         </Route>
 
         {/* Board */}
         <Route path="/free" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":free_id" element={<BoardDetailPage />} />
+          <Route path=":free_id" element={<FreeDetailPage />} />
           <Route path="edit/:free_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/question" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
-          <Route path=":question_id" element={<BoardDetailPage />} />
+          <Route path=":question_id" element={<QuestionDetailPage />} />
           <Route path="edit/:question_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/activity" element={<Outlet />}>

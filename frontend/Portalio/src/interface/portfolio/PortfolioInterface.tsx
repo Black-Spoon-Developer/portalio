@@ -1,24 +1,27 @@
 export interface Portfolio {
-  id: number;
-  memberId: number;
-  authorNickname: string;
-  authorPicture: string;
+  portfolioId: number;
   portfolioTitle: string;
   portfolioContent: string;
-  portfolioCommentCount: number;
+  portfolioJob: number;
+  portfolioViews: number;
+  portfolioThumbnailImg: string;
   portfolioRecommendationCount: number;
-  time: string;
+  portfolioPost: boolean;
+  portfolioIsPrimary: boolean;
   created: string;
-}
-
-export interface PortfolioList {
-  portfolioId: number;
-  picture: string;
+  portfolioCommentCount: number;
   memberId: number;
   memberNickname: string;
-  portfolioThumbnailImg: string;
-  portfolioContent: string;
-  portfolioCommentCount: number;
-  portfolioRecommendationCount: number;
+  picture: string;
+  isLiked: boolean;
+}
+
+export interface PortfolioCommetsResponse {
+  portfolioCommentId: number;
+  portfolioId: number;
+  content: string;
+  memberId: number;
+  memberNickname: string;
+  memberPicture: string;
   created: string;
 }

@@ -1,7 +1,7 @@
 const ActivityDetailPage: React.FC = () => {
   return (
     <div>
-      <h1>ActivityDetail Page</h1>
+      <h1>ActivityDetailPage. Page</h1>
     </div>
   );
 };

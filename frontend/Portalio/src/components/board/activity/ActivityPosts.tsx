@@ -1,41 +1,59 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
+import { ActivityList } from "../../../interface/activity/ActivityInterface";
 import { fetchMoreActivity, activitySearch } from "../../../api/ActivityAPI";
 import ActivitySearch from "./ActivitySearch";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
+import ActivityDetailModal from "./ActivityDetailModal";
 
 const ActivityPosts: React.FC = () => {
-  const navigate = useNavigate();
-  const [posts, setPosts] = useState<PortfolioList[]>([]);
+  // 게시글 상태
+  const [posts, setPosts] = useState<ActivityList[]>([]);
+  // 무한 스크롤 여부
   const [hasMore, setHasMore] = useState(true);
+  // 시작점 상태
   const [skip, setSkip] = useState(0);
-  const limit = 10;
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  // 검색 상태 여부
   const [isSearching, setIsSearching] = useState(false);
+  // 무한 스크롤에서 사용할 제한 수
+  const limit = 10;
 
+  // 모달 상태와 선택된 게시물 ID 관리
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 리셋 트리거 상태
+  const [resetTriggered, setResetTriggered] = useState(false);
+
+  // onMounted 트리거
   useEffect(() => {
     loadMorePosts();
   }, []);
 
+  // 리셋 트리거
+  useEffect(() => {
+    // 검색 상태가 아닌 경우 초기 전체 데이터 로드
+    if (!isSearching && resetTriggered) {
+      loadMorePosts();
+      setResetTriggered(false);
+    }
+  }, [resetTriggered]);
+
+  // 활동 게시글 리스트 조회 메서드 (무한 스크롤) - 검색 상태가 아닐 경우
   const loadMorePosts = async () => {
     try {
-      if (isSearching) {
-        // 검색 중일 때는 검색 API를 호출
-        const response = await activitySearch(searchTerm);
-        const newPosts = response.data.items;
-        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-        if (newPosts.length < limit) {
-          setHasMore(false);
-        }
+      const newPosts = await fetchMoreActivity(posts.length, limit);
+
+      // page를 나누지 않고 기본 틀에서 컴포넌트만 바꿔줘야 하는 로직을 작성했으므로
+      // useEffect가 자주 발생하게 되어 이를 방지하고자 onMounted시 상태가 초기화 되는것을 노려서 처음에 불러오는 값이 중첩이 안되도록 구현함.
+      if (skip === 0) {
+        setPosts(newPosts);
       } else {
-        // 검색 중이 아닐 때는 일반 게시글 불러오기
-        const newPosts = await fetchMoreActivity(skip, limit);
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-        if (newPosts.length < limit) {
-          setHasMore(false);
-        }
+      }
+
+      if (newPosts.length < limit) {
+        setHasMore(false);
       }
       setSkip(skip + limit);
     } catch (error) {
@@ -44,28 +62,42 @@ const ActivityPosts: React.FC = () => {
     }
   };
 
-  // 검색 요청 처리
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    setIsSearching(true); // 검색 중 상태로 설정
-    setSkip(0); // 무한 스크롤의 skip 값 초기화
-    setPosts([]); // 기존 게시글 초기화 후 새로운 검색 결과로 설정
-    setHasMore(true); // 무한 스크롤 활성화
-    loadMorePosts(); // 검색 API 요청
-  };
-
-  // 전체글 조회 요청 처리
-  const handleReset = () => {
-    setSearchTerm("");
-    setIsSearching(false); // 검색 상태 해제
-    setSkip(0);
+  // 검색 처리 핸들러
+  const handleSearch = async (term: string) => {
+    setIsSearching(true); // 검색 상태 활성화
+    setHasMore(false);
     setPosts([]);
-    setHasMore(true);
-    loadMorePosts();
+    try {
+      const searchResults = await activitySearch(term);
+      console.log(searchResults);
+      setPosts(searchResults);
+    } catch (error) {
+      console.error("Failed to search posts:", error);
+    }
   };
 
-  const handlePostClick = (postId: number) => navigate(`/portfolio/${postId}`);
+  // 검색 초기화 및 전체 게시물 조회 핸들러
+  const handleReset = () => {
+    setIsSearching(false); // 검색 상태 해제
+    setSkip(0); // 시작점 초기화
+    setPosts([]); // posts 초기화
+    setHasMore(true); // 무한 스크롤 다시 활성화
+    setResetTriggered(true); // 리셋 트리거 작동
+  };
 
+  // 게시물 클릭 시 모달을 열고 게시물 ID를 선택
+  const handlePostClick = (postId: number) => {
+    setSelectedPostId(postId);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPostId(null);
+  };
+
+  // 시간 형식 변환 함수
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -93,19 +125,18 @@ const ActivityPosts: React.FC = () => {
       <InfiniteScroll
         dataLength={posts.length}
         next={loadMorePosts}
-        hasMore={hasMore}
+        hasMore={!isSearching && hasMore} // 검색 상태에서는 무한 스크롤 비활성화
         loader={<LoadingSkeleton />}
         endMessage={<p>더 이상 게시글이 없습니다.</p>}
       >
         <div className="grid grid-cols-1 gap-4 p-4">
           {posts.map((post) => (
             <div
-              key={post.portfolioId}
-              onClick={() => handlePostClick(post.portfolioId)}
+              key={post.activityBoardId}
+              onClick={() => handlePostClick(post.activityBoardId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-2">
-                {/* 이 부분 수정해야함 */}
+              <div className="flex items-center mb-5">
                 <img
                   src={post.picture}
                   alt="프로필 이미지"
@@ -118,16 +149,17 @@ const ActivityPosts: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <img
-                src={post.portfolioThumbnailImg}
-                alt="no-image"
-                className="bg-gray-300 h-40 mb-2"
-              />
-              <p className="text-gray-700 mb-2">{post.portfolioContent}</p>
+              <p className="text-gray-700 mb-2 font-bold text-3xl">
+                {post.activityBoardTitle}
+              </p>
             </div>
           ))}
         </div>
       </InfiniteScroll>
+
+      {isModalOpen && selectedPostId && (
+        <ActivityDetailModal activityId={selectedPostId} onClose={closeModal} />
+      )}
     </>
   );
 };

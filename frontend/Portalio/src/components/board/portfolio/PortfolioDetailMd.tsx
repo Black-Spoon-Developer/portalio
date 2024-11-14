@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { portfolioDetailLike } from "../../../api/PortfolioAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
@@ -8,18 +8,20 @@ import remarkGfm from "remark-gfm";
 import "./PortfolioDetailMd.css";
 
 interface PortfolioDetailMdProps {
+  portfolioTitle: string;
   portfolioContent: string;
   isLiked: boolean;
   memberId: number;
+  setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
+  portfolioTitle,
   portfolioContent,
   isLiked,
   memberId,
+  setUpdateDetailTrigger,
 }) => {
-  const navigate = useNavigate();
-
   const userID = parseInt(
     useSelector((state: RootState) => state.auth.memberId) ?? "0",
     10
@@ -35,8 +37,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
 
     try {
       await portfolioDetailLike(portfolio_id);
-      navigate(0);
-      console.log(isLiked);
+      setUpdateDetailTrigger(true);
     } catch (error) {
       alert("좋아요 처리 중 오류가 발생했습니다." + error);
     }
@@ -45,7 +46,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
       <header className="flex justify-between items-center">
-        <h1>포트폴리오 제목</h1>
+        <h1>{portfolioTitle}</h1>
         {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
           <button
             onClick={handleLike}

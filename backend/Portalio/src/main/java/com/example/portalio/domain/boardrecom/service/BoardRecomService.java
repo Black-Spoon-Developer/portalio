@@ -32,7 +32,7 @@ public class BoardRecomService {
                 .orElseThrow(BoardNotFoundException::new);
 
         BoardRecom boardRecom = boardRecomRepository.findByMemberAndBoard(member, board)
-                .orElseThrow(BoardNotFoundException::new);
+                .orElse(null);
 
         if (boardRecom != null) {
             boardRecomRepository.delete(boardRecom);

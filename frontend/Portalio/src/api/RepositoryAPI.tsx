@@ -1,5 +1,7 @@
 import axios from "axios";
 import store, { RootState } from "../store";
+import { RepositoryRequest, RepositoryResponse } from "../type/RepositoryType";
+import { BASE_URL } from "./BaseVariable";
 import { RepositoryItem, RepositoryRequest, RepositoryResponse } from "../type/RepositoryType"
 
 
@@ -7,7 +9,9 @@ import { RepositoryItem, RepositoryRequest, RepositoryResponse } from "../type/R
 const BASE_URL = "https://k11d202.p.ssafy.io";
 
 // 레포지토리 글쓰기
-export const createRepository = async (repositoryData: RepositoryRequest): Promise<RepositoryResponse> => {
+export const createRepository = async (
+  repositoryData: RepositoryRequest
+): Promise<RepositoryResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post<RepositoryResponse>(
@@ -19,12 +23,14 @@ export const createRepository = async (repositoryData: RepositoryRequest): Promi
       },
     }
   );
-
   return response.data;
-}
+};
 
 // 레포지토리 글 수정
-export const patchRepository = async (repositoryID: string, repositoryData: RepositoryRequest): Promise<RepositoryResponse> => {
+export const patchRepository = async (
+  repositoryID: string,
+  repositoryData: RepositoryRequest
+): Promise<RepositoryResponse> => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.patch<RepositoryResponse>(
@@ -38,15 +44,65 @@ export const patchRepository = async (repositoryID: string, repositoryData: Repo
   );
 
   return response.data;
-}
+};
 
 // 레포지토리 글 상세보기
 export const getRepositoryDetail = async (repositoryID: string) => {
   const response = await axios.get(
-    `${BASE_URL}/api/v1/repository/${repositoryID}/detail`,
+    `${BASE_URL}/api/v1/repository/${repositoryID}/detail`
   );
 
   return response;
+};
+
+// 내 레포지토리 전체보기
+export const getMyRepositoryList = async (username: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/repository/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+// 레포지토리 조회하기
+export const getRepository = async (repositoryId: number) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/repository/${repositoryId}/detail`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+// 내 레포지토리 조회하기
+export const getMyRepositories = async (username: string) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/repository/${username}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
 }
 
 // 내 레포지토리 상세보기

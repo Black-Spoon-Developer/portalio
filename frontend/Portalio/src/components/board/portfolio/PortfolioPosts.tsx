@@ -3,47 +3,46 @@ import { useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import PortfolioSearch from "./PortfolioSearch";
 import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
-import { PortfolioList } from "../../../interface/portfolio/PortfolioInterface";
+import { Portfolio } from "../../../interface/portfolio/PortfolioInterface";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 
 const PortfolioPosts: React.FC = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState<PortfolioList[]>([]);
+  const [posts, setPosts] = useState<Portfolio[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
-  const limit = 10;
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedSubCategory, setSelectedSubCategory] = useState<number | null>(
-    null
-  );
   const [isSearching, setIsSearching] = useState(false);
+  const limit = 10;
 
+  // 리셋 트리거 상태
+  const [resetTriggered, setResetTriggered] = useState(false);
+
+  // onMounted 할때 초기 게시글 불러오기
   useEffect(() => {
     loadMorePosts();
   }, []);
 
+  // 리셋 트리거
+  useEffect(() => {
+    // 검색 상태가 아닌 경우 초기 전체 데이터 로드
+    if (!isSearching && resetTriggered) {
+      loadMorePosts();
+      setResetTriggered(false);
+    }
+  }, [resetTriggered]);
+
+  // 게시글 리스트 조회 메서드
   const loadMorePosts = async () => {
     try {
-      if (isSearching) {
-        // 검색 중일 때는 검색 API를 호출
-        const response = await portfolioSearch(
-          searchTerm,
-          selectedSubCategory || 0
-        );
-        const newPosts = response.data.items;
-        setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-        if (newPosts.length < limit) {
-          setHasMore(false);
-        }
-      } else {
+      if (!isSearching) {
         // 검색 중이 아닐 때는 일반 게시글 불러오기
         const newPosts = await fetchMorePosts(skip, limit);
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
         if (newPosts.length < limit) {
           setHasMore(false);
         }
+        setSkip(skip + limit);
       }
-      setSkip(skip + limit);
     } catch (error) {
       console.error("Failed to fetch posts:", error);
       setHasMore(false);
@@ -51,29 +50,33 @@ const PortfolioPosts: React.FC = () => {
   };
 
   // 검색 요청 처리
-  const handleSearch = (term: string, subCategory: number | null) => {
-    setSearchTerm(term);
-    setSelectedSubCategory(subCategory);
+  const handleSearch = async (term: string, subCategory: number | null) => {
     setIsSearching(true); // 검색 중 상태로 설정
     setSkip(0); // 무한 스크롤의 skip 값 초기화
     setPosts([]); // 기존 게시글 초기화 후 새로운 검색 결과로 설정
     setHasMore(true); // 무한 스크롤 활성화
-    loadMorePosts(); // 검색 API 요청
+    try {
+      const searchResults = await portfolioSearch(term, subCategory || 0);
+      console.log(searchResults);
+      setPosts(searchResults);
+    } catch (error) {
+      console.error("Failed to search posts:", error);
+    }
   };
 
-  // 전체글 조회 요청 처리
+  // 리셋으로 전체글 조회로 변경
   const handleReset = () => {
-    setSearchTerm("");
-    setSelectedSubCategory(null);
     setIsSearching(false); // 검색 상태 해제
     setSkip(0);
     setPosts([]);
     setHasMore(true);
-    loadMorePosts();
+    setResetTriggered(true);
   };
 
+  // 상세 조회 핸들러 함수
   const handlePostClick = (postId: number) => navigate(`/portfolio/${postId}`);
 
+  // 시간 형식 변환 함수
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -101,7 +104,7 @@ const PortfolioPosts: React.FC = () => {
       <InfiniteScroll
         dataLength={posts.length}
         next={loadMorePosts}
-        hasMore={hasMore}
+        hasMore={!isSearching && hasMore}
         loader={<LoadingSkeleton />}
         endMessage={<p>더 이상 게시글이 없습니다.</p>}
       >
@@ -112,7 +115,7 @@ const PortfolioPosts: React.FC = () => {
               onClick={() => handlePostClick(post.portfolioId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center mb-4">
                 {/* 이 부분 수정해야함 */}
                 <img
                   src={post.picture}
@@ -131,7 +134,9 @@ const PortfolioPosts: React.FC = () => {
                 alt="no-image"
                 className="bg-gray-300 h-40 mb-2"
               />
-              <p className="text-gray-700 mb-2">{post.portfolioContent}</p>
+              <p className="text-gray-700 mb-4 line-clamp-3">
+                {post.portfolioContent}
+              </p>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 <div className="text-lg tracking-widest">
                   💬 {post.portfolioCommentCount}

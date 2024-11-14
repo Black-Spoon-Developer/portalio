@@ -33,7 +33,6 @@ public class BoardCommentController {
     @GetMapping("/{boardsId}/comments")
     public ResponseEntity<BoardCommentListResponse> getBoardCommentList(
             @PathVariable Long boardsId) {
-
         BoardCommentListResponse response = boardCommentService.getBoardCommentList(boardsId);
 
         return ResponseEntity.ok(response);

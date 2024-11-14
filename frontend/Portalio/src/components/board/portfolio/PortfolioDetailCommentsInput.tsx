@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { postPortfolioDetailComment } from "../../../api/PortfolioAPI";
 
-const PortfolioDetailCommentsInput: React.FC = () => {
+interface PortfolioDetailCommentsInputProps {
+  setUpdateCommentTrigger: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const PortfolioDetailCommentsInput: React.FC<
+  PortfolioDetailCommentsInputProps
+> = ({ setUpdateCommentTrigger }) => {
   const navigate = useNavigate();
   const [content, setContent] = useState("");
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
@@ -14,8 +20,7 @@ const PortfolioDetailCommentsInput: React.FC = () => {
         // 댓글 작성 API 호출
         await postPortfolioDetailComment(portfolio_id, content);
         setContent(""); // 제출 후 입력창 초기화
-        alert("댓글이 성공적으로 작성되었습니다.");
-        navigate(0);
+        setUpdateCommentTrigger(true);
       } catch (error) {
         console.error("댓글 작성에 실패했습니다:", error);
         alert("댓글 작성에 실패했습니다.");
