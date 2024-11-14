@@ -84,13 +84,12 @@ public class ActivityBoardController {
     @Operation(summary = "[활동게시판]글 작성", description = "글 작성")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
-    @PostMapping("/onlyactivity/{repositoryId}")
+    @PostMapping("/onlyactivity")
     public ResponseEntity<ActivityBoardResponse> registerActivityBoard(
             @RequestBody @Valid ActivityBoardRequest request,
-            @PathVariable Long repositoryId,
             @AuthenticationPrincipal CustomOAuth2User oauth2User) {
 
-        ActivityBoardResponse response = activityBoardService.registerActivityBoard(request, repositoryId, oauth2User);
+        ActivityBoardResponse response = activityBoardService.registerActivityBoard(request, oauth2User);
 
         return ResponseEntity.ok(response);
     }

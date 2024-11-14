@@ -1,5 +1,6 @@
 export interface RepositoryRequest {
   repositoryTitle: string;
+  repositoryDescription: string
   repositoryContent: string;
   startDate: string;
   endDate: string;
@@ -10,12 +11,16 @@ export interface RepositoryRequest {
 export interface RepositoryResponse {
   repositoryId: number;
   repositoryTitle: string;
+  repositoryDescription: string
   repositoryContent: string;
   startDate: string;
   endDate: string;
   repositoryFileKey: string;
   repositoryPost: boolean;
+  repositoryIsPrimary: boolean;
   memberId: number;
+  memberUsername: string;
+  picture: string;
 }
 
 export interface RepositoryItem {

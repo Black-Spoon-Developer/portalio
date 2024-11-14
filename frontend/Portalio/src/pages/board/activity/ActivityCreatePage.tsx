@@ -2,14 +2,13 @@ import React, { useRef, useEffect, useState } from 'react';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getMyRepository } from '../../../api/RepositoryAPI'
+import { getMyRepositoryList } from '../../../api/RepositoryAPI'
 import { RootState } from "../../../store";
 import { registerActivity } from '../../../api/ActivityAPI';
 import TextField from "@mui/material/TextField";
@@ -17,7 +16,7 @@ import { RepositoryResponse } from '../../../type/RepositoryType';
 import { useSelector } from 'react-redux';
 
 const ActivityCreatePage: React.FC = () => {
-  const { repository_id } = useParams<{ repository_id: string }>();
+  const [repositoryId, setRepositoryId] = useState<number>(0)
   const today = new Date().toISOString().split('T')[0];
   const editorRef = useRef<Editor>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,9 +38,8 @@ const ActivityCreatePage: React.FC = () => {
     const fetchMyRepository = async () => {
       if (username) {
         try {
-          const response = await getMyRepository(username);
-          const data = response.data
-          setItems(data.items);
+          const response = await getMyRepositoryList(username);
+          setItems(response.items);
 
         } catch (error) {
           console.error("레포지토리 리스트 불러오기 오류:", error)
@@ -99,11 +97,10 @@ const ActivityCreatePage: React.FC = () => {
       activityBoardTitle: title,
       activityBoardContent: content,
       activityBoardDate: startDate,
+      repositoryId: repositoryId
     };
     
-    if (repository_id) {
-      registerActivity(repository_id, activityBoardData) 
-    }
+      registerActivity(activityBoardData) 
   };
   
   const [selectedRepository, setSelectedRepository] = useState<
@@ -113,6 +110,7 @@ const ActivityCreatePage: React.FC = () => {
 const handleRepositoryChange = (event: SelectChangeEvent<number>) => {
   const mainRepositoryId = Number(event.target.value);
   setSelectedRepository(mainRepositoryId);
+  setRepositoryId(mainRepositoryId)
 };
 
 return (
@@ -141,7 +139,7 @@ return (
               레포지토리 선택
               </MenuItem>
               {items.map((item) => (
-                <MenuItem key={item.repositoryId}>
+                <MenuItem key={item.repositoryId} value={item.repositoryId}>
                   {item.repositoryTitle}
                 </MenuItem>
               ))}

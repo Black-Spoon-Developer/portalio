@@ -1,13 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { createBoard, getBoard } from "../../../api/BoardAPI"
+import { getBoard, patchBoard } from "../../../api/BoardAPI"
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import { Categories } from "../../../assets/JobCategory";
 import { useParams } from 'react-router-dom';
 import { BoardRequest } from '../../../type/BoardType';
 import { ToastContainer, toast } from 'react-toastify';
@@ -136,14 +131,11 @@ const BoardEditPage: React.FC = () => {
       boardSolve: solve,
       boardThumbnailImg: thumbnailUrl,
     };
-
-    createBoard(boardData) 
+    if (board_id) {
+      patchBoard(board_id, boardData) 
+    }
   };
 
-  const handleMainCategoryChange = (event: SelectChangeEvent) => {
-    const selectedBoardValue = event.target.value;
-    setCategory(selectedBoardValue); // 선택한 게시판의 value를 설정
-  };
 
   return (
     <div>
@@ -156,31 +148,6 @@ const BoardEditPage: React.FC = () => {
         onChange={(e) => setTitle(e.target.value)}
       />
     </div>
-
-  <div className="p-4">
-    <Accordion>
-      <AccordionDetails>
-        <div className="mb-4">
-          <Select
-            value={category || ""}
-            onChange={handleMainCategoryChange}
-            displayEmpty
-            className="w-full"
-          >
-            <MenuItem value="" disabled>
-              게시판 선택
-            </MenuItem>
-            {Categories.map((category) => (
-              <MenuItem key={category.id} value={category.value}>
-                {category.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </div>
-
-      </AccordionDetails>
-    </Accordion>
-  </div>
 
     <Editor
       ref={editorRef}

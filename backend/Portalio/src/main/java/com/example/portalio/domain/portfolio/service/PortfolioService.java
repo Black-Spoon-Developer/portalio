@@ -115,7 +115,7 @@ public class PortfolioService {
         JobSubCategory jobSubCategory = findJobSubCategory(request.getJobSubCategoryId());
 
         // PortfolioRequest를 Portfolio 엔티티로 변환
-        Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(), request.getPortfolioContent(), request.getPortfolioThumbnailImg(), request.getPortfolioPost(), request.getPortfolioIsPrimary(), jobSubCategory, member, request.getPortfolioDescription());
+        Portfolio portfolio = Portfolio.of(request.getPortfolioTitle(),request. getPortfolioDescription(), request.getPortfolioContent(), request.getPortfolioThumbnailImg(), request.getPortfolioPost(), jobSubCategory, member);
 
         portfolioRepository.save(portfolio);
 
@@ -136,6 +136,9 @@ public class PortfolioService {
         if (request.getPortfolioTitle() != null) {
             portfolio.setPortfolioTitle(request.getPortfolioTitle());
         }
+        if (request.getPortfolioDescription() != null) {
+            portfolio.setPortfolioDescription(request.getPortfolioDescription());
+        }
         if (request.getPortfolioContent() != null) {
             portfolio.setPortfolioContent(request.getPortfolioContent());
         }
@@ -145,10 +148,6 @@ public class PortfolioService {
         }
         if (request.getPortfolioThumbnailImg() != null) {
             portfolio.setPortfolioThumbnailImg(request.getPortfolioThumbnailImg());
-        }
-
-        if (request.getPortfolioDescription() != null) {
-            portfolio.setPortfolioDescription(request.getPortfolioDescription());
         }
 
         portfolioRepository.save(portfolio);

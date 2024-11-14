@@ -3,19 +3,11 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
 import TextField from "@mui/material/TextField";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getActivityBoard, patchActivityBoard } from '../../../api/ActivityAPI';
 import { ActivityRequest } from '../../../type/ActivityType';
-import { RepositoryResponse } from '../../../type/RepositoryType';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
-import { getMyRepository } from '../../../api/RepositoryAPI';
 
 const PortfolioEditPage: React.FC = () => {
   const { repository_id } = useParams<{ repository_id: string }>();
@@ -26,9 +18,7 @@ const PortfolioEditPage: React.FC = () => {
   const [boardDate, setBoardDate] = useState<string>("");
   const [startDate, setStartDate] = useState(today);
   const [title, setTitle] = useState<string>("");
-  const [items, setItems] = useState<RepositoryResponse[]>([]);
   const [content, setContent] = useState<string>("");
-  const username = useSelector((state: RootState) => state.auth.username) ?? "Guest";
   
   const BASE_URL = "https://k11d202.p.ssafy.io";
   // const BASE_URL = "http://localhost:8080/";
@@ -61,21 +51,6 @@ const PortfolioEditPage: React.FC = () => {
     fetchActivityData();
   }, [activity_id]);
 
-  useEffect(() => {
-    const fetchMyRepository = async () => {
-      if (username) {
-        try {
-          const response = await getMyRepository(username);
-          const data = response.data
-          setItems(data.items);
-
-        } catch (error) {
-          console.error("레포지토리 리스트 불러오기 오류:", error)
-        }
-      }
-    }
-    fetchMyRepository();
-  }, [username]);
 
   const onUploadImage = async (
     blob: Blob,
@@ -122,22 +97,13 @@ const PortfolioEditPage: React.FC = () => {
       activityBoardTitle: title,
       activityBoardContent: content,
       activityBoardDate: boardDate,
+      repositoryId: repository_id,
     };
 
     if (repository_id && activity_id) {
       await patchActivityBoard(repository_id, activity_id, activityData);
     }
   };
-
-  
-  const [selectedRepository, setSelectedRepository] = useState<
-  number | null
->(null);
-
-const handleRepositoryChange = (event: SelectChangeEvent<number>) => {
-  const mainRepositoryId = Number(event.target.value);
-  setSelectedRepository(mainRepositoryId);
-};
 
 return (
   <div>
@@ -150,30 +116,6 @@ return (
         onChange={(e) => setTitle(e.target.value)}
       />
     </div>
-
-  <div className="p-4">
-    <Accordion>
-      <AccordionDetails>
-        <div className="mb-4">
-          <Select
-            value={selectedRepository || ""}
-            onChange={handleRepositoryChange}
-            displayEmpty
-            className="w-full"
-          >
-            <MenuItem value="" disabled>
-              레포지토리 선택
-            </MenuItem>
-            {items.map((item) => (
-              <MenuItem key={item.repositoryId}>
-                {item.repositoryTitle}
-              </MenuItem>
-            ))}
-          </Select>
-        </div>
-      </AccordionDetails>
-    </Accordion>
-  </div>
   
           {/* 시작 날짜와 종료 날짜 입력 */}
           <div className="flex mb-5 space-x-4">

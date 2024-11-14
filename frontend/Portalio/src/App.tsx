@@ -69,15 +69,15 @@ const App: React.FC = () => {
         <Route path="/free" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
           <Route path=":free_id" element={<FreeDetailPage />} />
-          <Route path="edit/:free_id" element={<BoardEditPage />} />
+          <Route path="edit/:board_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/question" element={<Outlet />}>
           <Route path="create" element={<BoardCreatePage />} />
           <Route path=":question_id" element={<QuestionDetailPage />} />
-          <Route path="edit/:question_id" element={<BoardEditPage />} />
+          <Route path="edit/:board_id" element={<BoardEditPage />} />
         </Route>
         <Route path="/activity" element={<Outlet />}>
-          <Route path="create/:repository_id" element={<ActivityCreatePage />} />
+          <Route path="create" element={<ActivityCreatePage />} />
           <Route path=":activity_id" element={<ActivityDetailPage />} />
           <Route path="edit/:repository_id/:activity_id" element={<ActivityEditPage />} />
         </Route>

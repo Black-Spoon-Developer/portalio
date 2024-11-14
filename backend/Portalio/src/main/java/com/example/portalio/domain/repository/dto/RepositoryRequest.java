@@ -17,6 +17,9 @@ public class RepositoryRequest {
     @Size(max = 50, message = "long title")
     private String repositoryTitle;
 
+    @Size(max = 200, message = "Description too long")
+    private String repositoryDescription;
+
     @NotNull(message = "empty repository content")
     private String repositoryContent;
 
@@ -30,6 +33,4 @@ public class RepositoryRequest {
 
     @NotNull(message = "empty repository post")
     private Boolean repositoryPost;
-
-    private Boolean repositoryIsPrimary;
 }
