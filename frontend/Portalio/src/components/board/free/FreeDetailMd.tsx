@@ -44,8 +44,7 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
 
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
-      <header className="flex justify-between items-center">
-        <h1>자유 게시판 제목</h1>
+      <section className="flex justify-end">
         {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
           <button
             onClick={handleLike}
@@ -57,6 +56,9 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
             ❤️
           </button>
         )}
+      </section>
+      <header className="flex justify-between items-center">
+        <h1>자유 게시판 제목</h1>
       </header>
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{FreeContent}</ReactMarkdown>
     </div>

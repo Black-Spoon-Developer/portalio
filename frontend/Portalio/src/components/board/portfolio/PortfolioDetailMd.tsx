@@ -45,8 +45,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
 
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
-      <header className="flex justify-between items-center">
-        <h1>{portfolioTitle}</h1>
+      <section className="flex justify-end">
         {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
           <button
             onClick={handleLike}
@@ -58,6 +57,9 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
             ❤️
           </button>
         )}
+      </section>
+      <header className="flex justify-between items-center">
+        <h1>{portfolioTitle}</h1>
       </header>
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {portfolioContent}
