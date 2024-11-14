@@ -20,6 +20,7 @@ const RepositoryCreatePage: React.FC = () => {
   const [endDate, setEndDate] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
   const [mongoDocumentId, setMongoDocumentId] = useState<string>(""); // MongoDB 문서 ID 상태
+  const [description, setDescription] = useState("")
   const BASE_URL = "https://k11d202.p.ssafy.io";
   // const BASE_URL = "http://localhost:8080";
 
@@ -76,6 +77,7 @@ const RepositoryCreatePage: React.FC = () => {
     
     const repositoryData = {
       repositoryTitle: title,
+      repositoryDescription: description,
       repositoryContent: content,
       startDate: startDate,
       endDate: endDate,
@@ -140,6 +142,10 @@ const RepositoryCreatePage: React.FC = () => {
   
   const notifyfail = () => {
     toast.error("게시글 내용이 부족합니다.")
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(event.target.value);
   };
 
   return (
@@ -212,7 +218,7 @@ const RepositoryCreatePage: React.FC = () => {
               padding: 0,
               maxHeight: '150px', // 최대 높이 설정
               overflowY: 'auto', // 세로 스크롤 활성화
-            }}
+            }} 
           >
             {files.map((file, index) => (
               <li
@@ -268,6 +274,17 @@ const RepositoryCreatePage: React.FC = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-5 rounded-lg w-1/3">
+          <div>
+              <textarea
+                id="textArea"
+                value={description}
+                onChange={handleChange}
+                rows={5}
+                cols={40}
+                placeholder="당신의 포스트를 짧게 소개해보세요."
+                className="w-full max-w-lg p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              />
+            </div>
             <div className="mb-5">
               <label className="block text-gray-700">게시 여부</label>
               <button 

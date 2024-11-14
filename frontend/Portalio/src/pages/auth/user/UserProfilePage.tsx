@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { getMyPortfolios } from "../../../api/PortfolioAPI";
 import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
-import { getRepository, getMyRepositories } from "./../../../api/RepositoryAPI";
+import { getRepository, getMyRepositoryList } from "./../../../api/RepositoryAPI";
 
 interface Free {
   boardId: number;
@@ -35,6 +35,7 @@ interface Portfolio {
   created: Date;
   portfolioId: number;
   portfolioTitle: string;
+  portfolioDescription: string;
   portfolioIsPrimary: boolean;
   portfolioCommentCount: number;
   portfolioThumbnailImg: string;
@@ -91,7 +92,7 @@ const UserProfilePage: React.FC = () => {
             limit
           );
           const portfoliosResponse = await getMyPortfolios(username, 0, 100);
-          const repositoryResponse = await getMyRepositories(username);
+          const repositoryResponse = await getMyRepositoryList(username);
           console.log("repositoryResponse: ", repositoryResponse);
           const activitiesWithRepositoryNames = await Promise.all(
             activitiesResponse.data.items.map(async (activity: Activity) => {
@@ -283,75 +284,75 @@ const UserProfilePage: React.FC = () => {
       </div>
 
       {/* 대표 포트폴리오 */}
-      <div className="portfolio-section !p-0">
-        {/* header */}
-        <div className="portfolio-header px-2 py-2">
-          <h2>대표 포트폴리오</h2>
-          <Link
-            to={`/users/profile/${userId}/portfolio`}
-            className="portfolio-settings-link"
-          >
-            <img
-              src={SettingsIcon}
-              alt="포트폴리오 관리"
-              className="settings-icon"
-            />
-            포트폴리오 관리
-          </Link>
-        </div>
-        {/* portfolio */}
-        {portfolio && (
-          <div className="block mt-4 min-h-[192px]">
+      <div className="portfolio-section">
+        <div className="border border-gray-300 rounded-lg">
+          {/* header */}
+          <div className="portfolio-header p-4">
+            <h2>대표 포트폴리오</h2>
             <Link
-              to={`/portfolio/${portfolio.portfolioId}`}
-              className="flex items-start w-full px-2 py-2"
+              to={`/users/profile/${userId}/portfolio`}
+              className="portfolio-settings-link"
             >
-              <div className="flex items-center">
-                <img
-                  src={portfolio.portfolioThumbnailImg || "기본 이미지 URL"} // 썸네일 이미지 URL 설정
-                  alt="대표 포트폴리오 썸네일"
-                  className="w-48 h-48 rounded-md mr-4" // 이미지 크기 및 여백 설정
-                />
-              </div>
-              <div className="flex flex-col w-full justify-between  min-h-[192px]">
-                <span className="text-lg font-semibold">
-                  {portfolio.portfolioTitle}
-                </span>
-                <span>
-                  <p>레포지토리 소개(최대 세 줄)</p>
-                  <p>레포지토리 소개(최대 세 줄)</p>
-                  <p>레포지토리 소개(최대 세 줄)</p>
-                </span>
-                <div className="text-sm text-gray-500 mt-auto self-end">
-                  {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
-                  {new Date(portfolio.created)
-                    .toLocaleDateString("ko-KR", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })
-                    .replace(/\.$/, "")}
-                </div>
-              </div>
+              <img
+                src={SettingsIcon}
+                alt="포트폴리오 관리"
+                className="settings-icon"
+              />
+              포트폴리오 관리
             </Link>
-            {/* Nickname */}
-            <div className="border-t border-gray-300 py-2 text-right">
-              <Link to={`/users/profile/${portfolio.memberId}`}>
-                <div className="py-2 px-2 flex items-center justify-end space-x-2">
+          </div>
+          {/* portfolio */}
+          {portfolio && (
+            <div className="block min-h-[192px]">
+              <Link
+                to={`/portfolio/${portfolio.portfolioId}`}
+                className="flex items-start w-full px-2 py-2"
+              >
+                <div className="flex items-center">
                   <img
-                    src={picture || ""}
-                    alt="profile"
-                    className="w-10 h-10 rounded-full"
+                    src={portfolio.portfolioThumbnailImg || "기본 이미지 URL"} // 썸네일 이미지 URL 설정
+                    alt="대표 포트폴리오 썸네일"
+                    className="w-48 h-48 rounded-md mr-4" // 이미지 크기 및 여백 설정
                   />
-                  <span className="text-gray-500">by</span>
-                  <span className="text-black font-bold">
-                    {portfolio.memberNickname}
+                </div>
+                <div className="flex flex-col w-full justify-between  min-h-[192px]">
+                  <span className="text-xl font-bold mb-3">
+                    {portfolio.portfolioTitle}
                   </span>
+                  <span className="text-sm line-clamp-3">
+                    {portfolio.portfolioDescription}
+                  </span>
+                  <div className="text-sm text-gray-500 mt-auto self-end">
+                    {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
+                    {new Date(portfolio.created)
+                      .toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                      .replace(/\.$/, "")}
+                  </div>
                 </div>
               </Link>
+              {/* Nickname */}
+              <div className="border-t border-gray-300 py-2 text-right">
+                <Link to={`/users/profile/${portfolio.memberId}`}>
+                  <div className="py-2 px-2 flex items-center justify-end space-x-2">
+                    <img
+                      src={picture || ""}
+                      alt="profile"
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <span className="text-gray-500">by</span>
+                    <span className="text-black font-bold">
+                      {portfolio.memberNickname}
+                    </span>
+                  </div>
+                </Link>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* 대표 레포지토리 및 작성한 게시글 섹션 */}

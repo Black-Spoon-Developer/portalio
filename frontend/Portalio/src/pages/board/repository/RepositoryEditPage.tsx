@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { createRepository, getRepositoryDetail } from "../../../api/RepositoryAPI";
+import { getRepositoryDetail, patchRepository } from "../../../api/RepositoryAPI";
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { useDropzone } from 'react-dropzone';
 import { getmyfiles, repoupdate } from '../../../api/S3ImageUploadAPI'
@@ -25,6 +25,8 @@ const RepositoryEditPage: React.FC = () => {
   const [fileUrls, setFileUrls] = useState<string[]>([]);  // 기존 파일 관리
   const [_, setFileNames] = useState<string[]>([]); 
   const [mongoDocumentId, setMongoDocumentId] = useState<string>(""); // MongoDB 문서 ID 상태
+  const [description, setDescription] = useState("")
+
   const BASE_URL = "https://k11d202.p.ssafy.io";
   // const BASE_URL = "https://localhost:8080";
 
@@ -122,14 +124,16 @@ const RepositoryEditPage: React.FC = () => {
     
     const repositoryData = {
       repositoryTitle: title,
+      repositoryDescription: description,
       repositoryContent: content,
       startDate: startDate,
       endDate: endDate,
       repositoryFileKey: mongoDocumentId,
       repositoryPost: isPublished
     };
-
-    createRepository(repositoryData);
+    if (repository_id) {
+      patchRepository(repository_id, repositoryData);
+    }
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -185,6 +189,10 @@ const RepositoryEditPage: React.FC = () => {
       default:
         return <FaFile style={{ color: 'gray' }} />;
     }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(event.target.value);
   };
 
   return (
@@ -274,6 +282,17 @@ const RepositoryEditPage: React.FC = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-5 rounded-lg w-1/3">
+          <div>
+              <textarea
+                id="textArea"
+                value={description}
+                onChange={handleChange}
+                rows={5}
+                cols={40}
+                placeholder="당신의 포스트를 짧게 소개해보세요."
+                className="w-full max-w-lg p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              />
+            </div>
             <div className="mb-5">
               <label className="block text-gray-700">게시 여부</label>
               <button 

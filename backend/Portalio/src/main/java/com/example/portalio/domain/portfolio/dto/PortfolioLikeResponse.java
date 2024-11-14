@@ -11,6 +11,7 @@ public class PortfolioLikeResponse {
 
     private Long portfolioId;
     private String portfolioTitle;
+    private String portfolioDescription;
     private String portfolioContent;
     private Long portfolioJob;
     private Integer portfolioViews;
@@ -30,6 +31,7 @@ public class PortfolioLikeResponse {
         return PortfolioLikeResponse.builder()
                 .portfolioId(portfolio.getPortfolioId())
                 .portfolioTitle(portfolio.getPortfolioTitle())
+                .portfolioDescription(portfolio.getPortfolioDescription())
                 .portfolioContent(portfolio.getPortfolioContent())
                 .portfolioJob(portfolio.getJobSubCategory().getJobId())
                 .portfolioViews(portfolio.getPortfolioViews())

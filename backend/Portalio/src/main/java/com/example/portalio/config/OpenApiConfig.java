@@ -1,4 +1,4 @@
-package com.example.portalio.common.security.config;
+package com.example.portalio.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

@@ -34,6 +34,9 @@ public class Repository extends AuditableCreatedEntity {
     @Column(name = "repository_title", nullable = false, length = 50)
     private String repositoryTitle;
 
+    @Column(name = "repository_description", nullable = false, columnDefinition = "TEXT")
+    private String repositoryDescription;
+
     @Column(name = "repository_content", nullable = false, columnDefinition = "TEXT")
     private String repositoryContent;
 
@@ -59,19 +62,19 @@ public class Repository extends AuditableCreatedEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Repository(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Boolean repositoryIsPrimary, Member member) {
+    private Repository(String repositoryTitle, String repositoryDescription, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Member member) {
         this.repositoryTitle = repositoryTitle;
+        this.repositoryDescription = repositoryDescription;
         this.repositoryContent = repositoryContent;
         this.startDate = startDate;
         this.endDate = endDate;
         this.repositoryFileKey = repositoryFileKey;
         this.repositoryPost = repositoryPost;
-        this.repositoryIsPrimary = repositoryIsPrimary;
         this.member = member;
     }
 
-    public static Repository of(String repositoryTitle, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Boolean repositoryIsPrimary, Member member) {
-        return new Repository(repositoryTitle, repositoryContent, startDate, endDate, repositoryFileKey, repositoryPost, repositoryIsPrimary, member);
+    public static Repository of(String repositoryTitle, String repositoryDescription, String repositoryContent, LocalDate startDate, LocalDate endDate, String repositoryFileKey, Boolean repositoryPost, Member member) {
+        return new Repository(repositoryTitle, repositoryDescription, repositoryContent, startDate, endDate, repositoryFileKey, repositoryPost, member);
     }
 
     public void setRepositoryTitle(String repositoryTitle) { this.repositoryTitle = repositoryTitle; }
@@ -87,4 +90,6 @@ public class Repository extends AuditableCreatedEntity {
     public void setRepositoryPost(Boolean repositoryPost) { this.repositoryPost = repositoryPost; }
 
     public void setRepositoryIsPrimary(Boolean repisitoryIsPrimary) { this.repositoryIsPrimary = repisitoryIsPrimary; }
+
+    public void setRepositoryDescription(String repositoryDescription) { this.repositoryDescription = repositoryDescription; }
 }
