@@ -72,19 +72,18 @@ public class Portfolio extends AuditableCreatedEntity {
     @OneToMany(mappedBy = "portfolio")
     private List<PortfolioRecom> portfolioRecoms = new ArrayList<>();
 
-    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, Boolean portfolioIsPrimary, JobSubCategory jobSubCategory, Member member, String portfolioDescription) {
+    private Portfolio(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost , JobSubCategory jobSubCategory, Member member, String portfolioDescription) {
         this.portfolioTitle = portfolioTitle;
         this.portfolioContent = portfolioContent;
         this.portfolioThumbnailImg = portfolioThumbnailImg;
         this.portfolioPost = portfolioPost;
-        this.portfolioIsPrimary = portfolioIsPrimary;
         this.jobSubCategory = jobSubCategory;
         this.member = member;
         this.portfolioDescription = portfolioDescription;
     }
 
-    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, Boolean portfolioIsPrimary, JobSubCategory jobSubCategory, Member member, String portfolioDescription) {
-        return new Portfolio(portfolioTitle, portfolioContent, portfolioThumbnailImg, portfolioPost, portfolioIsPrimary, jobSubCategory, member, portfolioDescription);
+    public static Portfolio of(String portfolioTitle, String portfolioContent, String portfolioThumbnailImg, Boolean portfolioPost, JobSubCategory jobSubCategory, Member member, String portfolioDescription) {
+        return new Portfolio(portfolioTitle, portfolioContent, portfolioThumbnailImg, portfolioPost, jobSubCategory, member, portfolioDescription);
     }
 
     public void setPortfolioTitle(String portfolioTitle) { this.portfolioTitle = portfolioTitle; }

@@ -138,13 +138,11 @@ public class AwsS3Service {
 
         List<String> fileUrls = new ArrayList<>(fileDocument.getFileUrls());
         List<String> fileNames = new ArrayList<>(fileDocument.getFileNames());
-        System.out.println(fileUrls);
 
         // S3에 각 파일을 업로드하고 URL 리스트 생성
         files.forEach(file -> {
             String realfileName = file.getOriginalFilename(); // 원본 파일 이름
             fileNames.add(realfileName);
-            System.out.println(fileUrls);
 
             String fileName = createFileNames(folderName, realfileName);
             ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -160,16 +158,12 @@ public class AwsS3Service {
             String fileUrl = "https://" + bucketName + ".s3." + "ap-northeast-2.amazonaws.com/" + fileName;
             fileUrls.add(fileUrl);
         });
-        System.out.println(fileUrls);
 
         fileDocument = new FileDocument(fileUrls, fileNames);
 
         // URL 리스트를 MongoDB에 저장
         FileDocument savedDocument = fileRepository.save(fileDocument);
 
-        System.out.println(savedDocument.getId());
-        System.out.println(savedDocument.getFileUrls());
-        System.out.println(savedDocument.getFileNames());
         // 저장된 문서의 ID 반환
         return savedDocument.getId();
     }
