@@ -35,6 +35,7 @@ interface Portfolio {
   created: Date;
   portfolioId: number;
   portfolioTitle: string;
+  portfolioDescription: string;
   portfolioIsPrimary: boolean;
   portfolioCommentCount: number;
   portfolioThumbnailImg: string;
@@ -314,13 +315,11 @@ const UserProfilePage: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col w-full justify-between  min-h-[192px]">
-                <span className="text-lg font-semibold">
+                <span className="text-xl font-semibold">
                   {portfolio.portfolioTitle}
                 </span>
-                <span>
-                  <p>레포지토리 소개(최대 세 줄)</p>
-                  <p>레포지토리 소개(최대 세 줄)</p>
-                  <p>레포지토리 소개(최대 세 줄)</p>
+                <span className="text-sm line-clamp-3">
+                  {portfolio.portfolioDescription}
                 </span>
                 <div className="text-sm text-gray-500 mt-auto self-end">
                   {portfolio.portfolioCommentCount}개의 댓글 ·{" "}
