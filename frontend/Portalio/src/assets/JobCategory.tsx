@@ -188,6 +188,6 @@ export const subCategories = [
 
 
 export const Categories = [
-  { id: 1, name: "자유게시판", value:"Free_board" },
-  { id: 2, name: "질문게시판", value: "Question_board" }
+  { id: 1, name: "자유게시판", value:"FREE" },
+  { id: 2, name: "질문게시판", value: "QUESTION" }
 ];

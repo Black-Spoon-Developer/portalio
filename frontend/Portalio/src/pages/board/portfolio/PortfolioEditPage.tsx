@@ -10,7 +10,8 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { mainCategories, subCategories } from "../../../assets/JobCategory";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PortfolioEditPage: React.FC = () => {
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
@@ -27,7 +28,11 @@ const PortfolioEditPage: React.FC = () => {
   const BASE_URL = "https://k11d202.p.ssafy.io";
   // const BASE_URL = "http://localhost:8080/";
 
-  
+  const notifyfail = () => {
+    toast.error("게시글 내용이 부족합니다.")
+  };
+
+
   useEffect(() => {
     // 포트폴리오 데이터 불러오기
     const fetchPortfolioData = async () => {
@@ -122,7 +127,7 @@ const PortfolioEditPage: React.FC = () => {
 
   const handleModalSave = async () => {
     if (!title || !content) {
-      console.error("모든 필드가 입력되어야 합니다.");
+      notifyfail()
       return;
     }
     
@@ -274,6 +279,7 @@ const filteredSubCategories = subCategories.filter(
             <div className="flex justify-end space-x-3">
               <button onClick={handleModalClose} className="px-4 py-2 bg-gray-300 rounded-lg">취소</button>
               <button onClick={handleModalSave} className="px-4 py-2 bg-blue-500 text-white rounded-lg">저장</button>
+              <ToastContainer />
             </div>
           </div>
         </div>
