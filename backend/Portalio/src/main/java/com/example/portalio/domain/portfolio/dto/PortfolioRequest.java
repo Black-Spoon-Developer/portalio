@@ -16,11 +16,11 @@ public class PortfolioRequest {
     @Size(max = 50, message = "long title")
     private String portfolioTitle;
 
-    @Size(max = 200, message = "Description too long")
-    private String portfolioDescription;
-
     @NotNull(message = "empty portfolio content")
     private String portfolioContent;
+
+    @Size(max = 200, message = "Description too long")
+    private String portfolioDescription;
 
     private String portfolioThumbnailImg;
 
