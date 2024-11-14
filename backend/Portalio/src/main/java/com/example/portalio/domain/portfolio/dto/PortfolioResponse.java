@@ -11,6 +11,7 @@ public class PortfolioResponse {
 
     private Long portfolioId;
     private String portfolioTitle;
+    private String portfolioDescription;
     private String portfolioContent;
     private Long portfolioJob;
     private Integer portfolioViews;
@@ -23,11 +24,13 @@ public class PortfolioResponse {
     private Long memberId;
     private String memberNickname;
 
+
     public static PortfolioResponse from(Portfolio portfolio) {
 
         return PortfolioResponse.builder()
                 .portfolioId(portfolio.getPortfolioId())
                 .portfolioTitle(portfolio.getPortfolioTitle())
+                .portfolioDescription(portfolio.getPortfolioDescription())
                 .portfolioContent(portfolio.getPortfolioContent())
                 .portfolioJob(portfolio.getJobSubCategory().getJobId())
                 .portfolioViews(portfolio.getPortfolioViews())
@@ -39,6 +42,7 @@ public class PortfolioResponse {
                 .created(portfolio.getCreated())
                 .memberId(portfolio.getMember().getMemberId())
                 .memberNickname(portfolio.getMember().getUserDetail().getUserNickname())
+
                 .build();
     }
 }
