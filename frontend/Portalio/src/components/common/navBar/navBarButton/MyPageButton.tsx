@@ -7,10 +7,10 @@ import { sideNavActions } from "../../../../store/nav/SideNavSlice";
 const MyPageButton: React.FC = () => {
   const dispatch = useDispatch();
 
-  const selectState = useSelector((state: RootState) => state.sideTab.tabState);
+  const selectState = useSelector((state: RootState) => state.sideNav.tabState);
 
   const onClick = () => {
-    dispatch(sideNavActions.selectNotification());
+    dispatch(sideNavActions.selectMypage());
   };
 
   return (
@@ -18,7 +18,7 @@ const MyPageButton: React.FC = () => {
       <button
         onClick={onClick}
         className={`flex items-center my-8 text-conceptGrey hover:text-conceptSkyBlue font-bold ${
-          selectState == "Notification"
+          selectState == "MyPage"
             ? "text-conceptSkyBlue border-l-4 border-conceptSkyBlue"
             : "text-conceptGrey hover:text-conceptSkyBlue"
         }`}

@@ -7,7 +7,7 @@ import { sideNavActions } from "../../../../store/nav/SideNavSlice";
 const FeedButton: React.FC = () => {
   const dispatch = useDispatch();
 
-  const selectState = useSelector((state: RootState) => state.sideTab.tabState);
+  const selectState = useSelector((state: RootState) => state.sideNav.tabState);
 
   const onClick = () => {
     dispatch(sideNavActions.selectFeed());

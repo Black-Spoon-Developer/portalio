@@ -1,5 +1,6 @@
 package com.example.portalio.domain.userdetail.repository;
 
+import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

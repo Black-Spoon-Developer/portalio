@@ -5,6 +5,9 @@ import PortfolioSearch from "./PortfolioSearch";
 import { fetchMorePosts, portfolioSearch } from "../../../api/PortfolioAPI";
 import { Portfolio } from "../../../interface/portfolio/PortfolioInterface";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import { userTicketUpdate } from "../../../api/TicketAPI";
 
 const PortfolioPosts: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +19,9 @@ const PortfolioPosts: React.FC = () => {
 
   // 리셋 트리거 상태
   const [resetTriggered, setResetTriggered] = useState(false);
+
+  // 유저 ID 값 가져오기
+  const userID = Number(useSelector((state: RootState) => state.auth.memberId));
 
   // onMounted 할때 초기 게시글 불러오기
   useEffect(() => {
@@ -37,6 +43,7 @@ const PortfolioPosts: React.FC = () => {
       if (!isSearching) {
         // 검색 중이 아닐 때는 일반 게시글 불러오기
         const newPosts = await fetchMorePosts(skip, limit);
+        console.log(newPosts);
         setPosts((prevPosts) => [...prevPosts, ...newPosts]);
         if (newPosts.length < limit) {
           setHasMore(false);
@@ -57,7 +64,6 @@ const PortfolioPosts: React.FC = () => {
     setHasMore(true); // 무한 스크롤 활성화
     try {
       const searchResults = await portfolioSearch(term, subCategory || 0);
-      console.log(searchResults);
       setPosts(searchResults);
     } catch (error) {
       console.error("Failed to search posts:", error);
@@ -74,7 +80,18 @@ const PortfolioPosts: React.FC = () => {
   };
 
   // 상세 조회 핸들러 함수
-  const handlePostClick = (postId: number) => navigate(`/portfolio/${postId}`);
+  const handlePostClick = async (postId: number, memberId: number) => {
+    // 내가 글 작성자라면 티켓 차감없이 상세 보기 가능
+    if (memberId === userID) {
+      navigate(`/portfolio/${postId}`);
+    } else {
+      const response = await userTicketUpdate(-1);
+      // 티켓값이 충분하면 이동
+      if (response) {
+        navigate(`/portfolio/${postId}`);
+      }
+    }
+  };
 
   // 시간 형식 변환 함수
   const formatTimeAgo = (dateString: string) => {
@@ -112,7 +129,7 @@ const PortfolioPosts: React.FC = () => {
           {posts.map((post) => (
             <div
               key={post.portfolioId}
-              onClick={() => handlePostClick(post.portfolioId)}
+              onClick={() => handlePostClick(post.portfolioId, post.memberId)}
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
               <div className="flex items-center mb-4">
@@ -132,10 +149,10 @@ const PortfolioPosts: React.FC = () => {
               <img
                 src={post.portfolioThumbnailImg}
                 alt="no-image"
-                className="bg-gray-300 h-40 mb-2"
+                className="bg-gray-300 h-40 mb-2 w-full"
               />
               <p className="text-gray-700 mb-4 line-clamp-3">
-                {post.portfolioContent}
+                {post.portfolioDescription}
               </p>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 <div className="text-lg tracking-widest">

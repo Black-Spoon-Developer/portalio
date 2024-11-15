@@ -23,9 +23,11 @@ public class MemberDTO {
     private Long memberId;
     private String memberName;
     private String memberUsername;
-    private String memberPicture;
+    private String memberNickname;
     private String refreshToken;
+    private String memberPicture;
     private Role memberRole;
+    private int memberTicket;
     private boolean memberAuth;
 
     public static MemberDTO from(Member member) {
@@ -35,10 +37,12 @@ public class MemberDTO {
             MemberDTO memberDTO = MemberDTO.builder()
                     .memberId(member.getMemberId())
                     .memberName(member.getMemberName())
+                    .memberNickname(member.getUserDetail().getUserNickname())
+                    .refreshToken(member.getRefreshToken().getValue())
                     .memberUsername(member.getMemberUsername())
                     .memberPicture(member.getMemberPicture())
-                    .refreshToken(refreshToken.getValue())
                     .memberRole(member.getMemberRole())
+                    .memberTicket(member.getUserDetail().getUserTicket())
                     .memberAuth(member.isMemberAuth())
                     .build();
 
@@ -55,10 +59,5 @@ public class MemberDTO {
 
             return memberDTO;
         }
-
-
     }
-
-
-
 }

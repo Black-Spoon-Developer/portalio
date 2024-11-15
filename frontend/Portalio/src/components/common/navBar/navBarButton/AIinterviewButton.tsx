@@ -3,15 +3,18 @@ import { MdCoPresent } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
 import { sideNavActions } from "../../../../store/nav/SideNavSlice";
+import { useNavigate } from "react-router-dom";
 
 const AIinterviewButton: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const selectState = useSelector((state: RootState) => state.sideTab.tabState);
+  const selectState = useSelector((state: RootState) => state.sideNav.tabState);
 
   // 탭 상태 변환
   const onClick = () => {
     dispatch(sideNavActions.selectAIinterview());
+    navigate("/test");
   };
 
   // 나중에 라우터 경로 설정을 통해서 페이지 이동하게 하면 됩니다.

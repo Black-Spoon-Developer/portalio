@@ -6,6 +6,7 @@ export interface Portfolio {
   portfolioViews: number;
   portfolioThumbnailImg: string;
   portfolioRecommendationCount: number;
+  portfolioDescription: string;
   portfolioPost: boolean;
   portfolioIsPrimary: boolean;
   created: string;
