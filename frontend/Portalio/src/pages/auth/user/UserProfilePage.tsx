@@ -12,7 +12,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { getMyPortfolios } from "../../../api/PortfolioAPI";
 import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
-import { getRepository, getMyRepositoryList } from "./../../../api/RepositoryAPI";
+import {
+  getRepository,
+  getMyRepositoryList,
+} from "./../../../api/RepositoryAPI";
 
 interface Free {
   boardId: number;
@@ -58,8 +61,8 @@ const UserProfilePage: React.FC = () => {
     .fill(null)
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
 
-  const username = useSelector((state: RootState) => state.auth.username);
-  const picture = useSelector((state: RootState) => state.auth.picture);
+  const username = useSelector((state: RootState) => state.auth.memberNickname);
+  const picture = useSelector((state: RootState) => state.auth.memberPicture);
 
   const [frees, setFrees] = useState<Free[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);

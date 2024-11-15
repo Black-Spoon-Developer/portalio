@@ -1,14 +1,18 @@
 package com.example.portalio.domain.userdetail.controller;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.jobhistory.dto.JobHistoryResponse;
 import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
 import com.example.portalio.domain.userdetail.dto.TicketResponse;
 import com.example.portalio.domain.userdetail.dto.UserDetailDTO;
 import com.example.portalio.domain.userdetail.dto.UserDetailRequest;
+import com.example.portalio.domain.userdetail.dto.UserSocialLinkRequest;
+import com.example.portalio.domain.userdetail.dto.UserSocialLinkResponse;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.service.UserDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,6 +58,8 @@ public class UserDetailController {
 
     // userDetail 정보 저장 - 닉네임
     @Operation(summary = "[개인회원] 회원 닉네임 설정", description = "닉네임, memberId의 값을 보내주어 닉네임 설정")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
     @PatchMapping("/nickname")
     public ResponseEntity<?> saveUserDetail(@RequestBody UserDetailRequest request) {
         UserDetailDTO savedUserDetailDTO = userDetailService.saveUserDetail(request);
@@ -73,6 +79,29 @@ public class UserDetailController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 존재하는 닉네임입니다.");
         }
+    }
+    
+    // 유저 소셜 링크 조회
+    @Operation(summary = "[개인회원] 소셜 링크 조회", description = "memberId 값으로 조회")
+    @GetMapping("/social/{memberId}")
+    public ResponseEntity<?> getUserSocialLink(@PathVariable("memberId") Long memberId) {
 
+        UserSocialLinkResponse response = userDetailService.getUserSocialLink(memberId);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    
+    // 유저 소셜 링크 저장 및 업데이트
+    @Operation(summary = "[개인회원] 소셜 링크 저장 및 업데이트", description = "memberId와 socialLink 값으로 설정")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/social/{memberId}")
+    public ResponseEntity<?> saveUserSocialLink(@PathVariable("memberId") Long memberId, @RequestBody @Valid
+                                                UserSocialLinkRequest request) {
+
+        UserSocialLinkResponse response = userDetailService.saveUserSocialLink(memberId, request);
+
+        return ResponseEntity.ok(response);
     }
 }

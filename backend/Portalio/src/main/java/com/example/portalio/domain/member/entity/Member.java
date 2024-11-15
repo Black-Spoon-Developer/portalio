@@ -6,6 +6,7 @@ import com.example.portalio.domain.boardcomment.entity.BoardComment;
 import com.example.portalio.domain.boardrecom.entity.BoardRecom;
 import com.example.portalio.domain.chatbot.entity.Chatbot;
 import com.example.portalio.domain.common.entity.AuditableCreatedEntity;
+import com.example.portalio.domain.jobhistory.entity.JobHistory;
 import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
 import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.message.entity.Message;
@@ -112,6 +113,9 @@ public class Member extends AuditableCreatedEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Repository> repositories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<JobHistory> jobHistories = new ArrayList<>();
 
     public void setMemberName(String memberName) {
         this.memberName = memberName;

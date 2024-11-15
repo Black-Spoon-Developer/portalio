@@ -8,6 +8,8 @@ import com.example.portalio.domain.userdetail.dto.UserDetailDTO;
 import com.example.portalio.domain.userdetail.dto.UserDetailRequest;
 import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
 import com.example.portalio.domain.userdetail.dto.TicketResponse;
+import com.example.portalio.domain.userdetail.dto.UserSocialLinkRequest;
+import com.example.portalio.domain.userdetail.dto.UserSocialLinkResponse;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.error.NoTicketAvailableException;
 import com.example.portalio.domain.userdetail.error.NoUserDetailException;
@@ -83,5 +85,31 @@ public class UserDetailService {
                     return new TicketRankingResponse(userDetailDTO.getMemberId(), userDetailDTO.getUserTicket());})
                 .collect(Collectors.toList());
     }
+    
+    // 유저 소셜링크 조회
+    public UserSocialLinkResponse getUserSocialLink(Long memberId) {
+        UserDetail userDetail = userDetailRepository.findByMemberId(memberId)
+                .orElseThrow(NoUserDetailException::new);
+
+        return UserSocialLinkResponse.from(userDetail);
+
+    }
+
+    // 유저 소셜링크 저장 및 수정
+    public UserSocialLinkResponse saveUserSocialLink(Long memberId, UserSocialLinkRequest request) {
+
+        UserDetail userDetail = userDetailRepository.findByMemberId(memberId)
+                .orElseThrow(NoUserDetailException::new);
+
+        userDetail.setUserFacebook(request.getFacebook());
+        userDetail.setUserInstagram(request.getInstagram());
+        userDetail.setUserLinkedin(request.getLinkedin());
+        userDetail.setUserGithub(request.getGithub());
+
+        UserDetail savedUserDetail = userDetailRepository.save(userDetail);
+
+        return  UserSocialLinkResponse.from(savedUserDetail);
+    }
+
 
 }
