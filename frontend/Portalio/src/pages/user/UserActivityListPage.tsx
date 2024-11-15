@@ -23,7 +23,7 @@ const UserActivityListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [boards, setBoards] = useState<Board[]>([]); // Board 배열 상태 정의
   const itemsPerPage = 10;
-  const username = useSelector((state: RootState) => state.auth.username);
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
   const { user_id } = useParams<{ user_id: string }>(); // URL에서 user_id 추출
 
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -79,7 +79,10 @@ const UserActivityListPage: React.FC = () => {
       <div className="bg-white shadow-md rounded-lg border">
         <ul>
           {currentBoards.map((board) => (
-            <Link to={`/activity/${board.activityBoardId}`} key={board.activityBoardId}>
+            <Link
+              to={`/activity/${board.activityBoardId}`}
+              key={board.activityBoardId}
+            >
               <li
                 key={board.activityBoardId}
                 className="flex justify-between items-center p-4 border-b last:border-b-0"

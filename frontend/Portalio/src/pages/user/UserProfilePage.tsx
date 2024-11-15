@@ -80,7 +80,7 @@ const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
 const UserProfilePage: React.FC = () => {
   // 페이지 기본 변수
   const { user_id } = useParams<{ user_id: string }>();
-  const username = useSelector((state: RootState) => state.auth.memberNickname);
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
 
   // 프로필 사진 관련 변수
   const picture = useSelector((state: RootState) => state.auth.memberPicture);

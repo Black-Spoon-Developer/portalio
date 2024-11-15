@@ -27,7 +27,7 @@ const UserQuestionListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [boards, setBoards] = useState<Board[]>([]); // Board 배열 상태 정의
   const itemsPerPage = 10;
-  const username = useSelector((state: RootState) => state.auth.username);
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
   const { user_id } = useParams<{ user_id: string }>(); // URL에서 user_id 추출
 
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
