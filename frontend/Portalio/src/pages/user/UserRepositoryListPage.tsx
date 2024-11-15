@@ -25,8 +25,8 @@ const UserRepositoryListPage: React.FC = () => {
     const fetchRepositories = async () => {
       try {
         const state: RootState = store.getState();
-        const username = state.auth.username;
-        const response = await getMyRepositoryList(username || '');
+        const username = state.auth.memberUsername;
+        const response = await getMyRepositoryList(username || "");
         console.log("Repository List:", response); // 응답 콘솔에 출력
         setRepositories(response.items); // 상태에 응답 데이터 저장
       } catch (error) {
@@ -59,7 +59,6 @@ const UserRepositoryListPage: React.FC = () => {
     "#8FBC8F",
     "#7DAFC9",
   ];
-
 
   // 전체 레포지토리 목록의 총 활동 일수를 계산하는 함수
   const calculateTotalContributions = () => {
