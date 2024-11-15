@@ -193,3 +193,7 @@ pyrightconfig.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+
+# Dependency directories
+node_modules/
+jspm_packages/
