@@ -96,11 +96,11 @@ public class UserDetailController {
     @Operation(summary = "[개인회원] 소셜 링크 저장 및 업데이트", description = "memberId와 socialLink 값으로 설정")
     @PreAuthorize("isAuthenticated()")
     @SecurityRequirement(name = "bearerAuth")
-    @PatchMapping("/social/{memberId}")
-    public ResponseEntity<?> saveUserSocialLink(@PathVariable("memberId") Long memberId, @RequestBody @Valid
+    @PatchMapping("/saveOrEdit")
+    public ResponseEntity<?> saveUserSocialLink(@AuthenticationPrincipal CustomOAuth2User oauth2User, @RequestBody @Valid
                                                 UserSocialLinkRequest request) {
 
-        UserSocialLinkResponse response = userDetailService.saveUserSocialLink(memberId, request);
+        UserSocialLinkResponse response = userDetailService.saveUserSocialLink(oauth2User, request);
 
         return ResponseEntity.ok(response);
     }

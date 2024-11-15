@@ -1,5 +1,6 @@
 package com.example.portalio.domain.jobhistory.service;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryListResponse;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryRequest;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryResponse;
@@ -30,7 +31,8 @@ public class JobHistoryService {
     }
 
     // 유저 경력/이력 저장
-    public JobHistoryResponse saveJobHistory(Long memberId, JobHistoryRequest request) {
+    public JobHistoryResponse saveJobHistory(CustomOAuth2User oAuth2User, JobHistoryRequest request) {
+        Long memberId = oAuth2User.getMemberId();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
