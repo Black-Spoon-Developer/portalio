@@ -1,0 +1,629 @@
+
+@router.post("/pre-interview", response_model=MemberInfoDTO)
+async def pre_interview(
+    token: str,
+    db: AsyncSession = Depends(get_db)
+):
+    # 기존 인터뷰 준비 로직 유지
+    try:
+        current_member = await get_current_member(token=token, db=db)
+        interview_id = await create_interview(current_member.member_id, db)
+        member_records = await get_member_records(db=db, member_id=current_member.member_id)
+        member_records.interview_id = interview_id
+        return member_records
+    except HTTPException as e:
+        raise e
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="멤버 기록 실패"
+        )
+    
+# @router.post("/generate-questions", response_model=QuestionResponseDTO)
+async def create_interview_questions(
+    request: QuestionRequestDTO,
+    db: AsyncSession = Depends(get_db),
+    member=Depends(get_current_member)
+):
+    # 질문 생성 로직 유지
+    try:
+        portfolio_text, repository_text = None, None
+        if request.portfolio_id:
+            result = await db.execute(select(Portfolio).filter(Portfolio.portfolio_id == request.portfolio_id))
+            portfolio = result.scalars().first()
+            portfolio_text = portfolio.portfolio_content if portfolio else None
+        if request.repository_id:
+            result = await db.execute(select(Repository).filter(Repository.repository_id == request.repository_id))
+            repository = result.scalars().first()
+            repository_text = repository.repository_content if repository else None
+        questions_data = await generate_and_save_questions(
+            db, request.interview_id, portfolio_text, repository_text, request.job_role_ids
+        )
+        response_questions = [
+            QuestionDTO(
+                question_tag=q["question_tag"],
+                question_intent=q["question_intent"],
+                question_text=q["question_text"],
+                audio_s3_url=q["audio_s3_url"]
+            ) for q in questions_data
+        ]
+        return QuestionResponseDTO(questions=response_questions)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="질문 생성 중 오류가 발생했습니다.")
+
+
+@router.post("/mock-interview/{interview_type}/submit-answer", response_model=AnswerResponseDTO)
+async def submit_answer(
+    interview_type: str,
+    request: AnswerRequestDTO,
+    db: AsyncSession = Depends(get_db),
+    member=Depends(get_current_member),
+    file: Optional[UploadFile] = File(None)
+):
+    if interview_type == "text":
+        # 텍스트 인터뷰 답변 처리
+        answer, feedback = await save_text_answer_and_feedback(
+            db=db,
+            question_id=request.question_id,
+            member_id=member.member_id,
+            answer_text=request.answer_text,
+            question=request.question,
+            question_intent=request.question_intent,
+            context_text=request.context_text
+        )
+    elif interview_type == "audio":
+        # 파일 검증
+        if not file:
+            raise HTTPException(status_code=400, detail="오디오 파일이 필요합니다.")
+        audio_content = await file.read()
+        
+        # 음성 인터뷰 답변 처리
+        answer, feedback, analyze_entry = await save_audio_answer_and_feedback(
+            db=db,
+            question_id=request.question_id,
+            member_id=member.member_id,
+            audio_content=audio_content,
+            question=request.question,
+            question_intent=request.question_intent,
+            context_text=request.context_text
+        )
+    else:
+        raise HTTPException(status_code=400, detail="유효하지 않은 인터뷰 타입입니다.")
+    
+    return AnswerResponseDTO(
+        answer_id=answer.answer_id,
+        feedback=feedback.feedback_text,
+        feedback_json=feedback.feedback_data
+    )
+
+    
+# 오디오 분석 클래스
+analyzer = AudioAnalyzer()
+
+# S3 업로드 함수
+def upload_to_s3(file_data: BytesIO, file_name: str) -> str:
+    s3_bucket_name = os.getenv("S3_BUCKET_NAME")
+    s3_client.upload_fileobj(file_data, s3_bucket_name, file_name)
+    return f"https://{s3_bucket_name}.s3.amazonaws.com/{file_name}"
+
+# TTS 오디오 생성 함수
+def generate_tts_audio(text: str) -> BytesIO:
+    input_text = texttospeech.SynthesisInput(text=text)
+    gender_choice = random.choice([texttospeech.SsmlVoiceGender.MALE, texttospeech.SsmlVoiceGender.FEMALE])
+    voice = texttospeech.VoiceSelectionParams(language_code="ko-KR", ssml_gender=gender_choice)
+    audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.LINEAR16)
+    response = tts_client.synthesize_speech(input=input_text, voice=voice, audio_config=audio_config)
+    audio_data = BytesIO(response.audio_content)
+    audio_data.seek(0)
+    return audio_data
+
+# STT 변환 함수
+def convert_audio_to_text(audio_content: bytes) -> str:
+    audio = speech_v1.RecognitionAudio(content=audio_content)
+    config = speech_v1.RecognitionConfig(
+        encoding=speech_v1.RecognitionConfig.AudioEncoding.LINEAR16,
+        sample_rate_hertz=16000,
+        language_code="ko-KR"
+    )
+    response = speech_client.recognize(config=config, audio=audio)
+    transcript = " ".join([result.alternatives[0].transcript for result in response.results])
+    return transcript
+
+# 인터뷰 flush
+async def create_interview(member_id: int, db: AsyncSession) -> int:
+    new_interview = Interview(member_id=member_id, interview_type="text", created_at=datetime.utcnow())
+    db.add(new_interview)
+    await db.flush()  # `interview_id`를 생성하여 flush
+    return new_interview.interview_id
+
+# 사용자 정보 조회
+async def get_member_records(db: AsyncSession, member_id: int) -> MemberInfoDTO:
+    result = await db.execute(select(Member).filter(Member.member_id == member_id))
+    member = result.scalars().first()
+    if not member:
+        raise HTTPException(status_code=404, detail="유저 정보 없음")
+    
+    # 포트폴리오와 요약 정보 매핑
+    portfolios = [
+        {
+            "portfolio_id": portfolio.portfolio_id,
+            "portfolio_title": portfolio.portfolio_title,
+            "portfolio_content": portfolio.portfolio_content,
+            "portfolio_summary": portfolio.summary.summary_text if portfolio.summary else None
+        }
+        for portfolio in member.portfolios
+    ]
+
+    # 리포지토리와 요약 정보 매핑
+    repositories = [
+        {
+            "repository_id": repo.repository_id,
+            "repository_title": repo.repository_title,
+            "repository_content": repo.repository_content,
+            "repository_summary": repo.summary.summary_text if repo.summary else None
+        }
+        for repo in member.repositories
+    ]
+
+    # 희망 직무 정보 조회 및 매핑
+    hope_jobs = [
+        {
+            "job_id": job.job_id,
+            "job_name": job.job.job_name
+        }
+        for job in member.member_jobs
+    ]
+
+    return MemberInfoDTO(
+        member_id=member.member_id,
+        portfolios=portfolios,
+        repositories=repositories,
+        hope_jobs=hope_jobs
+    )
+
+# 질문 생성
+async def create_question(prompt_text: str, question_tag: str, file_prefix: str) -> dict:
+    response = openai.Completion.create(
+        model="gpt-4o-mini",
+        prompt=prompt_text,
+        max_tokens=150,
+        temperature=0.7,
+    )
+    response_text = response.choices[0].text.strip()
+    
+    # 의도와 질문 분리
+    if "|" in response_text:
+        intent, question_text = response_text.split("|", 1)
+    else:
+        intent, question_text = "의도를 알 수 없음", response_text
+
+    # TTS 오디오 생성 및 S3 업로드
+    audio_data = generate_tts_audio(question_text.strip())
+    audio_url = upload_to_s3(audio_data, f"tts_audio/{file_prefix}_{int(datetime.utcnow().timestamp())}.wav")
+
+    return {
+        "question_tag": question_tag,
+        "question_intent": intent.strip(),
+        "question_text": question_text.strip(),
+        "audio_s3_url": audio_url
+    }
+
+# 질문 저장 flush
+async def generate_and_save_questions(
+    db: AsyncSession,
+    interview_id: int,
+    portfolio_text: Optional[str],
+    repository_text: Optional[str],
+    job_roles: List[str]
+) -> List[dict]:
+    questions_data = []
+
+    # 포트폴리오와 리포지토리 중 하나라도 텍스트가 제공되었는지 확인
+    base_text = portfolio_text if portfolio_text else repository_text
+    if not base_text:
+        raise ValueError("포트폴리오 또는 리포지토리 중 하나는 반드시 선택되어야 합니다.")
+
+    # 직무별 질문 (용어 관련 1개, 상황 관련 1개)
+    for role in job_roles[:1]:  # 직무 1개만 선택
+        prompts = [
+            (f"{role}와 관련된 용어를 기반으로 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요. 텍스트는 다음과 같습니다: {base_text}", "직무"),
+            (f"{role} 직무 상황과 관련된 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요. 텍스트는 다음과 같습니다: {base_text}", "직무")
+        ]
+        
+        for prompt_text, tag in prompts:
+            question_data = await create_question(prompt_text, tag, f"{role}_{tag}")
+            questions_data.append(question_data)
+
+    # 경험 관련 질문 2개 생성
+    experience_prompt = f"다음 텍스트를 기반으로 경험 관련 질문을 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요: {base_text}"
+    for i in range(2):
+        question_data = await create_question(experience_prompt, "경험", f"experience_{i}")
+        questions_data.append(question_data)
+
+    # 인성 관련 질문 생성
+    personality_prompt = "인성 평가를 위한 질문을 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요."
+    personality_question = await create_question(personality_prompt, "인성", "personality")
+    questions_data.append(personality_question)
+
+    # 질문 데이터를 DB에 저장
+    for q_data in questions_data:
+        question = Question(
+            interview_id=interview_id,
+            question_tag=q_data["question_tag"],
+            question_intent=q_data["question_intent"],
+            content=q_data["question_text"],
+            audio_s3_key=q_data["audio_s3_url"],
+            created_at=datetime.utcnow()
+        )
+        db.add(question)
+    
+    # 모든 질문 추가 후 한 번의 flush 실행
+    await db.flush()
+
+    return questions_data
+
+# 피드백 진행
+async def generate_feedback(
+    question: str,
+    question_intent: str,
+    context_text: str,
+    answer_text: str
+) -> Dict:
+    """면접 답변에 대한 종합 피드백 생성"""
+    
+    prompt = f"""
+    다음 면접 답변에 대한 종합적인 평가와 피드백을 JSON 형식으로 제공해주세요.
+    
+    [입력 정보]
+    질문: {question}
+    질문 의도: {question_intent}
+    참고 컨텍스트: {context_text}
+    답변: {answer_text}
+    
+    다음 형식으로 JSON을 생성해주세요:
+    {{
+        "scores": {{
+            "content_relevance": <1-100>,
+            "question_understanding": <1-100>,
+            "logic": <1-100>,
+            "delivery": <1-100>
+        }},
+        "strengths": [
+            {{
+                "category": <"CONTENT"|"STRUCTURE"|"DELIVERY">,
+                "point": <string>,
+                "details": <string>
+            }}
+        ],
+        "improvements": [
+            {{
+                "category": <"CONTENT"|"STRUCTURE"|"DELIVERY">,
+                "point": <string>,
+                "priority": <1-3>,
+                "suggestion": <string>
+            }}
+        ],
+        "suggestions": [
+            {{
+                "category": <"CONTENT"|"STRUCTURE"|"DELIVERY">,
+                "text": <string>,
+                "example": <string>
+            }}
+        ],
+        "overall_comment": <string>
+    }}
+    """
+    
+    try:
+        response = await openai.ChatCompletion.acreate(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7
+        )
+        
+        # OpenAI의 응답을 JSON으로 파싱
+        feedback_data = response.choices[0].message.content
+        return feedback_data
+        
+    except Exception as e:
+        print(f"피드백 생성 중 오류 발생: {str(e)}")
+        return None
+
+# 채팅 면접 API 메인 함수
+async def save_text_answer_and_feedback(
+    db: AsyncSession, 
+    question_id: int, 
+    member_id: int, 
+    answer_text: str,
+    question: str,
+    question_intent: str,
+    context_text: str
+):
+    
+    # Answer 저장
+    answer = Answer(
+        question_id=question_id,
+        member_id=member_id,
+        content=answer_text,
+        interview_type="text",
+        created_at=datetime.utcnow()
+    )
+    db.add(answer)
+    await db.flush()  # answer_id 생성
+
+    # 피드백 생성
+    feedback_data = await generate_feedback(
+        question=question,
+        question_intent=question_intent,
+        context_text=context_text,
+        answer_text=answer_text
+    )
+    
+    # Feedback 저장
+    feedback = Feedback(
+        answer_id=answer.answer_id,
+        feedback_text=feedback_data.get("overall_comment", ""),
+        feedback_data=feedback_data  # JSON 형식으로 저장
+    )
+    db.add(feedback)
+    await db.commit()
+
+    return answer, feedback
+
+# 음성 면접 API 메인 함수
+async def save_audio_answer_and_feedback(
+    db: AsyncSession,
+    question_id: int,
+    member_id: int,
+    audio_content: bytes,
+    question: str,
+    question_intent: str,
+    context_text: str
+):
+    # S3 업로드
+    audio_url = upload_to_s3(BytesIO(audio_content), f"audio_responses/{question_id}_{int(datetime.datetime.utcnow().timestamp())}.wav")
+
+    # STT 변환
+    answer_text = convert_audio_to_text(audio_content)
+
+    # Answer 저장
+    answer = Answer(
+        question_id=question_id,
+        member_id=member_id,
+        content=answer_text,
+        audio_s3_key=audio_url,
+        interview_type="audio",
+        created_at=datetime.datetime.utcnow()
+    )
+    db.add(answer)
+    await db.flush()  # answer_id 생성
+
+     # 피드백 생성
+    feedback_data = await generate_feedback(
+        question=question,
+        question_intent=question_intent,
+        context_text=context_text,
+        answer_text=answer_text
+    )
+
+     # Feedback 저장
+    feedback = Feedback(
+        answer_id=answer.answer_id,
+        feedback_text=feedback_data.get("overall_comment", ""),
+        feedback_data=feedback_data
+    )
+    db.add(feedback)
+
+    audio_analysis = analyzer.analyze_audio_file(audio_content)
+    speech_analysis = analyzer.analyze_speech(audio_content)
+
+    analyze_entry = Analyze(
+        answer_id=answer.answer_id,
+        transcript=speech_analysis["transcript"],
+        speech_rate=audio_analysis["속도(BPM)"],
+        volume_variation=audio_analysis["볼륨 떨림 정도(RMS 표준편차)"],
+        silence_ratio=audio_analysis["무음 비율"],
+        fluency_score=audio_analysis["유창성 점수"],
+        pronunciation_issues=speech_analysis["pronunciation_issues"],
+        word_timestamps=speech_analysis["words"],
+        created_at=datetime.datetime.utcnow()
+    )
+    db.add(analyze_entry)
+
+    # 최종 커밋
+    await db.commit()
+
+    return answer, feedback, analyze_entry
+
+
+    from typing import Optional
+from sqlalchemy import select
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from utils.dependencies import get_current_member
+from ai.mock_interview.services import get_member_records, generate_and_save_questions, save_text_answer_and_feedback, create_interview, create_question, save_audio_answer_and_feedback
+from database import get_db
+from ai.mock_interview.schemas import AnswerRequestDTO, AnswerResponseDTO, MemberInfoDTO, QuestionRequestDTO, QuestionDTO, QuestionResponseDTO
+from models import Portfolio, Repository, Interview
+
+router = APIRouter()
+
+@router.post("/pre-interview", response_model=MemberInfoDTO)
+async def pre_interview(
+    token: str,
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        current_member = await get_current_member(token=token, db=db)
+        interview_id = await create_interview(current_member.member_id, db)
+        member_records = await get_member_records(db=db, member_id=current_member.member_id)
+        
+        # 필요한 데이터를 MemberInfoDTO로 변환
+        return MemberInfoDTO(
+            member_id=member_records.member_id,
+            portfolios=member_records.portfolios,
+            repositories=member_records.repositories,
+            hope_jobs=member_records.hope_jobs,
+            interview_id=interview_id
+        )
+    except HTTPException as e:
+        raise e
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="멤버 기록 실패"
+        )
+    
+@router.post("/generate-questions", response_model=QuestionResponseDTO)
+async def create_interview_questions(
+    request: QuestionRequestDTO,
+    db: AsyncSession = Depends(get_db),
+    member=Depends(get_current_member)
+):
+    try:
+        portfolio_text, repository_text = None, None
+        if request.portfolio_id:
+            result = await db.execute(select(Portfolio).filter(Portfolio.portfolio_id == request.portfolio_id))
+            portfolio = result.scalars().first()
+            portfolio_text = portfolio.portfolio_content if portfolio else None
+        if request.repository_id:
+            result = await db.execute(select(Repository).filter(Repository.repository_id == request.repository_id))
+            repository = result.scalars().first()
+            repository_text = repository.repository_content if repository else None
+        
+        questions_data = await generate_and_save_questions(
+            db, request.interview_id, portfolio_text, repository_text, request.job_role_ids
+        )
+        
+        # 반환될 데이터가 DTO와 일치하는지 확인
+        response_questions = [
+            QuestionDTO(
+                question_tag=q["question_tag"],
+                question_intent=q["question_intent"],
+                question_text=q["question_text"],
+                audio_s3_url=q.get("audio_s3_url")
+            ) for q in questions_data
+        ]
+        return QuestionResponseDTO(questions=response_questions)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="질문 생성 중 오류가 발생했습니다.")
+
+
+@router.post("/mock-interview/{interview_type}/submit-answer", response_model=AnswerResponseDTO)
+async def submit_answer(
+    interview_type: str,
+    request: AnswerRequestDTO,
+    db: AsyncSession = Depends(get_db),
+    member=Depends(get_current_member),
+    file: Optional[UploadFile] = File(None)
+):
+    if interview_type == "text":
+        answer, feedback = await save_text_answer_and_feedback(
+            db=db,
+            question_id=request.question_id,
+            member_id=member.member_id,
+            answer_text=request.answer_text,
+            question=request.question,
+            question_intent=request.question_intent,
+            context_text=request.context_text
+        )
+    elif interview_type == "audio":
+        if not file:
+            raise HTTPException(status_code=400, detail="오디오 파일이 필요합니다.")
+        audio_content = await file.read()
+        
+        answer, feedback, analyze_entry = await save_audio_answer_and_feedback(
+            db=db,
+            question_id=request.question_id,
+            member_id=member.member_id,
+            audio_content=audio_content,
+            question=request.question,
+            question_intent=request.question_intent,
+            context_text=request.context_text
+        )
+    else:
+        raise HTTPException(status_code=400, detail="유효하지 않은 인터뷰 타입입니다.")
+    
+    return AnswerResponseDTO(
+        answer_id=answer.answer_id,
+        feedback=feedback.feedback_text,
+        feedback_json=feedback.feedback_data
+    )
+
+
+async def generate_and_save_questions(
+    db: Session,
+    interview_id: int,
+    portfolio_text: Optional[str],
+    repository_text: Optional[str],
+    job_roles: List[str]
+) -> List[dict]:
+    questions_data = []
+
+    base_text = portfolio_text if portfolio_text else repository_text
+    if not base_text:
+        raise ValueError("포트폴리오 또는 리포지토리 중 하나는 반드시 선택되어야 합니다.")
+
+    try:
+        for role in job_roles[:1]:  
+            prompts = [
+                (f"{role}와 관련된 용어를 기반으로 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요.:", "직무"),
+                (f"{role} 직무 상황과 관련된 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요.:", "직무")
+            ]
+            
+            for prompt_text, tag in prompts:
+                question_data = await create_question(prompt_text, tag, f"role_tag")
+                dto = QuestionDTO(**question_data)
+                questions_data.append({
+                    "question_tag": dto.question_tag,
+                    "question_intent": dto.question_intent,
+                    "question_text": dto.question_text,
+                    "audio_s3_url": dto.audio_s3_url
+                })
+
+        experience_prompt = f"""
+        '{base_text}'에서 얻은 경험에 대해 이야기해 주세요.
+        구체적으로 다음 형식으로 질문과 의도를 작성해 주세요: '의도:| 질문:'
+        """
+        for i in range(2):
+            question_data = await create_question(experience_prompt, "경험", f"experience_{i}")
+            dto = QuestionDTO(**question_data)
+            questions_data.append({
+                "question_tag": dto.question_tag,
+                "question_intent": dto.question_intent,
+                "question_text": dto.question_text,
+                "audio_s3_url": dto.audio_s3_url
+            })
+
+        personality_prompt = "인성 평가를 위한 질문을 '의도: ... | 질문: ...' 형식으로 질문을 작성하세요."
+        personality_question = await create_question(personality_prompt, "인성", "personality")
+        dto = QuestionDTO(**personality_question)
+        questions_data.append({
+            "question_tag": dto.question_tag,
+            "question_intent": dto.question_intent,
+            "question_text": dto.question_text,
+            "audio_s3_url": dto.audio_s3_url
+        })
+
+        # DB에 저장
+        for q_data in questions_data:
+            question = Question(
+                interview_id=interview_id,
+                question_tag=q_data["question_tag"],
+                question_intent=q_data["question_intent"],
+                content=q_data["question_text"],
+                audio_s3_key=q_data["audio_s3_url"],
+                created_at=datetime.utcnow()
+            )
+            db.add(question)
+        
+        db.flush()
+        
+        return questions_data
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"질문 생성 중 오류 발생: {str(e)}")
+
+
+
