@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface TempBoardTabProps {
-  userId: string;
+  user_id: string;
 }
 
-const TempBoardTab: React.FC<TempBoardTabProps> = ({ userId }) => {
+const TempBoardTab: React.FC<TempBoardTabProps> = ({ user_id }) => {
   const [selectedTab, setSelectedTab] = React.useState(0);
   const tabs = ["활동", "자유", "질문"];
   const navigate = useNavigate();
@@ -26,9 +26,9 @@ const TempBoardTab: React.FC<TempBoardTabProps> = ({ userId }) => {
   const handleTabClick = (index: number) => {
     setSelectedTab(index);
     const paths = [
-      `/users/profile/${userId}/activity`,
-      `/users/profile/${userId}/free`,
-      `/users/profile/${userId}/question`,
+      `/users/profile/${user_id}/activity`,
+      `/users/profile/${user_id}/free`,
+      `/users/profile/${user_id}/question`,
     ];
     navigate(paths[index]);
   };
