@@ -1,0 +1,64 @@
+package com.example.portalio.domain.userdetail.entity;
+
+import com.example.portalio.domain.member.entity.Member;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "user_detail")
+public class UserDetail {
+    @Id
+    @Column(name = "member_id")
+    private Long memberId;
+
+    // 추후 unique true로 다시 바꾼후 프론트에서 조회를 해서 요청을 안보내도록 하기
+    @Column(name = "user_nickname")
+    private String userNickname;
+
+    @Column(name = "user_email", length = 40)
+    private String userEmail;
+
+    @Column(name = "user_ticket")
+    private Integer userTicket = 0;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private Member member;
+
+    public void setUserNickname(String userNickname) { this.userNickname = userNickname; }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void setUserEmail(String email) {
+        this.userEmail = email;
+    }
+
+    public void setUserTicket(Integer ticket) { this.userTicket = ticket; }
+
+
+    public static UserDetail of(String userEmail, String userNickname, Member member) {
+        UserDetail userDetail = new UserDetail();
+        userDetail.userEmail = userEmail;
+        userDetail.userNickname = userNickname;
+        userDetail.member = member;
+        return userDetail;
+    }
+
+
+}
