@@ -1,18 +1,17 @@
 import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import "./UserProfilePage.css";
-import ProfileImage from "../../../assets/ProfileImage.png"; // 프로필 이미지 경로
-import BriefCase from "../../../assets/BriefCase.svg";
-import FacebookIcon from "../../../assets/Facebook.svg";
-import LinkedInIcon from "../../../assets/LinkedIn.svg";
-import InstagramIcon from "../../../assets/Instagram.svg";
-import GitHubIcon from "../../../assets/GitHub.svg";
-import SettingsIcon from "../../../assets/Setting.svg";
+import BriefCase from "../../assets/BriefCase.svg";
+import FacebookIcon from "../../assets/Facebook.svg";
+import LinkedInIcon from "../../assets/LinkedIn.svg";
+import InstagramIcon from "../../assets/Instagram.svg";
+import GitHubIcon from "../../assets/GitHub.svg";
+import SettingsIcon from "../../assets/Setting.svg";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
-import { getMyPortfolios } from "../../../api/PortfolioAPI";
-import { getMyBoards, getMyActivities } from "../../../api/BoardAPI";
-import { getRepository, getMyRepositoryList } from "./../../../api/RepositoryAPI";
+import { RootState } from "../../store";
+import { getMyPortfolios } from "../../api/PortfolioAPI";
+import { getMyBoards, getMyActivities } from "../../api/BoardAPI";
+import { getRepository, getMyRepositoryList } from "../../api/RepositoryAPI";
 
 interface Free {
   boardId: number;
@@ -48,8 +47,25 @@ interface Repository {
   repositoryTitle: string;
 }
 
+const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
+  onClose,
+  children,
+}) => (
+  <div className="modal-overlay fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+    <div className="modal-content bg-white p-4 rounded shadow-lg" onClick={(e) => e.stopPropagation()}>
+      {children}
+      <button onClick={onClose} className="mt-4 text-right w-full text-blue-500 hover:text-blue-700">
+        닫기
+      </button>
+    </div>
+  </div>
+);
+
 const UserProfilePage: React.FC = () => {
-  const { userId } = useParams<{ userId: string }>();
+  const { user_id } = useParams<{ user_id: string }>();
+  const username = useSelector((state: RootState) => state.auth.username);
+  const picture = useSelector((state: RootState) => state.auth.picture);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedYear, setSelectedYear] = useState(2024);
   const years = [2023, 2024];
@@ -58,8 +74,9 @@ const UserProfilePage: React.FC = () => {
     .fill(null)
     .map(() => Array(7).fill(Math.floor(Math.random() * 2)));
 
-  const username = useSelector((state: RootState) => state.auth.username);
-  const picture = useSelector((state: RootState) => state.auth.picture);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const [frees, setFrees] = useState<Free[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -97,6 +114,7 @@ const UserProfilePage: React.FC = () => {
           const activitiesWithRepositoryNames = await Promise.all(
             activitiesResponse.data.items.map(async (activity: Activity) => {
               const repository = await getRepository(activity.repositoryId);
+              console.log("단일 응답:", repository);
               return {
                 ...activity,
                 repositoryName: repository.repositoryTitle, // repository의 이름을 저장
@@ -152,95 +170,166 @@ const UserProfilePage: React.FC = () => {
   // 표시할 이력 데이터 (3개까지만 표시하고, 펼치기 버튼 클릭 시 전체 표시)
   const displayedCareers = isExpanded ? careerData : careerData.slice(0, 3);
 
+  // 프로필 사진 클릭 시 선택 모달 열기
+  const handleProfileClick = () => setIsModalOpen(true);
+
+  const handleViewProfile = () => {
+    setIsModalOpen(false);
+    setIsViewModalOpen(true);
+  };
+
+  const handleUploadProfile = () => {
+    setIsModalOpen(false);
+    setIsUploadModalOpen(true);
+  };
+
   return (
     <div className="user-profile-page">
       {/* 프로필 및 이력 / 경력, 소셜 섹션 */}
-      <div className="user-profile-container">
-        <div className="profile-header">
-          <img src={ProfileImage} alt="Profile" className="profile-image" />
-          <div className="profile-info">
-            <h2 className="intro-title">🔥 끊임없이 도전하는 사람!</h2>
-            <p className="intro-description">
+      <div className="user-profile-container border-2 border-gray-400 p-5 rounded-md bg-white">
+        <div className="profile-header flex items-center text-left mb-5 border-b border-gray-400 pb-5">
+          <div className="relative mr-6 min-w-[200px]">
+            {" "}
+            {/* 오른쪽에 여백 추가 */}
+            <img
+              src={picture || "기본 이미지 URL"}
+              alt="Profile"
+              className="profile-image w-48 h-48 rounded-full cursor-pointer" // 둥근 이미지 모양 유지
+              onClick={handleProfileClick}
+            />
+            <button
+              className="change-profile-button absolute bottom-2 right-2 bg-gray-700 text-white rounded px-2 py-1"
+              onClick={handleProfileClick}
+            >
+              변경
+            </button>
+          </div>
+
+          {/* 선택 모달 */}
+          {isModalOpen && (
+            <Modal onClose={() => setIsModalOpen(false)}>
+              <button className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded" onClick={handleViewProfile}>
+                프로필 사진 보기
+              </button>
+              <button className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded">
+                프로필 사진 선택
+              </button>
+            </Modal>
+          )}
+
+          {/* 프로필 사진 보기 모달 */}
+          {isViewModalOpen && (
+            <Modal onClose={() => setIsViewModalOpen(false)}>
+              <img
+                src={picture || "기본 이미지 URL"}
+                alt="Profile"
+                className="w-[500px] h-[500px]"
+              />
+            </Modal>
+          )}
+
+          {/* 사진 업로드 모달 */}
+          {isUploadModalOpen && (
+            <Modal onClose={() => setIsUploadModalOpen(false)}>
+              <div>
+                <h2>프로필 사진 업로드</h2>
+                <input type="file" accept="image/*" />
+                <button className="upload-button">업로드</button>
+              </div>
+            </Modal>
+          )}
+
+          <div className="profile-info flex flex-col">
+            <h2 className="intro-title text-xl text-orange-500 font-bold mb-2">
+              🔥 끊임없이 도전하는 사람!
+            </h2>
+            <p className="intro-description text-sm mb-1">
               다양한 회사에서 많은 경험을 했습니다. 현재는 구직중이며 원하는
               회사는 많은 성장성과 도전정신이 있는 회사를 원합니다.
             </p>
-            <p className="follow-info">300 팔로우 400 팔로잉</p>
+            <p className="follow-info text-sm text-gray-600">
+              300 팔로우 400 팔로잉
+            </p>
           </div>
         </div>
 
-        <div className="profile-content">
-          <div className="career-section">
-            <h3 className="career-title">이력 / 경력</h3>
-            <ul className="career-list">
+        <div className="profile-content flex">
+          {/* 이력 / 경력 섹션 */}
+          <div className="career-section w-1/2 pr-4 border-r border-gray-300">
+            <h3 className="career-title text-lg font-semibold mb-3">
+              이력 / 경력
+            </h3>
+            <ul className="career-list space-y-3">
               {displayedCareers.map((career, index) => (
                 <li className="career-item" key={index}>
-                  <img
-                    src={BriefCase}
-                    alt="Briefcase Icon"
-                    className="career-icon"
-                  />
                   <div className="career-details">
-                    <strong className="company-name">{career.company}</strong>
-                    <span className="position-location">
-                      {" "}
+                    <strong className="company-name font-bold">
+                      {career.company}
+                    </strong>
+                    <span className="position-location ml-1">
                       {career.position}
                     </span>
                     <br />
-                    <span className="position-position">
-                      {career.location}{" "}
+                    <span className="position-location text-gray-500">
+                      {career.location}
                     </span>
-                    <span className="duration">{career.duration}</span>
+                    <span className="duration text-gray-500">
+                      {career.duration}
+                    </span>
                   </div>
                 </li>
               ))}
             </ul>
-            <div className="expand-button">
+            <div className="expand-button mt-3 flex justify-center items-center">
               {careerData.length > 3 && (
-                <button onClick={() => setIsExpanded(!isExpanded)}>
-                  {isExpanded ? "▲접기" : "▼펼치기"}
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="text-500"
+                >
+                  {isExpanded ? "▲ 접기" : "▼ 펼치기"}
                 </button>
               )}
             </div>
           </div>
 
-          <div className="social-section">
-            <h3>소셜</h3>
-            <ul className="social-list">
+          {/* 소셜 섹션 */}
+          <div className="social-section w-1/2 pl-4">
+            <h3 className="text-lg font-semibold mb-3">소셜</h3>
+            <ul className="social-list space-y-6">
               <li>
-                <div className="social-item">
-                  <img
-                    src={FacebookIcon}
-                    alt="Facebook"
-                    className="social-icon"
-                  />{" "}
-                  <a href="">Facebook 링크</a>
+                <div className="social-item flex items-center space-x-2">
+                  <img src={FacebookIcon} alt="Facebook" className="w-8 h-8" />
+                  <a href="" className="text-blue-800 hover:underline">
+                    Facebook 링크
+                  </a>
                 </div>
               </li>
               <li>
-                <div className="social-item">
-                  <img
-                    src={LinkedInIcon}
-                    alt="LinkedIn"
-                    className="social-icon"
-                  />{" "}
-                  <a href="">LinkedIn 링크</a>
+                <div className="social-item flex items-center space-x-2">
+                  <img src={LinkedInIcon} alt="LinkedIn" className="w-8 h-8" />
+                  <a href="" className="text-blue-800 hover:underline">
+                    LinkedIn 링크
+                  </a>
                 </div>
               </li>
               <li>
-                <div className="social-item">
+                <div className="social-item flex items-center space-x-2">
                   <img
                     src={InstagramIcon}
                     alt="Instagram"
-                    className="social-icon"
-                  />{" "}
-                  <a href="">Instagram 링크</a>
+                    className="w-8 h-8"
+                  />
+                  <a href="" className="text-blue-800 hover:underline">
+                    Instagram 링크
+                  </a>
                 </div>
               </li>
-
               <li>
-                <div className="social-item">
-                  <img src={GitHubIcon} alt="GitHub" className="social-icon" />{" "}
-                  <a href="">GitHub 링크</a>
+                <div className="social-item flex items-center space-x-2">
+                  <img src={GitHubIcon} alt="GitHub" className="w-8 h-8" />
+                  <a href="" className="text-blue-800 hover:underline">
+                    GitHub 링크
+                  </a>
                 </div>
               </li>
             </ul>
@@ -290,13 +379,13 @@ const UserProfilePage: React.FC = () => {
           <div className="portfolio-header p-4">
             <h2>대표 포트폴리오</h2>
             <Link
-              to={`/users/profile/${userId}/portfolio`}
+              to={`/users/profile/${user_id}/portfolio`}
               className="portfolio-settings-link"
             >
               <img
                 src={SettingsIcon}
                 alt="포트폴리오 관리"
-                className="settings-icon"
+                className="settings-icon w-6 h-6"
               />
               포트폴리오 관리
             </Link>
@@ -362,7 +451,7 @@ const UserProfilePage: React.FC = () => {
           <div className="section-header">
             <h2>대표 레포지토리</h2>
             <Link
-              to={`/users/profile/${userId}/repository`}
+              to={`/users/profile/${user_id}/repository`}
               className="more-link"
             >
               더 보기 →
@@ -389,7 +478,7 @@ const UserProfilePage: React.FC = () => {
             <h3 className="post-title">
               활동 게시글{" "}
               <Link
-                to={`/users/profile/${userId}/activity`}
+                to={`/users/profile/${user_id}/activity`}
                 className="more-link"
               >
                 더 보기 →
@@ -415,7 +504,7 @@ const UserProfilePage: React.FC = () => {
           <div className="post-category">
             <h3 className="post-title">
               자유 게시글{" "}
-              <Link to={`/users/profile/${userId}/free`} className="more-link">
+              <Link to={`/users/profile/${user_id}/free`} className="more-link">
                 더 보기 →
               </Link>
             </h3>
@@ -435,7 +524,7 @@ const UserProfilePage: React.FC = () => {
             <h3 className="post-title">
               질문 게시글{" "}
               <Link
-                to={`/users/profile/${userId}/question`}
+                to={`/users/profile/${user_id}/question`}
                 className="more-link"
               >
                 더 보기 →

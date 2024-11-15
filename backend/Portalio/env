@@ -1,0 +1,35 @@
+// EC2
+; JASYPT_KEY=J4sypt!_Aut0nom0us#D102*Key_BlackBSD=11th&Floor_Dev4_Spoon$Term
+; MYSQL_HOST=52.78.167.44
+; MYSQL_PORT=3306
+; MYSQL_DB=portalio
+; MYSQL_PASSWORD=Faker!HMson#ChaSG0N!Let5Go
+; MYSQL_USER=BSDeveloper
+; DDL_AUTO_OPTION=update
+
+// local
+MYSQL_HOST=127.0.0.1
+MYSQL_PORT=3306
+MYSQL_DB=portalio
+MYSQL_PASSWORD=8032
+MYSQL_USER=root
+DDL_AUTO_OPTION=update
+
+
+AWS_CREDENTIALS_ACCESSKEY=AKIAUSJEUPKIADONEBVR
+AWS_CRETENDIALS_SECRETKEY=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
+AWS_S3_BUCKETNAME=portalio
+AWS_REGION_STATIC=ap-northeast-2
+
+JWT_SECRET_KEY=7bbc56c6b7aac000bf32d30346bd0a1b080f31f7b4bda19af1c24f9f6622973169341017a5a2b36ea20021768cb65a3ada0ab46382b2ecd5b845d3f53ad6b00b
+
+GOOGLE_CLIENT_ID=294318505613-pt0ms3kb9t937loio6ekqatogs3a97el.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_REDIRECT_URI=http://localhost:8080/login/oauth2/code/google
+
+NAVER_CLIENT_ID=GTGazE4_6QxC6tfGEr5a
+NAVER_CLIENT_SECRET=4EdXPJp3Zb
+https://k11d202.p.ssafy.io/oauth2/authorization/naver
+; NAVER_REDIRECT_URI=https://k11d202.p.ssafy.io/login/oauth2/code/naver
+
+MONGO_URI=mongodb://BSDeveloper:Ch%40sangG0n_L3tsG0!@k11d202.p.ssafy.io:27017/admin
