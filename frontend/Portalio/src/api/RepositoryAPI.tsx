@@ -1,17 +1,10 @@
 import axios from "axios";
 import store, { RootState } from "../store";
 import { BASE_URL } from "./BaseVariable";
-<<<<<<< HEAD
-import {
-  RepositoryItem,
-  RepositoryRequest,
-  RepositoryResponse,
-} from "../type/RepositoryType";
-=======
+
 import { RepositoryItem, RepositoryRequest, RepositoryResponse } from "../type/RepositoryType"
 
 
->>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
 
 // 레포지토리 글쓰기
 export const createRepository = async (
@@ -52,7 +45,6 @@ export const patchRepository = async (
 };
 
 // 레포지토리 글 상세보기
-<<<<<<< HEAD
 export const getRepositoryDetail = async (repositoryId: string) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
@@ -64,24 +56,13 @@ export const getRepositoryDetail = async (repositoryId: string) => {
         Authorization: `Bearer ${accessToken}`,
       },
     }
-=======
-export const getRepositoryDetail = async (repositoryID: string) => {
-  const response = await axios.get(
-    `${BASE_URL}/api/v1/repository/${repositoryID}/detail`
->>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
-  );
+  )
 
-  return response;
-};
+  return response.data;
+}
 
 // 내 레포지토리 전체보기
-<<<<<<< HEAD
-export const getMyRepositoryList = async (
-  username: string
-): Promise<RepositoryItem> => {
-=======
 export const getMyRepositoryList = async (username: string): Promise<RepositoryItem> => {
->>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.get<RepositoryItem>(
@@ -108,10 +89,6 @@ export const getRepository = async (repositoryId: number) => {
       },
     }
   );
-<<<<<<< HEAD
   console.log("API Response:", response.status, response.data);
-=======
->>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
-
   return response.data;
 };
