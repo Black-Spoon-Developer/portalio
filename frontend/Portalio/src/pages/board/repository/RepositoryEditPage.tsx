@@ -43,7 +43,7 @@ const RepositoryEditPage: React.FC = () => {
     const fetchRepositoryData = async () => {
       if (repository_id) {
         try {
-          const response = await getRepositoryDetail(repository_id);
+          const response = await getRepositoryDetail(parseInt(repository_id, 10));
           const data: RepositoryRequest = response.data;
           setTitle(data.repositoryTitle);
           setContent(data.repositoryContent);
