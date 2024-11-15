@@ -27,8 +27,6 @@ from sqlalchemy.dialects.postgresql import JSON
 import os
 
 # 딕셔너리로
-
-
 # DB세션 의존성
 from fastapi import Depends
 from sqlalchemy.orm import Session
@@ -88,11 +86,13 @@ RIGHT_EYE = [33, 133, 159]
 # 분석 결과 데이터 저장용
 analysis_results = {}
 
+
 def put_korean_text(image, text, position, font, color=(0,255,0)):
     img_pil = Image.fromarray(image)
     draw = ImageDraw.Draw(img_pil)
     draw.text(position, text, font=font, fill=color)
     return np.array(img_pil)
+
 
 def smooth_emotions(emotion_queue):
     if not emotion_queue:
@@ -146,6 +146,8 @@ DATABASE_URL = f"mysql+pymysql://{os.getenv('AI_DATABASE_USER')}:{quote_plus(os.
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
 
 class TimeSeriesData(BaseModel):
     time: int
@@ -349,6 +351,8 @@ def sync_analyze_video(video_file):
     }
 
 
+
+
 @app.post("/api/v1/ai/interview/questions")
 async def start_interview():
     return {"interview_id": 1, "questions": [
@@ -438,30 +442,7 @@ async def upload_video(interview_id: int, question_id: int, file: UploadFile = F
     }
 
 
-# @app.get("/api/v1/ai/analysis/{interview_id}", response_model=Dict[int, AnalysisResult])
-# async def get_analysis(interview_id: int, db: Session = Depends(get_db)):
-#     analyses = db.query(InterviewAnalysis).filter(InterviewAnalysis.interview_id == interview_id).all()
-#     if not analyses:
-#         raise HTTPException(status_code=404, detail="Analysis not found for this interview")
-
-#     results = {}
-#     for analysis in analyses:
-#         time_series_data = db.query(TimeSeriesData).filter(TimeSeriesData.analysis_id == analysis.id).all()
-#         results[analysis.question_id] = AnalysisResult(
-#             current_emotion=analysis.current_emotion,
-#             movement_focus=analysis.movement_focus,
-#             gaze_focus=analysis.gaze_focus,
-#             time_series_data=[
-#                 TimeSeriesData(
-#                     time=data.time,
-#                     emotion=data.emotion,
-#                     movement_focus=data.movement_focus,
-#                     gaze_focus=data.gaze_focus
-#                 )
-#                 for data in time_series_data
-#             ]
-#         )
-#     return results
+# return results
 @app.get("/api/v1/ai/analysis/{interview_id}", response_model=Dict[int, AnalysisResult])
 async def get_analysis(interview_id: int, db: Session = Depends(get_db)):
     analyses = db.query(InterviewAnalysis).filter(InterviewAnalysis.interview_id == interview_id).all()
@@ -483,6 +464,3 @@ async def get_analysis(interview_id: int, db: Session = Depends(get_db)):
             time_series_data=time_series_data
         )
     return results
-
-
-

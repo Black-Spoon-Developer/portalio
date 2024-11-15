@@ -11,7 +11,7 @@ const InterviewIntroPage: React.FC = () => {
   const sectionRefs = useRef<HTMLDivElement[]>([]);
 
   const handleStartButtonClick = () => {
-    navigate("/ai/interview/questions");
+    navigate("/mock-interview/interview/questions");
   };
 
   useEffect(() => {

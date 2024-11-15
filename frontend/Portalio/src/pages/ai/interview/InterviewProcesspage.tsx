@@ -1,4 +1,5 @@
 // InterviewProcessPage.tsx
+// 같은 구조여서 음성이랑 화상을 묶어서 음성,화상 부분 면접 과정
 import React, { useEffect, useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
@@ -15,7 +16,7 @@ const InterviewProcessPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const { interviewId, questions, currentQuestionIndex, isPreparationTime, isFinished, isRecording, pendingUploads } = useSelector(
+  const { interviewId, questions, currentQuestionIndex, isPreparationTime, isFinished, isRecording } = useSelector(
     (state: RootState) => state.interview
   );
 
@@ -54,7 +55,7 @@ const InterviewProcessPage: React.FC = () => {
         dispatch(interviewActions.removePendingUpload(questionId));
         if (questionId === questions.length - 1) {
           setIsLastUploadInProgress(false);
-          navigate("/ai/analyze/1/");
+          navigate("/mock-interview/analyze/1/");
         }
       }
     },

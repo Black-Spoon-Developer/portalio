@@ -17,7 +17,7 @@ export default function ChatInterviewPage() {
   const [chatLog, setChatLog] = useState<{ type: "question" | "answer"; content: string; index?: number }[]>([
     { type: "question", content: questions[0], index: 1 },
   ]);
-
+  
   const handleTextAnswerSubmit = () => {
     if (!textAnswer.trim()) return;
 
@@ -28,7 +28,7 @@ export default function ChatInterviewPage() {
     setTextAnswer("");
 
     if (currentQuestionIndex >= questions.length - 1) {
-      navigate("/ai/analyze/1/");
+      navigate("/mock-interview/analyze/1/");
     } else {
       dispatch(interviewActions.incrementQuestionIndex());
       setChatLog((prevLog) => [

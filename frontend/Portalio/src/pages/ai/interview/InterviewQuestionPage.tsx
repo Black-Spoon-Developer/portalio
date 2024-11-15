@@ -11,7 +11,7 @@ const InterviewQuestionPage: React.FC = () => {
   useEffect(() => {
     // API에서 질문을 가져와 상태에 저장
     const fetchQuestions = async () => {
-      const questions = await fetchQuestionsApi();
+      const questions = await fetchQuestionsApi(dispatch);
       if (questions) {
         dispatch(interviewActions.setQuestions(questions));
       }
@@ -21,7 +21,7 @@ const InterviewQuestionPage: React.FC = () => {
   }, [dispatch]);
 
   const handleProceedToSetup = () => {
-    navigate("/ai/interview/setup");
+    navigate("/mock-interview/interview/setup");
   };
 
   return (

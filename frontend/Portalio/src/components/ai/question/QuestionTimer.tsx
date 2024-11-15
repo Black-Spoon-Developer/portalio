@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { QuestionTimerProps } from "../../type/InterviewType";
+import { QuestionTimerProps } from "../../../type/InterviewType";
 
 const QuestionTimer: React.FC<QuestionTimerProps> = ({
   isPreparationTime,

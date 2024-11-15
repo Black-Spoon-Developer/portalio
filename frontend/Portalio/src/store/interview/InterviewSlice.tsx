@@ -20,6 +20,9 @@ const interviewSlice = createSlice({
   name: "interview",
   initialState,
   reducers: {
+    setInterviewId(state, action: PayloadAction<number>) {
+      state.interviewId = action.payload;
+    },
     setQuestions(state, action: PayloadAction<string[]>) {
       state.questions = action.payload;
       state.isLoading = false;

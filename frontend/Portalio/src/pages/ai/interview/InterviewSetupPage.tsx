@@ -24,9 +24,9 @@ const InterviewSetupPage: React.FC = () => {
 
   const startInterview = (type: "video" | "audio" | "text") => {
     if (type === "text") {
-      navigate("/ai/interview/text");
+      navigate("/mock-interview/interview/text");
     } else {
-      navigate("/ai/interview/process", { state: { interviewType: type } });
+      navigate("/mock-interview/interview/process", { state: { interviewType: type } });
     }
   };
 

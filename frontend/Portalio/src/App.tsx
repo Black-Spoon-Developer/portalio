@@ -39,7 +39,7 @@ const App: React.FC = () => {
   const navigate = useNavigate();
   
   const handleStartInterview = () => {
-    navigate("/ai/introduce");
+    navigate("/mock-interview/introduce");
   };
 
 
@@ -117,7 +117,7 @@ const App: React.FC = () => {
         {/* <Route path="/recruiter" element={<RecruiterPage />} /> */}
 
         {/* AI (주석 처리) */}
-        { <Route path="/ai" element={<Outlet />}>
+        { <Route path="/mock-interview" element={<Outlet />}>
           <Route path="introduce" element={<InterviewIntroPage />} />
           <Route path="interview/process" element={<InterviewProcessPage  />} />
           <Route path="interview/text" element={<InterviewTextPage  />} />
