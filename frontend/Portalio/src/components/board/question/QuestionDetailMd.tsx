@@ -3,13 +3,11 @@ import { useParams } from "react-router-dom";
 import { boardDetailLike, patchSolveBoard } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import {
   IoCheckmarkCircleOutline,
   IoCheckmarkCircleSharp,
 } from "react-icons/io5";
-import "./QuestionDetailMd.css";
+import { Viewer } from "@toast-ui/react-editor";
 
 interface QuestionDetailMdProps {
   QuestionContent: string;
@@ -96,9 +94,10 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
       <header className="flex items-center">
         <h1>질문 게시판 제목</h1>
       </header>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+      <Viewer initialValue={QuestionContent} key={QuestionContent} />
+      {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {QuestionContent}
-      </ReactMarkdown>
+      </ReactMarkdown> */}
     </div>
   );
 };

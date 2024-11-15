@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 import { boardDetailLike } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import "./FreeDetailMd.css";
+import { Viewer } from "@toast-ui/react-editor";
 
 interface FreeDetailMdProps {
   FreeContent: string;
@@ -60,7 +58,7 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
       <header className="flex justify-between items-center">
         <h1>자유 게시판 제목</h1>
       </header>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{FreeContent}</ReactMarkdown>
+      <Viewer initialValue={FreeContent} key={FreeContent} />
     </div>
   );
 };

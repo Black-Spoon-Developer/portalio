@@ -64,26 +64,20 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
-        
-
 
         MemberDTO memberDTO = MemberDTO.from(member);
 
         // 유저 디테일 정보에 email, default 닉네임, 외래키 저장
-        UserDetail userDetail = userDetailRepository.findById(memberDTO.getMemberId())
+        UserDetail userDetail = userDetailRepository.findByMemberId(memberDTO.getMemberId())
                 .orElse(null);
 
         if (userDetail == null) {
             userDetailRepository.save(UserDetail.of(customUserDetails.getEmail(), "no nickname", member));
         }
 
-
-
         // 로그인 중에 만약 발급된 refresh 토큰이 있다면 DB에서 찾아서 검증 후 토큰이 만료 되었으면 새로운 토큰 발급하고 아니면
         // 토큰 값을 조회해서 그대로 쿠키에 담아서 그냥 보내주기
         String refreshToken = memberDTO.getRefreshToken();
-
-
 
         if (refreshToken != null) {
             boolean isExired = jwtUtil.isExpired(refreshToken);
@@ -112,8 +106,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 response.addCookie(createCookie("refresh", refresh));
                 response.setStatus(HttpStatus.OK.value());
             }
-
-
         } else {
             // 유저 정보 추출
             Long memberId = member.getMemberId();

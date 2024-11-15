@@ -1,38 +1,41 @@
-import React, { useRef, useEffect, useState } from 'react';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor } from '@toast-ui/react-editor';
-import axios from 'axios';
+import React, { useRef, useEffect, useState } from "react";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor } from "@toast-ui/react-editor";
+import axios from "axios";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getMyRepositoryList } from '../../../api/RepositoryAPI'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getMyRepositoryList } from "../../../api/RepositoryAPI";
 import { RootState } from "../../../store";
-import { registerActivity } from '../../../api/ActivityAPI';
+import { registerActivity } from "../../../api/ActivityAPI";
 import TextField from "@mui/material/TextField";
-import { RepositoryResponse } from '../../../type/RepositoryType';
-import { useSelector } from 'react-redux';
+import { RepositoryResponse } from "../../../type/RepositoryType";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { userTicketUpdate } from "../../../api/TicketAPI";
 
 const ActivityCreatePage: React.FC = () => {
-  const [repositoryId, setRepositoryId] = useState<number>(0)
-  const today = new Date().toISOString().split('T')[0];
+  const navigate = useNavigate();
+  const [repositoryId, setRepositoryId] = useState<number>(0);
+  const today = new Date().toISOString().split("T")[0];
   const editorRef = useRef<Editor>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [startDate, setStartDate] = useState(today);
   const [items, setItems] = useState<RepositoryResponse[]>([]);
-  const username = useSelector((state: RootState) => state.auth.username) ?? "Guest";
+  const username =
+    useSelector((state: RootState) => state.auth.memberUsername) ?? "Guest";
 
   // const BASE_URL = "http://localhost:8080";
   const BASE_URL = "https://k11d202.p.ssafy.io";
-  
-  const notifyfail = () => {
-    toast.error("게시글 내용이 부족합니다.")
-  };
 
+  const notifyfail = () => {
+    toast.error("게시글 내용이 부족합니다.");
+  };
 
   useEffect(() => {
     const fetchMyRepository = async () => {
@@ -40,12 +43,11 @@ const ActivityCreatePage: React.FC = () => {
         try {
           const response = await getMyRepositoryList(username);
           setItems(response.items);
-
         } catch (error) {
-          console.error("레포지토리 리스트 불러오기 오류:", error)
+          console.error("레포지토리 리스트 불러오기 오류:", error);
         }
       }
-    }
+    };
     fetchMyRepository();
   }, [username]);
 
@@ -57,13 +59,17 @@ const ActivityCreatePage: React.FC = () => {
       const formData = new FormData();
       formData.append("multipartFile", blob);
       formData.append("folderName", "Activity_board");
-  
-      const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
+
+      const response = await axios.post(
+        `${BASE_URL}/api/v1/s3/image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       const imageUrl = response.data;
       console.log("Response Text:", imageUrl);
       callback(imageUrl, "이미지 설명");
@@ -71,7 +77,7 @@ const ActivityCreatePage: React.FC = () => {
       console.error("이미지 업로드 오류:", error);
     }
   };
-  
+
   const handleSave = () => {
     if (editorRef.current) {
       const editorInstance = editorRef.current.getInstance();
@@ -81,78 +87,86 @@ const ActivityCreatePage: React.FC = () => {
     }
   };
 
+  // 모달 닫는 핸들러
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
-  
 
+  // 최종 저장 핸들러
   const handleModalSave = async () => {
     if (!title || !content) {
-      notifyfail()
-      
+      notifyfail();
+
       return;
     }
-    
+
     const activityBoardData = {
       activityBoardTitle: title,
       activityBoardContent: content,
       activityBoardDate: startDate,
-      repositoryId: repositoryId
+      repositoryId: repositoryId,
     };
-    
-      registerActivity(activityBoardData) 
+
+    // 활동 게시글 등록 요청
+    await registerActivity(activityBoardData);
+
+    // 티켓 1개 지급
+    await userTicketUpdate(1);
+
+    // 활동 게시판으로 이동
+    navigate("/");
   };
-  
-  const [selectedRepository, setSelectedRepository] = useState<
-  number | null
->(null);
 
-const handleRepositoryChange = (event: SelectChangeEvent<number>) => {
-  const mainRepositoryId = Number(event.target.value);
-  setSelectedRepository(mainRepositoryId);
-  setRepositoryId(mainRepositoryId)
-};
+  const [selectedRepository, setSelectedRepository] = useState<number | null>(
+    null
+  );
 
-return (
-  <div>
-    <div className="flex mb-5">
-      <input 
-        type="text" 
-        placeholder="제목을 입력하세요" 
-        className="w-full p-3 text-4xl rounded-lg"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-    </div>
+  const handleRepositoryChange = (event: SelectChangeEvent<number>) => {
+    const mainRepositoryId = Number(event.target.value);
+    setSelectedRepository(mainRepositoryId);
+    setRepositoryId(mainRepositoryId);
+  };
 
-  <div className="p-4">
-    <Accordion>
-      <AccordionDetails>
-        <div className="mb-4">
-          <Select
-            value={selectedRepository || ""}
-            onChange={handleRepositoryChange}
-            displayEmpty
-            className="w-full"
-          >
-            <MenuItem value="" disabled>
-              레포지토리 선택
-              </MenuItem>
-              {items.map((item) => (
-                <MenuItem key={item.repositoryId} value={item.repositoryId}>
-                  {item.repositoryTitle}
+  return (
+    <div>
+      <div className="flex mb-5">
+        <input
+          type="text"
+          placeholder="제목을 입력하세요"
+          className="w-full p-3 text-4xl rounded-lg"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>
+
+      <div className="p-4">
+        <Accordion>
+          <AccordionDetails>
+            <div className="mb-4">
+              <Select
+                value={selectedRepository || ""}
+                onChange={handleRepositoryChange}
+                displayEmpty
+                className="w-full"
+              >
+                <MenuItem value="" disabled>
+                  레포지토리 선택
                 </MenuItem>
-              ))}
-            </Select>
-          </div>
-        </AccordionDetails>
-      </Accordion>
-    </div>
-    
-            {/* 시작 날짜와 종료 날짜 입력 */}
-            <div className="flex mb-5 space-x-4">
+                {items.map((item) => (
+                  <MenuItem key={item.repositoryId} value={item.repositoryId}>
+                    {item.repositoryTitle}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+      </div>
+
+      {/* 시작 날짜와 종료 날짜 입력 */}
+      <div className="flex mb-5 space-x-4">
         <TextField
-          label="시작 날짜"
+          label="활동 날짜"
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
@@ -170,12 +184,12 @@ return (
         initialEditType="markdown"
         useCommandShortcut={true}
         hooks={{
-          addImageBlobHook: onUploadImage
+          addImageBlobHook: onUploadImage,
         }}
       />
 
-      <button 
-        onClick={handleSave} 
+      <button
+        onClick={handleSave}
         className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
       >
         저장
@@ -185,8 +199,18 @@ return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-5 rounded-lg w-1/3">
             <div className="flex justify-end space-x-3">
-              <button onClick={handleModalClose} className="px-4 py-2 bg-gray-300 rounded-lg">취소</button>
-              <button onClick={handleModalSave} className="px-4 py-2 bg-blue-500 text-white rounded-lg">저장</button>
+              <button
+                onClick={handleModalClose}
+                className="px-4 py-2 bg-gray-300 rounded-lg"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleModalSave}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                저장
+              </button>
               <ToastContainer />
             </div>
           </div>

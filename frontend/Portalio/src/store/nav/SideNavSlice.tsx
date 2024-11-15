@@ -28,7 +28,7 @@ const sideNavSlice = createSlice({
       state.tabState = "Message";
     },
 
-    selectNotification(state) {
+    selectMypage(state) {
       state.tabState = "MyPage";
     },
   },

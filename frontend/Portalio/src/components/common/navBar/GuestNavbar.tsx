@@ -65,7 +65,7 @@ const GuestNavbar: React.FC = () => {
       {/* 프로필 및 메뉴 */}
       <div className="flex items-center p-3 relative">
         <div className="mx-3 font-bold">게스트</div>
-        <Tooltip title="Account settings">
+        <Tooltip title="프로필 메뉴">
           <IconButton onClick={handleMenuOpen} size="small" sx={{ ml: 2 }}>
             <Avatar src={BasicProfile} alt="Profile" />
           </IconButton>

@@ -30,20 +30,24 @@ const BoardPage: React.FC = () => {
         if (response) {
           const newAccessToken = response.data.access;
 
-          // 유저 정보 저장
-          const memberId = response.data.memberId.toString();
-          const name = response.data.name;
-          const username = response.data.username;
-          const picture = response.data.picture;
-          const role = response.data.role;
+          let memberAuth: boolean = false;
 
+          if (response.data.auth === "1") {
+            memberAuth = true;
+          }
+
+          // 유저 정보 저장
           const userInfo: UserInfo = {
             accessToken: newAccessToken,
-            memberId,
-            name,
-            username,
-            picture,
-            role,
+            memberId: response.data.memberId,
+            memberName: response.data.name,
+            memberUsername: response.data.username,
+            memberNickname: response.data.nickname,
+            memberPicture: response.data.picture,
+            memberRole: response.data.role,
+            memberTicket: response.data.tickets,
+            memberAuth: memberAuth,
+            memberJob: response.data.jobSubCategoryId,
           };
 
           dispatch(authActions.login(userInfo));

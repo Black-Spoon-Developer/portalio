@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { IoCloseOutline } from "react-icons/io5";
 import { fetchDetailActivity } from "../../../api/ActivityAPI";
-import "./ActivityDetailMd.css"; // markdown-viewer 스타일 적용
 import { ActivityDetail } from "../../../interface/activity/ActivityInterface";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
+import { Viewer } from "@toast-ui/react-editor";
 
 interface ActivityDetailMdProps {
   activityId: number;
@@ -73,9 +71,10 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
                 <header className="text-2xl font-bold border-b-2 p-2">
                   {activityDetailInfo?.activityBoardTitle}
                 </header>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {activityDetailInfo?.activityBoardContent}
-                </ReactMarkdown>
+                <Viewer
+                  initialValue={activityDetailInfo?.activityBoardContent}
+                  key={activityDetailInfo?.activityBoardContent}
+                />
               </div>
             )}
           </section>

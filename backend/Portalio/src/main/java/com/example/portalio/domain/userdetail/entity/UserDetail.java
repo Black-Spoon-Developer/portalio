@@ -10,10 +10,9 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value.Str;
+
 
 @Entity
 @Getter
@@ -34,6 +33,18 @@ public class UserDetail {
     @Column(name = "user_ticket")
     private Integer userTicket = 0;
 
+    @Column(name = "user_facebook")
+    private String userFacebook;
+
+    @Column(name = "user_instagram")
+    private String userInstagram;
+
+    @Column(name = "user_linkedin")
+    private String userLinkedin;
+
+    @Column(name = "user_github")
+    private String userGithub;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
@@ -51,6 +62,13 @@ public class UserDetail {
 
     public void setUserTicket(Integer ticket) { this.userTicket = ticket; }
 
+    public void setUserFacebook(String facebook) {this.userFacebook = facebook;}
+
+    public void setUserInstagram(String instagram) {this.userInstagram = instagram;}
+
+    public void setUserLinkedin(String linkedin) {this.userLinkedin = linkedin;}
+
+    public void setUserGithub(String github) {this.userGithub = github;}
 
     public static UserDetail of(String userEmail, String userNickname, Member member) {
         UserDetail userDetail = new UserDetail();
