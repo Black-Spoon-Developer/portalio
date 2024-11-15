@@ -20,7 +20,7 @@ const ITEMS_PER_PAGE = 10;
 const UserPortfolioListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
-  const username = useSelector((state: RootState) => state.auth.username);
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
   const navigate = useNavigate();
 
