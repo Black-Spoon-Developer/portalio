@@ -7,6 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDetailRequest {
     private String memberId;
-    private String nickname;
+    private String memberNickname;
 
 }

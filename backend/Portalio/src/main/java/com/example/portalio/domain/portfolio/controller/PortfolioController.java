@@ -1,7 +1,6 @@
 package com.example.portalio.domain.portfolio.controller;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
-import com.example.portalio.domain.board.dto.BoardListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioLikeListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioLikeResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;

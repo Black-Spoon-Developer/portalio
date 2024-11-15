@@ -1,8 +1,7 @@
 import axios from "axios";
-import { UserDetailInfo } from "../type/UserType";
+import { UserDetailInfoSave } from "../type/UserType";
 import store, { RootState } from "../store";
 import { BASE_URL } from "./BaseVariable";
-
 
 // 회원 닉네임 중복 검사 API
 export const memberNicknameDuplicateCheckAPI = async (nickname: string) => {
@@ -35,9 +34,9 @@ export const saveUserDetail = async (nickname: string) => {
     const memberId = state.auth.memberId;
 
     if (accessToken && memberId) {
-      const request: UserDetailInfo = {
+      const request: UserDetailInfoSave = {
         memberId,
-        nickname,
+        memberNickname: nickname,
       };
 
       const response = await axios.patch(

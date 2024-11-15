@@ -14,7 +14,7 @@ const persistConfig = {
 // 여러 슬라이스를 결합할 때 사용 - 사용할 reducer 하나씩 추가하는 곳!
 const rootReducer = combineReducers({
   auth: authReducer,
-  sideTab: sideTabReducer, // auth 슬라이스 추가
+  sideNav: sideTabReducer, // auth 슬라이스 추가
 });
 
 // persistReducer로 rootReducer 감싸기

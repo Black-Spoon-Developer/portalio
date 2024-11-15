@@ -1,13 +1,22 @@
-export type UserInfo = {
+export interface UserInfo {
   accessToken: string | null;
   memberId: string | null;
-  name: string | null;
-  username: string | null;
-  picture: string | null;
-  role: string | null;
-};
+  memberName: string | null;
+  memberUsername: string | null;
+  memberNickname: string | null;
+  memberPicture: string | null;
+  memberRole: string | null;
+  memberTicket: number | null;
+  memberAuth: boolean | null;
+  memberJob: string | null;
+}
 
-export type UserDetailInfo = {
+export interface UserDetailInfo {
+  memberNickname: string;
+  memberJob: string;
+}
+
+export interface UserDetailInfoSave {
   memberId: string;
-  nickname: string;
-};
+  memberNickname: string;
+}
