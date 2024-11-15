@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import { getRepositoryDetail } from "./../../../api/RepositoryAPI";
+import {   } from "./../../../api/RepositoryAPI";
 
 interface Repository {
   repositoryId: number; // 레포지토리 고유 ID
@@ -15,15 +15,18 @@ interface Repository {
 }
 
 const RepositoryDetailPage: React.FC = () => {
-  const { repositoryId } = useParams<{ repositoryId: string }>(); // URL에서 userId를 추출
+  const { repository_id } = useParams<{ repository_id: string }>(); // URL에서 user_id 추출
   const [repository, setRepository] = useState<Repository | null>(null);
+  console.log(repository_id);
 
   useEffect(() => {
     const fetchRepositoryDetail = async () => {
       try {
-        const response = await getRepositoryDetail(repositoryId || "");
-        console.log("Repository Detail:", response); // 응답 콘솔에 출력
-        setRepository(response.data); // 상태에 응답 데이터 저장
+        if (repository_id) {
+          const response = await  (parseInt(repository_id, 10));
+          console.log("Repository Detail:", response); // 응답 콘솔에 출력
+          setRepository(response); // 상태에 응답 데이터 저장
+        }
       } catch (error) {
         console.error("Failed to fetch repositories:", error);
       }
