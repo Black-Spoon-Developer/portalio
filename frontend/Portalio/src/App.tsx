@@ -5,11 +5,19 @@ import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 // import MainTestPage from "./pages/MainTest.tsx";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import UserSignupPage from "./pages/auth/user/UserSignUpPage.tsx";
+<<<<<<< HEAD
 import UserProfilePage from "./pages/user/UserProfilePage.tsx";
 import UserSettingPage from "./pages/user/UserSettingPage.tsx";
 import UserPortfolioListPage from "./pages/user/UserPortfolioListPage.tsx";
 import UserFreeListPage from "./pages/user/UserFreeListPage";
 import UserRepositoryListPage from "./pages/user/UserRepositoryListPage.tsx";
+=======
+import UserProfilePage from "./pages/auth/user/UserProfilePage.tsx";
+import UserSettingPage from "./pages/auth/user/UserSettingPage.tsx";
+import UserPortfolioListPage from "./pages/auth/user/UserPortfolioListPage.tsx";
+import UserFreeListPage from "./pages/auth/user/UserFreeListPage";
+import UserRepositoryListPage from "./pages/auth/user/UserRepositoryListPage.tsx";
+>>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
 import BoardEditPage from "./pages/board/board/BoardEditPage.tsx";
 import BoardCreatePage from "./pages/board/board/BoardCreatePage.tsx";
 import PortfolioCreatePage from "./pages/board/portfolio/PortfolioCreatePage.tsx";
@@ -25,7 +33,10 @@ import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.t
 import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
 import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
+<<<<<<< HEAD
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
+=======
+>>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -36,7 +47,10 @@ import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 // import PortfolioPage from "./pages/board/PortfolioPage.tsx";
+<<<<<<< HEAD
 import UserActivityListPage from './pages/user/UserActivityListPage';
+=======
+>>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -64,8 +78,11 @@ const App: React.FC = () => {
             <Route path="setting" element={<UserSettingPage />} />
             <Route path="portfolio" element={<UserPortfolioListPage />} />
             <Route path="repository" element={<UserRepositoryListPage />} />
+<<<<<<< HEAD
             <Route path="activity" element={<UserActivityListPage />} />
             <Route path="question" element={<UserQuestionListPage />} />
+=======
+>>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
           </Route>
         </Route>
 

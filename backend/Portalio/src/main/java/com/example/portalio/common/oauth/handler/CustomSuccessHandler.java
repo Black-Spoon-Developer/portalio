@@ -141,11 +141,19 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // 가입 시 회원정보를 입력하지 않은 회원이면 회원정보 입력 페이지로 리다이렉트
         if (!isAuth) {
+<<<<<<< HEAD
            response.sendRedirect("https://k11d202.p.ssafy.io/users/signup");
             // response.sendRedirect("http://localhost:5173/users/signup");
         } else {
            response.sendRedirect("https://k11d202.p.ssafy.io/");
             // response.sendRedirect("http://localhost:5173/");
+=======
+            response.sendRedirect("https://k11d202.p.ssafy.io/users/signup");
+//            response.sendRedirect("http://localhost:5173/users/signup");
+        } else {
+            response.sendRedirect("https://k11d202.p.ssafy.io/");
+//            response.sendRedirect("http://localhost:5173/");
+>>>>>>> 28819a1dc49b3c259646ea3b5974dd39e67315cc
         }
     }
 
