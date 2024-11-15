@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./UserProfilePage.css";
 import BriefCase from "../../assets/BriefCase.svg";
 import FacebookIcon from "../../assets/Facebook.svg";

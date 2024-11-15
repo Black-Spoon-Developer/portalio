@@ -45,7 +45,7 @@ export const patchRepository = async (
 };
 
 // 레포지토리 글 상세보기
-export const getRepositoryDetail = async (repositoryId: string) => {
+export const getRepositoryDetail = async (repositoryId: number) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   console.log(repositoryId)
