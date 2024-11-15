@@ -1,13 +1,13 @@
-// package com.example.portalio;
+//package com.example.portalio;
 //
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.context.SpringBootTest;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
 //
-// @SpringBootTest
-// class PortalioApplicationTests {
+//@SpringBootTest
+//class PortalioApplicationTests {
 //
-// @Test
-// void contextLoads() {
-// }
+//	@Test
+//	void contextLoads() {
+//	}
 //
-// }
+//}
