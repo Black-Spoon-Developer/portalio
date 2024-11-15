@@ -15,56 +15,7 @@
     background-color: #fff;
   }
     
-  /* 활동 내역 잔디 섹션 */
-  .activity-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .year-selector {
-    display: flex;
-    gap: 5px;
-  }
-  
-  .year-button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-  
-  .year-button.active {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .activity-grid {
-    display: grid;
-    grid-template-columns: repeat(52, 1fr);
-    gap: 2px;
-  }
-  
-  .week {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  
-  .day {
-    width: 10px;
-    height: 10px;
-    background-color: #e0e0e0;
-    border-radius: 2px;
-  }
-  
-  .day.active {
-    background-color: #9dd89f;
-  }
-  
+
 /* 대표 포트폴리오, 레포지토리 및 게시글 섹션 */
   
   /* 포트폴리오 헤더 */
