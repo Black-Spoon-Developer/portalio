@@ -4,7 +4,8 @@ import java.time.YearMonth;
 import lombok.Getter;
 
 @Getter
-public class JobHistoryRequest {
+public class JobHistoryEditRequest {
+    private Long jobHistoryId;
     private String jobCompany;
     private String jobPosition;
     private YearMonth jobStartDate;

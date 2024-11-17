@@ -83,6 +83,8 @@ const PortfolioDetailPage: React.FC = () => {
         <PortfolioDetailMd
           portfolioTitle={portfolio?.portfolioTitle ?? ""}
           portfolioContent={portfolio?.portfolioContent ?? ""}
+          memberNickname={portfolio?.memberNickname ?? ""}
+          memberPicture={portfolio?.picture ?? ""}
           isLiked={portfolio?.isLiked ?? false}
           memberId={portfolio?.memberId ?? 0}
           setUpdateDetailTrigger={setUpdateDetailTrigger}

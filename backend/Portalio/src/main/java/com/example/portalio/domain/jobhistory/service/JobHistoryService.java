@@ -1,5 +1,7 @@
 package com.example.portalio.domain.jobhistory.service;
 
+import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.jobhistory.dto.JobHistoryEditRequest;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryListResponse;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryRequest;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryResponse;
@@ -30,7 +32,8 @@ public class JobHistoryService {
     }
 
     // 유저 경력/이력 저장
-    public JobHistoryResponse saveJobHistory(Long memberId, JobHistoryRequest request) {
+    public JobHistoryResponse saveJobHistory(CustomOAuth2User oAuth2User, JobHistoryRequest request) {
+        Long memberId = oAuth2User.getMemberId();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
@@ -41,6 +44,33 @@ public class JobHistoryService {
 
         return JobHistoryResponse.from(savedJobHistory);
     }
+
+    // 유저 경력/이력 수정
+    public JobHistoryResponse editJobHistory(JobHistoryEditRequest request) {
+        JobHistory jobHistory = jobHistoryRepository.findByJobHistoryId(request.getJobHistoryId())
+                .orElseThrow(JobHistoryNotFoundException::new);
+
+        if (!request.getJobCompany().equals(jobHistory.getJobCompany())) {
+            jobHistory.setJobCompany(request.getJobCompany());
+        }
+
+        if (!request.getJobPosition().equals(jobHistory.getJobPosition())) {
+            jobHistory.setJobPosition(request.getJobPosition());
+        }
+
+        if (!request.getJobStartDate().equals(jobHistory.getJobStartDate())) {
+            jobHistory.setJobStartDate(String.valueOf(request.getJobStartDate()));
+        }
+
+        if (!request.getJobEndDate().equals(jobHistory.getJobEndDate())) {
+            jobHistory.setJobEndDate(String.valueOf(request.getJobEndDate()));
+        }
+
+        JobHistory savedJobHistory = jobHistoryRepository.save(jobHistory);
+
+        return JobHistoryResponse.from(savedJobHistory);
+    }
+
     
     // 유저 경력/이력 삭제
     public JobHistoryResponse deleteJobHistory(Long jobHistoryId) {
