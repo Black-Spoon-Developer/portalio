@@ -7,6 +7,7 @@ import { RootState } from "../../store";
 interface Repository {
   repositoryId: number;
   repositoryTitle: string;
+  repositoryDescription: string;
 }
 
 const PrimaryRepository: React.FC = () => {
@@ -14,15 +15,21 @@ const PrimaryRepository: React.FC = () => {
   const username = useSelector((state: RootState) => state.auth.memberUsername);
   const [repositories, setRepositories] = useState<Repository[]>([]);
 
-  // 대표 레포지토리 조회 함수 - 이거 수정 필요함
+  // 대표 레포지토리 조회 함수
   const getPrimaryRepository = async () => {
     if (username) {
-      const repositoryResponse = await getMyRepositoryList(username);
-
-      setRepositories(repositoryResponse.items.slice(0, 3));
-    } else {
-      alert("대표 레포지토리 정보를 가져오는 중 에러가 발생했습니다.");
+      try {
+        const repositoryResponse = await getMyRepositoryList(username);
+        setRepositories(repositoryResponse.items.slice(0, 3)); // 상위 3개 레포지토리만 표시
+      } catch (error) {
+        console.log(error);
+      }
     }
+  };
+
+  // 긴 글자 -> ... 으로 대체
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
   };
 
   useEffect(() => {
@@ -30,26 +37,68 @@ const PrimaryRepository: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-1/2 border-r mr-5 p-2">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="font-bold text-2xl">대표 레포지토리</h2>
-        <Link to={`/users/profile/${user_id}/repository`} className="text-sm">
+        <Link
+          to={`/users/profile/${user_id}/activity`}
+          className="text-sm text-blue-500 hover:underline"
+        >
           더 보기 →
         </Link>
       </div>
+
       {repositories.length > 0 ? (
-        repositories.map((repository, index) => (
-          <div className="repository-item" key={index}>
-            <Link to={`/repository/${repository.repositoryId}`}>
-              <h3>{repository.repositoryTitle}</h3>
-              <p>효율적인 인재 확보와 이직률 감소 사례</p>
-            </Link>
-          </div>
+        repositories.map((repository) => (
+          <Link
+            key={repository.repositoryId}
+            to={`/repository/${repository.repositoryId}`}
+            className="text-gray-800 hover:text-blue-500"
+          >
+            <div className="bg-white shadow rounded-lg p-4 border mb-4">
+              <p className="font-bold text-xl">
+                {truncateText(repository.repositoryTitle, 20)}
+              </p>
+              <p>{truncateText(repository.repositoryDescription, 40)}</p>
+            </div>
+          </Link>
         ))
       ) : (
-        <p className="mt-5">레포지토리가 없습니다</p>
+        <li className="text-gray-500">대표 레포지토리가 없어요</li>
       )}
     </div>
+
+    // <div>
+    //   <h2 className="font-bold text-2xl mb-4"></h2>{" "}
+    //   <Link
+    //     to={`/users/profile/${user_id}/repository`}
+    //     className="text-sm text-blue-500 hover:underline"
+    //   >
+    //     더 보기 →
+    //   </Link>
+    //   <ul className="space-y-3">
+    //     {repositories.length > 0 ? (
+    //       repositories.map((repository) => (
+    //         <li key={repository.repositoryId} className="flex items-center">
+    //           <Link
+    //             to={`/repository/${repository.repositoryId}`}
+    //             className="text-gray-800 hover:text-blue-500 truncate max-w-full"
+    //             title={repository.repositoryTitle} // 전체 텍스트 표시
+    //           >
+    //             <div className="bg-white shadow rounded-lg p-4 border w-full">
+    //               <h1 className="text-2xl font-bold">
+    //                 {repository.repositoryTitle}
+    //               </h1>
+    //               <p>{repository.repositoryDescription}</p>
+    //             </div>
+    //           </Link>
+    //         </li>
+    //       ))
+    //     ) : (
+    //       <li className="text-gray-500">레포지토리가 없습니다</li>
+    //     )}
+    //   </ul>
+    // </div>
   );
 };
 

@@ -35,6 +35,11 @@ const PostsBoards: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  // 긴 글자 -> ... 으로 대체
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
   // api 요청
   useEffect(() => {
     if (username) {
@@ -81,75 +86,101 @@ const PostsBoards: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-1/2 ml-2">
-      <h2 className="font-bold text-2xl">작성한 게시글</h2>
-      <section className="mt-3">
+    <div>
+      <h2 className="font-bold text-2xl mb-4">작성한 게시글</h2>
+      <section className="space-y-4">
         {/* 활동 게시글 */}
-        <section>
-          <h3 className="flex justify-between items-center">
-            <div className="font-bold text-xl my-4">활동 게시글</div>
-
-            <Link to={`/users/profile/${user_id}/activity`} className="text-sm">
+        <div className="bg-white shadow rounded-lg p-4 border">
+          <h3 className="flex justify-between items-center mb-3">
+            <span className="font-bold text-xl">활동 게시글</span>
+            <Link
+              to={`/users/profile/${user_id}/activity`}
+              className="text-sm text-blue-500 hover:underline"
+            >
               더 보기 →
             </Link>
           </h3>
-          <ul>
+          <ul className="space-y-3">
             {activities.length > 0 ? (
               activities.map((activity) => (
-                <li key={activity.activityBoardId}>
-                  <Link to={`/activity/${activity.activityBoardId}`}>
-                    <span className="font-bold text-black">
-                      [{activity.repositoryName}]
-                    </span>{" "}
-                    {activity.activityBoardTitle}
+                <li
+                  key={activity.activityBoardId}
+                  className="flex items-center"
+                >
+                  <span className="text-gray-600 mr-2">
+                    [{truncateText(activity.repositoryName, 10)}]
+                  </span>
+                  <Link
+                    to={`/activity/${activity.activityBoardId}`}
+                    className="text-gray-800 hover:text-blue-500"
+                  >
+                    {truncateText(activity.activityBoardTitle, 13)}
                   </Link>
                 </li>
               ))
             ) : (
-              <li className="">작성한 활동 게시글이 없어요</li>
+              <li className="text-gray-500">작성한 활동 게시글이 없어요</li>
             )}
           </ul>
-        </section>
-        <section>
-          <h3 className="flex justify-between items-center">
-            <div className="font-bold text-xl my-4">자유 게시글</div>
-            <Link to={`/users/profile/${user_id}/free`} className="text-sm">
+        </div>
+
+        {/* 자유 게시글 */}
+        <div className="bg-white shadow rounded-lg p-4 border">
+          <h3 className="flex justify-between items-center mb-3">
+            <span className="font-bold text-xl">자유 게시글</span>
+            <Link
+              to={`/users/profile/${user_id}/free`}
+              className="text-sm text-blue-500 hover:underline"
+            >
               더 보기 →
             </Link>
           </h3>
-          <ul>
+          <ul className="space-y-3">
             {frees.length > 0 ? (
               frees.map((free) => (
                 <li key={free.boardId}>
-                  <Link to={`/free/${free.boardId}`}>{free.boardTitle}</Link>
-                </li>
-              ))
-            ) : (
-              <li>작성한 자유 게시글이 없어요</li>
-            )}
-          </ul>
-        </section>
-        <section>
-          <h3 className="flex justify-between items-center">
-            <div className="font-bold text-xl my-4">질문 게시글</div>
-            <Link to={`/users/profile/${user_id}/question`} className="text-sm">
-              더 보기 →
-            </Link>
-          </h3>
-          <ul>
-            {questions.length > 0 ? (
-              questions.map((question) => (
-                <li key={question.boardId}>
-                  <Link to={`/question/${question.boardId}`}>
-                    {question.boardTitle}
+                  <Link
+                    to={`/free/${free.boardId}`}
+                    className="text-gray-800 hover:text-blue-500"
+                  >
+                    {truncateText(free.boardTitle, 20)}
                   </Link>
                 </li>
               ))
             ) : (
-              <li>작성한 질문 게시글이 없어요</li>
+              <li className="text-gray-500">작성한 자유 게시글이 없어요</li>
             )}
           </ul>
-        </section>
+        </div>
+
+        {/* 질문 게시글 */}
+        <div className="bg-white shadow rounded-lg p-4 border">
+          <h3 className="flex justify-between items-center mb-3">
+            <span className="font-bold text-xl">질문 게시글</span>
+            <Link
+              to={`/users/profile/${user_id}/question`}
+              className="text-sm text-blue-500 hover:underline"
+            >
+              더 보기 →
+            </Link>
+          </h3>
+          <ul className="space-y-3">
+            {questions.length > 0 ? (
+              questions.map((question) => (
+                <li key={question.boardId}>
+                  <Link
+                    to={`/question/${question.boardId}`}
+                    className="text-gray-800 hover:text-blue-500 "
+                  >
+                    {truncateText(question.boardTitle, 20)}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="text-gray-500">작성한 질문 게시글이 없어요</li>
+            )}
+          </ul>
+        </div>
       </section>
     </div>
   );
