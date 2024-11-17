@@ -1,6 +1,7 @@
 package com.example.portalio.domain.jobhistory.service;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
+import com.example.portalio.domain.jobhistory.dto.JobHistoryEditRequest;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryListResponse;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryRequest;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryResponse;
@@ -43,6 +44,33 @@ public class JobHistoryService {
 
         return JobHistoryResponse.from(savedJobHistory);
     }
+
+    // 유저 경력/이력 수정
+    public JobHistoryResponse editJobHistory(JobHistoryEditRequest request) {
+        JobHistory jobHistory = jobHistoryRepository.findByJobHistoryId(request.getJobHistoryId())
+                .orElseThrow(JobHistoryNotFoundException::new);
+
+        if (!request.getJobCompany().equals(jobHistory.getJobCompany())) {
+            jobHistory.setJobCompany(request.getJobCompany());
+        }
+
+        if (!request.getJobPosition().equals(jobHistory.getJobPosition())) {
+            jobHistory.setJobPosition(request.getJobPosition());
+        }
+
+        if (!request.getJobStartDate().equals(jobHistory.getJobStartDate())) {
+            jobHistory.setJobStartDate(String.valueOf(request.getJobStartDate()));
+        }
+
+        if (!request.getJobEndDate().equals(jobHistory.getJobEndDate())) {
+            jobHistory.setJobEndDate(String.valueOf(request.getJobEndDate()));
+        }
+
+        JobHistory savedJobHistory = jobHistoryRepository.save(jobHistory);
+
+        return JobHistoryResponse.from(savedJobHistory);
+    }
+
     
     // 유저 경력/이력 삭제
     public JobHistoryResponse deleteJobHistory(Long jobHistoryId) {

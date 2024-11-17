@@ -1,35 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsIcon from "../../assets/Setting.svg";
 import FacebookIcon from "../../assets/Facebook.svg";
 import LinkedInIcon from "../../assets/LinkedIn.svg";
 import InstagramIcon from "../../assets/Instagram.svg";
 import GitHubIcon from "../../assets/GitHub.svg";
+import { createOrUpdateSocialLink, getSocialLink } from "../../api/MyPageAPI";
+import { UserSocialLinkRequest } from "../../interface/mypage/MyPageInterface";
+import { useParams } from "react-router-dom";
 
 const SocialLink: React.FC = () => {
+  const { user_id } = useParams<{ user_id: string }>();
+  const userId = Number(user_id);
+
   // 소셜 관련 변수
   const [isEditing, setIsEditing] = useState(false);
-  const [socialLinks, setSocialLinks] = useState({
+  const [socialLinks, setSocialLinks] = useState<UserSocialLinkRequest>({
     facebook: "",
     linkedin: "",
     instagram: "",
     github: "",
   });
 
-  // 소셜 관련 함수
+  // 소셜 바인딩 핸들러 함수
   const handleSocialInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSocialLinks((prevLinks) => ({ ...prevLinks, [name]: value }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // 여기서 서버로 socialLinks를 저장하는 API 호출 추가 가능
-    console.log("Social Links Saved:", socialLinks);
+  const handleGetSociallink = async (memberId: number) => {
+    const response = await getSocialLink(memberId);
+    setSocialLinks(response);
   };
 
+  // 소셜 저장 함수
+  const handleSaveSocialLink = async () => {
+    const response = await createOrUpdateSocialLink(socialLinks);
+    setSocialLinks(response);
+    setIsEditing(false);
+  };
+
+  // 변경 취소 핸들러 함수
   const handleCancel = () => {
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    handleGetSociallink(userId);
+  }, []);
 
   return (
     <div className="w-1/2 pl-4">
@@ -51,7 +68,14 @@ const SocialLink: React.FC = () => {
       </div>
       <ul className={`social-list ${isEditing ? "space-y-4" : "space-y-6"}`}>
         <li className="flex items-center space-x-2">
-          <img src={FacebookIcon} alt="Facebook" className="w-8 h-8" />
+          <a
+            href={socialLinks.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={FacebookIcon} alt="Facebook" className="w-8 h-8" />
+          </a>
+
           {isEditing ? (
             <input
               type="text"
@@ -64,14 +88,23 @@ const SocialLink: React.FC = () => {
           ) : (
             <a
               href={socialLinks.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-800 hover:underline"
             >
-              Facebook 링크
+              Facebook
             </a>
           )}
         </li>
         <li className="flex items-center space-x-2">
-          <img src={LinkedInIcon} alt="LinkedIn" className="w-8 h-8" />
+          <a
+            href={socialLinks.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={LinkedInIcon} alt="LinkedIn" className="w-8 h-8" />
+          </a>
+
           {isEditing ? (
             <input
               type="text"
@@ -84,14 +117,23 @@ const SocialLink: React.FC = () => {
           ) : (
             <a
               href={socialLinks.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-800 hover:underline"
             >
-              LinkedIn 링크
+              LinkedIn
             </a>
           )}
         </li>
         <li className="flex items-center space-x-2">
-          <img src={InstagramIcon} alt="Instagram" className="w-8 h-8" />
+          <a
+            href={socialLinks.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={InstagramIcon} alt="Instagram" className="w-8 h-8" />
+          </a>
+
           {isEditing ? (
             <input
               type="text"
@@ -104,14 +146,23 @@ const SocialLink: React.FC = () => {
           ) : (
             <a
               href={socialLinks.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-800 hover:underline"
             >
-              Instagram 링크
+              Instagram
             </a>
           )}
         </li>
         <li className="flex items-center space-x-2">
-          <img src={GitHubIcon} alt="GitHub" className="w-8 h-8" />
+          <a
+            href={socialLinks.github}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={GitHubIcon} alt="GitHub" className="w-8 h-8" />
+          </a>
+
           {isEditing ? (
             <input
               type="text"
@@ -124,9 +175,11 @@ const SocialLink: React.FC = () => {
           ) : (
             <a
               href={socialLinks.github}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-800 hover:underline"
             >
-              GitHub 링크
+              GitHub
             </a>
           )}
         </li>
@@ -134,7 +187,7 @@ const SocialLink: React.FC = () => {
       {isEditing && (
         <div className="flex justify-end space-x-2 mt-4">
           <button
-            onClick={handleSave}
+            onClick={handleSaveSocialLink}
             className="text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-700"
           >
             저장

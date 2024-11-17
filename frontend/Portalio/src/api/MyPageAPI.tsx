@@ -1,8 +1,9 @@
 import store, { RootState } from "../store";
 import { BASE_URL } from "./BaseVariable";
 import {
-  JobHistoryDTO,
+  JobHistoryRequest,
   UserSocialLinkRequest,
+  JobHistoryEditRequest,
 } from "../interface/mypage/MyPageInterface";
 import axios from "axios";
 
@@ -14,7 +15,7 @@ export const getjobHistory = async (memberId: number) => {
 };
 
 // 경력/이력 생성
-export const createJobHistory = async (request: JobHistoryDTO) => {
+export const createJobHistory = async (request: JobHistoryRequest) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
 
@@ -31,13 +32,31 @@ export const createJobHistory = async (request: JobHistoryDTO) => {
   return response.data;
 };
 
+// 경력/이력 수정
+export const editJobHistory = async (request: JobHistoryEditRequest) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  const response = await axios.patch(
+    `${BASE_URL}/api/v1/jobHistory/edit`,
+    request,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
 // 경력/이력 삭제
-const deleteJobHistory = async (jobHistoryId: number) => {
+export const deleteJobHistory = async (jobHistoryId: number) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
 
   const response = await axios.delete(
-    `${BASE_URL}/api/v1/jobHistory/${jobHistoryId}`,
+    `${BASE_URL}/api/v1/jobHistory/delete/${jobHistoryId}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -64,11 +83,15 @@ export const createOrUpdateSocialLink = async (
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
 
-  const response = await axios.patch(`${BASE_URL}/api/v1/saveOrEdit`, request, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await axios.patch(
+    `${BASE_URL}/api/v1/users/social/saveOrEdit`,
+    request,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
 
   return response.data;
 };

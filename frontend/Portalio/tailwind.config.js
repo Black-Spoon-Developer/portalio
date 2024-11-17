@@ -6,7 +6,7 @@ export default {
       colors: {
         conceptSkyBlue: "#57D4E2",
         hoverConceptSkyBlue: "#3DB3C2",
-        conceptGreen: "#02C58E",
+        conceptGreen: "#03F6B4",
         hoverConceptGreen: "#029A72",
         conceptGrey: "#BFBFBF",
         naverColor: "#03C75A",

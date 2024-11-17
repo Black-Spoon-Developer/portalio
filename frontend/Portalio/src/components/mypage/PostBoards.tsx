@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { getMyBoards } from "../../api/BoardAPI";
+import { useSelector } from "react-redux";
+import { getMyActivities } from "../../api/BoardAPI";
+import { RootState } from "../../store";
+import { useEffect } from "react";
+import { getRepository } from "../../api/RepositoryAPI";
 
 interface Free {
   boardId: number;
@@ -19,6 +25,8 @@ interface Activity {
 }
 
 const PostsBoards: React.FC = () => {
+  // 페이지 기본 변수
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
   const { user_id } = useParams<{ user_id: string }>();
   // 게시판 관련 변수
   const skip = 0;
@@ -26,6 +34,51 @@ const PostsBoards: React.FC = () => {
   const [frees, setFrees] = useState<Free[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  // api 요청
+  useEffect(() => {
+    if (username) {
+      const fetchMyInfos = async () => {
+        try {
+          // 게시글 요청
+          const freesResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "FREE"
+          );
+          const questionsResponse = await getMyBoards(
+            username,
+            skip,
+            limit,
+            "QUESTION"
+          );
+          const activitiesResponse = await getMyActivities(
+            username,
+            skip,
+            limit
+          );
+
+          const activitiesWithRepositoryNames = await Promise.all(
+            activitiesResponse.data.items.map(async (activity: Activity) => {
+              const repository = await getRepository(activity.repositoryId);
+              return {
+                ...activity,
+                repositoryName: repository.repositoryTitle, // repository의 이름을 저장
+              };
+            })
+          );
+
+          setFrees(freesResponse.data.items);
+          setQuestions(questionsResponse.data.items);
+          setActivities(activitiesWithRepositoryNames);
+        } catch (error) {
+          console.error("Failed to fetch boards:", error);
+        }
+      };
+      fetchMyInfos();
+    }
+  }, []);
 
   return (
     <div className="w-1/2 ml-2">

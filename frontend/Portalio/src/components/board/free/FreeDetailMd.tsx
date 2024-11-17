@@ -4,20 +4,28 @@ import { boardDetailLike } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { Viewer } from "@toast-ui/react-editor";
+import { useNavigate } from "react-router-dom";
 
 interface FreeDetailMdProps {
-  FreeContent: string;
+  freeTitle: string;
+  freeContent: string;
   isLiked: boolean;
   memberId: number;
+  memberNickname: string;
+  memberPicture: string;
   setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
-  FreeContent,
+  freeTitle,
+  freeContent,
   isLiked,
+  memberNickname,
+  memberPicture,
   memberId,
   setUpdateDetailTrigger,
 }) => {
+  const navigate = useNavigate();
   const userID = parseInt(
     useSelector((state: RootState) => state.auth.memberId) ?? "0",
     10
@@ -40,9 +48,33 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
     }
   };
 
+  // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
+  const handleAuthorProfile = () => {
+    navigate(`/users/profile/${userID}`);
+  };
+
+  // 글 수정 버튼을 누르면 수정 페이지로 이동
+  const handleEditPost = () => {
+    navigate(`/free/edit/${free_id}`);
+  };
+
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
-      <section className="flex justify-end">
+      <section className="flex justify-between">
+        <div className="flex items-center">
+          <button onClick={handleAuthorProfile}>
+            <img src={memberPicture} alt="" className="size-12 rounded-full" />
+          </button>
+          <div className="ml-4 font-bold">{memberNickname}</div>
+        </div>
+        {memberId === userID && (
+          <button
+            onClick={handleEditPost}
+            className="font-bold text-lg hover:text-conceptSkyBlue"
+          >
+            ✏️ 수정
+          </button>
+        )}
         {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
           <button
             onClick={handleLike}
@@ -56,9 +88,9 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
         )}
       </section>
       <header className="flex justify-between items-center">
-        <h1>자유 게시판 제목</h1>
+        <h1>{freeTitle}</h1>
       </header>
-      <Viewer initialValue={FreeContent} key={FreeContent} />
+      <Viewer initialValue={freeContent} key={freeContent} />
     </div>
   );
 };

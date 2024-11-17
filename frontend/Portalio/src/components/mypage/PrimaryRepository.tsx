@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { getMyRepositoryList } from "../../api/RepositoryAPI";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 interface Repository {
   repositoryId: number;
@@ -8,7 +11,23 @@ interface Repository {
 
 const PrimaryRepository: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
   const [repositories, setRepositories] = useState<Repository[]>([]);
+
+  // 대표 레포지토리 조회 함수 - 이거 수정 필요함
+  const getPrimaryRepository = async () => {
+    if (username) {
+      const repositoryResponse = await getMyRepositoryList(username);
+
+      setRepositories(repositoryResponse.items.slice(0, 3));
+    } else {
+      alert("대표 레포지토리 정보를 가져오는 중 에러가 발생했습니다.");
+    }
+  };
+
+  useEffect(() => {
+    getPrimaryRepository();
+  }, []);
 
   return (
     <div className="w-1/2 border-r mr-5 p-2">

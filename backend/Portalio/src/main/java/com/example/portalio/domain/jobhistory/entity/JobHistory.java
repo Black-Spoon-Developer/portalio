@@ -43,11 +43,16 @@ public class JobHistory {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    public void setJobCompany(String jobCompany) {this.jobCompany = jobCompany;}
+    public void setJobPosition(String jobPosition) {this.jobPosition = jobPosition;}
+    public void setJobStartDate(String jobStartDate) {this.jobStartDate = YearMonth.parse(jobStartDate);}
+    public void setJobEndDate(String jobEndDate) {this.jobEndDate = YearMonth.parse(jobEndDate);}
+
     private JobHistory(Member member, JobHistoryRequest request) {
-        this.jobCompany = request.getCompany();
-        this.jobPosition = request.getPosition();
-        this.jobStartDate = request.getStartDate();
-        this.jobEndDate = request.getEndDate();
+        this.jobCompany = request.getJobCompany();
+        this.jobPosition = request.getJobPosition();
+        this.jobStartDate = request.getJobStartDate();
+        this.jobEndDate = request.getJobEndDate();
         this.member = member;
     }
 

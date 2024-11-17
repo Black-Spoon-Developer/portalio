@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SettingsIcon from "../../assets/Setting.svg";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { getMyPortfolios } from "../../api/PortfolioAPI";
 
 interface Portfolio {
   created: Date;
@@ -19,8 +20,27 @@ interface Portfolio {
 const PrimaryPortfolio: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
   const picture = useSelector((state: RootState) => state.auth.memberPicture);
+  const username = useSelector((state: RootState) => state.auth.memberUsername);
 
   const [portfolio, setPortfolio] = useState<Portfolio>();
+
+  // 대표 레포지토리 조회 함수
+  const getPrimaryPortfolio = async () => {
+    if (username) {
+      const portfoliosResponse = await getMyPortfolios(username, 0, 100);
+
+      const primaryPortfolio = portfoliosResponse.data.items.find(
+        (item: Portfolio) => item.portfolioIsPrimary == true
+      );
+      setPortfolio(primaryPortfolio);
+    } else {
+      alert("대표 포트폴리오 조회 에러 발생!");
+    }
+  };
+
+  useEffect(() => {
+    getPrimaryPortfolio();
+  }, []);
 
   return (
     <div className="border border-gray-300 rounded-lg">
