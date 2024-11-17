@@ -121,9 +121,9 @@ const PortfolioCreatePage: React.FC = () => {
 
   // 썸네일과 소개 글까지 작성을 다 한 후에 저장하는 함수
   const handleModalSave = async () => {
-    if (!title || !content) {
+    if (!title || !content || !selectedSubCategory) {
       notifyfail();
-      alert("제목과 내용을 모두 입력해 주세요!");
+      alert("제목, 내용, 직무 정보를 모두 입력해 주세요!");
       return;
     }
 
@@ -172,149 +172,155 @@ const PortfolioCreatePage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex mb-5">
-        <input
-          type="text"
-          placeholder="제목을 입력하세요"
-          className="w-full p-3 text-4xl rounded-lg"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
+    <div className="grid grid-cols-6">
+      <section className="col-span-1"></section>
+      <section className="col-span-4">
+        <div className="flex mb-5">
+          <input
+            type="text"
+            placeholder="제목을 입력하세요"
+            className="w-full p-3 text-4xl rounded-lg"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
 
-      <div className="p-4">
-        <Accordion>
-          <AccordionDetails>
-            <div className="mb-4">
-              <Select
-                value={selectedMainCategory || ""}
-                onChange={handleMainCategoryChange}
-                displayEmpty
-                className="w-full"
-              >
-                <MenuItem value="" disabled>
-                  중분류 선택
-                </MenuItem>
-                {mainCategories.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </div>
-
-            {selectedMainCategory && (
+        <div className="p-4">
+          <Accordion>
+            <AccordionDetails>
               <div className="mb-4">
                 <Select
-                  value={selectedSubCategory || ""}
-                  onChange={handleSubCategoryChange}
+                  value={selectedMainCategory || ""}
+                  onChange={handleMainCategoryChange}
                   displayEmpty
                   className="w-full"
                 >
                   <MenuItem value="" disabled>
-                    소분류 선택
+                    중분류 선택
                   </MenuItem>
-                  {filteredSubCategories.map((subCategory) => (
-                    <MenuItem key={subCategory.id} value={subCategory.id}>
-                      {subCategory.name}
+                  {mainCategories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
                     </MenuItem>
                   ))}
                 </Select>
               </div>
-            )}
-          </AccordionDetails>
-        </Accordion>
-      </div>
 
-      <Editor
-        ref={editorRef}
-        initialValue="Hello, Toast UI Editor with Plugins!"
-        previewStyle="vertical"
-        height="1000px"
-        initialEditType="markdown"
-        useCommandShortcut={true}
-        hooks={{
-          addImageBlobHook: onUploadImage,
-        }}
-      />
+              {selectedMainCategory && (
+                <div className="mb-4">
+                  <Select
+                    value={selectedSubCategory || ""}
+                    onChange={handleSubCategoryChange}
+                    displayEmpty
+                    className="w-full"
+                  >
+                    <MenuItem value="" disabled>
+                      소분류 선택
+                    </MenuItem>
+                    {filteredSubCategories.map((subCategory) => (
+                      <MenuItem key={subCategory.id} value={subCategory.id}>
+                        {subCategory.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
+              )}
+            </AccordionDetails>
+          </Accordion>
+        </div>
 
-      <button
-        onClick={handleSave}
-        className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
-      >
-        저장
-      </button>
+        <Editor
+          ref={editorRef}
+          initialValue="Hello, Toast UI Editor with Plugins!"
+          previewStyle="vertical"
+          height="1000px"
+          initialEditType="markdown"
+          useCommandShortcut={true}
+          hooks={{
+            addImageBlobHook: onUploadImage,
+          }}
+        />
 
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg w-1/3">
-            <h2 className="text-xl font-semibold mb-3">게시 설정</h2>
+        <button
+          onClick={handleSave}
+          className="my-3 px-3 py-2 text-lg font-semibold rounded-lg bg-conceptSkyBlue text-white hover:bg-hoverConceptSkyBlue"
+        >
+          저장
+        </button>
 
-            <div className="mb-3">
-              <div
-                onClick={openFileExplorer}
-                className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
-              >
-                {thumbnailUrl ? (
-                  <img
-                    src={thumbnailUrl}
-                    alt="Thumbnail Preview"
-                    className="w-full h-full object-cover rounded"
-                  />
-                ) : (
-                  <p className="text-gray-500">클릭하여 이미지를 선택하세요</p>
-                )}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-5 rounded-lg w-1/3">
+              <h2 className="text-xl font-semibold mb-3">게시 설정</h2>
+
+              <div className="mb-3">
+                <div
+                  onClick={openFileExplorer}
+                  className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
+                >
+                  {thumbnailUrl ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail Preview"
+                      className="w-full h-full object-cover rounded"
+                    />
+                  ) : (
+                    <p className="text-gray-500">
+                      클릭하여 이미지를 선택하세요
+                    </p>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleThumbnailChange}
+                  className="hidden"
+                />
               </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleThumbnailChange}
-                className="hidden"
-              />
-            </div>
-            <div>
-              <textarea
-                id="textArea"
-                value={description}
-                onChange={handleChange}
-                rows={5}
-                cols={40}
-                placeholder="당신의 포스트를 짧게 소개해보세요."
-                className="w-full max-w-lg p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-            </div>
+              <div>
+                <textarea
+                  id="textArea"
+                  value={description}
+                  onChange={handleChange}
+                  rows={5}
+                  cols={40}
+                  placeholder="당신의 포스트를 짧게 소개해보세요."
+                  className="w-full max-w-lg p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
 
-            <div className="mb-5">
-              <label className="block text-gray-700">게시 여부</label>
-              <button
-                onClick={handlePublishToggle}
-                className={`mt-2 px-3 py-1 rounded ${
-                  isPublished ? "bg-blue-300" : "bg-red-300"
-                }`}
-              >
-                {isPublished ? "Public" : "Private"}
-              </button>
-            </div>
+              <div className="mb-5">
+                <label className="block text-gray-700">게시 여부</label>
+                <button
+                  onClick={handlePublishToggle}
+                  className={`mt-2 px-3 py-1 rounded ${
+                    isPublished ? "bg-blue-300" : "bg-red-300"
+                  }`}
+                >
+                  {isPublished ? "Public" : "Private"}
+                </button>
+              </div>
 
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleModalClose}
-                className="px-4 py-2 bg-gray-300 rounded-lg"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleModalSave}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-              >
-                저장
-              </button>
-              <ToastContainer />
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={handleModalClose}
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleModalSave}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                  작성
+                </button>
+                <ToastContainer />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </section>
+      <section className="col-span-1"></section>
     </div>
   );
 };

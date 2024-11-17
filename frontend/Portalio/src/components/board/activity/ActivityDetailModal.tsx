@@ -4,6 +4,9 @@ import { fetchDetailActivity } from "../../../api/ActivityAPI";
 import { ActivityDetail } from "../../../interface/activity/ActivityInterface";
 import LoadingSkeleton from "../../spinner/LoadingSkeleton";
 import { Viewer } from "@toast-ui/react-editor";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 interface ActivityDetailMdProps {
   activityId: number;
@@ -14,10 +17,12 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
   activityId,
   onClose,
 }) => {
+  const navigate = useNavigate();
   const [activityDetailInfo, setActivityDetailInfo] =
     useState<ActivityDetail>();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const userID = Number(useSelector((state: RootState) => state.auth.memberId));
 
   useEffect(() => {
     const fetchActivityDetail = async () => {
@@ -36,21 +41,47 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
     fetchActivityDetail();
   }, []);
 
+  // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
+  const handleAuthorProfile = () => {
+    navigate(`/users/profile/${activityDetailInfo?.memberId}`);
+  };
+
+  // 글 수정 버튼을 누르면 수정 페이지로 이동
+  const handleEditPost = () => {
+    navigate(
+      `/activity/edit/${activityDetailInfo?.repositoryId}/${activityDetailInfo?.activityBoardId}`
+    );
+  };
+
   return (
     <>
       <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
         <div className="relative w-1/2">
           {/* 작성자 정보를 viewer 바로 위에 배치 */}
-          <section className="flex items-center mb-4">
-            <img
-              src={activityDetailInfo?.picture}
-              alt="no-image"
-              className="mr-3 rounded-full size-10"
-            />
-            <div className="font-bold text-white">
-              {activityDetailInfo?.memberNickname}님의 활동 게시글
-            </div>
-          </section>
+          <header className="flex justify-between items-center">
+            <section className="flex items-center mb-4">
+              <button onClick={handleAuthorProfile}>
+                <img
+                  src={activityDetailInfo?.picture}
+                  alt="no-image"
+                  className="mr-3 rounded-full size-10"
+                />
+              </button>
+              <div className="font-bold text-white">
+                {activityDetailInfo?.memberNickname}님의 활동 게시글
+              </div>
+            </section>
+            <section>
+              {userID === activityDetailInfo?.memberId && (
+                <button
+                  onClick={handleEditPost}
+                  className="font-bold text-md mr-2 text-white hover:text-conceptSkyBlue"
+                >
+                  ✏️ 수정
+                </button>
+              )}
+            </section>
+          </header>
 
           <section
             className="markdown-viewer p-6 rounded-lg bg-white shadow-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"

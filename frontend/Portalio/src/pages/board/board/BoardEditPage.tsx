@@ -1,29 +1,31 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { getBoard, patchBoard } from "../../../api/BoardAPI"
-import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor } from '@toast-ui/react-editor';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { BoardRequest } from '../../../type/BoardType';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useRef, useEffect, useState } from "react";
+import { getBoard, patchBoard } from "../../../api/BoardAPI";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor } from "@toast-ui/react-editor";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import { BoardRequest } from "../../../type/BoardType";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BoardEditPage: React.FC = () => {
+  const navigate = useNavigate();
   const { board_id } = useParams<{ board_id: string }>();
   const editorRef = useRef<Editor>(null);
-  const defaultImg = "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
+  const defaultImg =
+    "https://portalio.s3.ap-northeast-2.amazonaws.com/exec/default_img2.png";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [_, setThumbnail] = useState<File | null>(null);
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(defaultImg); // 썸네일 URL 저장
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [category, setCategory] = useState("")
-  const [solve, setSolve] = useState(false)
+  const [category, setCategory] = useState("");
+  const [solve, setSolve] = useState(false);
   const BASE_URL = "https://k11d202.p.ssafy.io";
 
   const notifyfail = () => {
-    toast.error("게시글 내용이 부족합니다.")
+    toast.error("게시글 내용이 부족합니다.");
   };
 
   useEffect(() => {
@@ -33,7 +35,7 @@ const BoardEditPage: React.FC = () => {
         try {
           const response = await getBoard(board_id); // API 호출
           const data: BoardRequest = response.data; // response의 data를 PortfolioResponse로 타입 지정
-  
+
           setCategory(data.boardCategory);
           setTitle(data.boardTitle);
           setContent(data.boardContent);
@@ -50,8 +52,6 @@ const BoardEditPage: React.FC = () => {
     fetchBoardDeta();
   }, [board_id]);
 
-
-  
   const onUploadImage = async (
     blob: Blob,
     callback: (url: string, alt: string) => void
@@ -60,13 +60,17 @@ const BoardEditPage: React.FC = () => {
       const formData = new FormData();
       formData.append("multipartFile", blob);
       formData.append("folderName", category);
-  
-      const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
+
+      const response = await axios.post(
+        `${BASE_URL}/api/v1/s3/image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       const imageUrl = response.data;
       console.log("Response Text:", imageUrl);
       callback(imageUrl, "이미지 설명");
@@ -74,7 +78,7 @@ const BoardEditPage: React.FC = () => {
       console.error("이미지 업로드 오류:", error);
     }
   };
-  
+
   const handleSave = () => {
     if (editorRef.current) {
       const editorInstance = editorRef.current.getInstance();
@@ -84,7 +88,9 @@ const BoardEditPage: React.FC = () => {
     }
   };
 
-  const handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setThumbnail(file);
@@ -95,9 +101,13 @@ const BoardEditPage: React.FC = () => {
       formData.append("folderName", category);
 
       try {
-        const response = await axios.post(`${BASE_URL}/api/v1/s3/image`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const response = await axios.post(
+          `${BASE_URL}/api/v1/s3/image`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
         setThumbnailUrl(response.data); // URL 상태에 저장
       } catch (error) {
         console.error("썸네일 업로드 오류:", error);
@@ -119,11 +129,11 @@ const BoardEditPage: React.FC = () => {
 
   const handleModalSave = async () => {
     if (!title || !content) {
-      notifyfail()
-      
+      notifyfail();
+
       return;
     }
-    
+
     const boardData = {
       boardCategory: category,
       boardTitle: title,
@@ -132,74 +142,99 @@ const BoardEditPage: React.FC = () => {
       boardThumbnailImg: thumbnailUrl,
     };
     if (board_id) {
-      patchBoard(board_id, boardData) 
+      patchBoard(board_id, boardData);
+      // 카테고리에 따라 상세 페이지로 이동
+      if (category === "FREE") {
+        navigate(`/free/${board_id}`);
+      } else {
+        navigate(`/question/${board_id}`);
+      }
     }
   };
 
-
   return (
-    <div>
-    <div className="flex mb-5">
-      <input 
-        type="text" 
-        placeholder="제목을 입력하세요" 
-        className="w-full p-3 text-4xl rounded-lg"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-    </div>
-
-    <Editor
-      ref={editorRef}
-      initialValue="Hello, Toast UI Editor with Plugins!"
-      previewStyle="vertical"
-      height="1000px"
-      initialEditType="markdown"
-      useCommandShortcut={true}
-      hooks={{
-        addImageBlobHook: onUploadImage
-      }}
-    />
-
-    <button 
-      onClick={handleSave} 
-      className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
-    >
-      저장
-    </button>
-
-    {isModalOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white p-5 rounded-lg w-1/3">
-          <h2 className="text-xl font-semibold mb-3">썸네일 설정</h2>
-          
-          <div className="mb-3">
-            <div 
-              onClick={openFileExplorer}
-              className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
-            >
-              {thumbnailUrl ? (
-                <img src={thumbnailUrl} alt="Thumbnail Preview" className="w-full h-full object-cover rounded" />
-              ) : (
-                <p className="text-gray-500">클릭하여 이미지를 선택하세요</p>
-              )}
-            </div>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              onChange={handleThumbnailChange} 
-              className="hidden"
-            />
-          </div>
-          <div className="flex justify-end space-x-3">
-            <button onClick={handleModalClose} className="px-4 py-2 bg-gray-300 rounded-lg">취소</button>
-            <button onClick={handleModalSave} className="px-4 py-2 bg-blue-500 text-white rounded-lg">저장</button>
-            <ToastContainer />
-          </div>
+    <div className="grid grid-cols-6">
+      <section className="col-span-1"></section>
+      <section className="col-span-4">
+        <div className="flex mb-5">
+          <input
+            type="text"
+            placeholder="제목을 입력하세요"
+            className="w-full p-3 text-4xl rounded-lg"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
-      </div>
-    )}
-  </div>
+
+        <Editor
+          ref={editorRef}
+          initialValue="Hello, Toast UI Editor with Plugins!"
+          previewStyle="vertical"
+          height="1000px"
+          initialEditType="markdown"
+          useCommandShortcut={true}
+          hooks={{
+            addImageBlobHook: onUploadImage,
+          }}
+        />
+
+        <button
+          onClick={handleSave}
+          className="my-3 px-3 py-2 text-lg font-semibold rounded-lg bg-conceptSkyBlue text-white hover:bg-hoverConceptSkyBlue"
+        >
+          저장
+        </button>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-5 rounded-lg w-1/3">
+              <h2 className="text-xl font-semibold mb-3">썸네일 설정</h2>
+
+              <div className="mb-3">
+                <div
+                  onClick={openFileExplorer}
+                  className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
+                >
+                  {thumbnailUrl ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail Preview"
+                      className="w-full h-full object-cover rounded"
+                    />
+                  ) : (
+                    <p className="text-gray-500">
+                      클릭하여 이미지를 선택하세요
+                    </p>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleThumbnailChange}
+                  className="hidden"
+                />
+              </div>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={handleModalClose}
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleModalSave}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                  수정
+                </button>
+                <ToastContainer />
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+      <section className="col-span-1"></section>
+    </div>
   );
 };
 

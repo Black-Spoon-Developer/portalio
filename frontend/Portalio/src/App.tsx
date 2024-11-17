@@ -26,7 +26,9 @@ import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
 import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
-
+import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
+import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
+// import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -37,7 +39,7 @@ import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 // import PortfolioPage from "./pages/board/PortfolioPage.tsx";
-import UserActivityListPage from './pages/user/UserActivityListPage';
+import UserActivityListPage from "./pages/user/UserActivityListPage";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -119,6 +121,8 @@ const App: React.FC = () => {
         <Route path="*" element={<NotFoundPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
+        <Route path="/test" element={<TextAnalysisPage />}></Route>
+        <Route path="/test/list" element={<AiInterviewRecordsPage />}></Route>
       </Routes>
 
       {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}

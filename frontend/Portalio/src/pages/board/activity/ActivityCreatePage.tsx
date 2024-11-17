@@ -128,94 +128,101 @@ const ActivityCreatePage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex mb-5">
-        <input
-          type="text"
-          placeholder="제목을 입력하세요"
-          className="w-full p-3 text-4xl rounded-lg"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
+    <div className="grid grid-cols-6">
+      <section className="col-span-1"></section>
+      <section className="col-span-4">
+        <div className="flex mb-5">
+          <input
+            type="text"
+            placeholder="제목을 입력하세요"
+            className="w-full p-3 text-4xl rounded-lg"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
 
-      <div className="p-4">
-        <Accordion>
-          <AccordionDetails>
-            <div className="mb-4">
-              <Select
-                value={selectedRepository || ""}
-                onChange={handleRepositoryChange}
-                displayEmpty
-                className="w-full"
-              >
-                <MenuItem value="" disabled>
-                  레포지토리 선택
-                </MenuItem>
-                {items.map((item) => (
-                  <MenuItem key={item.repositoryId} value={item.repositoryId}>
-                    {item.repositoryTitle}
+        <div className="p-4">
+          <Accordion>
+            <AccordionDetails>
+              <div className="mb-4">
+                <Select
+                  value={selectedRepository || ""}
+                  onChange={handleRepositoryChange}
+                  displayEmpty
+                  className="w-full"
+                >
+                  <MenuItem value="" disabled>
+                    레포지토리 선택
                   </MenuItem>
-                ))}
-              </Select>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      </div>
+                  {items.map((item) => (
+                    <MenuItem key={item.repositoryId} value={item.repositoryId}>
+                      {item.repositoryTitle}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </div>
 
-      {/* 시작 날짜와 종료 날짜 입력 */}
-      <div className="flex mb-5 space-x-4">
-        <TextField
-          label="활동 날짜"
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          InputLabelProps={{
-            shrink: true,
+        {/* 시작 날짜와 종료 날짜 입력 */}
+        <div className="flex mb-5 space-x-4">
+          <TextField
+            label="활동 날짜"
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </div>
+
+        <Editor
+          ref={editorRef}
+          initialValue="Hello, Toast UI Editor with Plugins!"
+          previewStyle="vertical"
+          height="1000px"
+          initialEditType="markdown"
+          useCommandShortcut={true}
+          hooks={{
+            addImageBlobHook: onUploadImage,
           }}
         />
-      </div>
 
-      <Editor
-        ref={editorRef}
-        initialValue="Hello, Toast UI Editor with Plugins!"
-        previewStyle="vertical"
-        height="1000px"
-        initialEditType="markdown"
-        useCommandShortcut={true}
-        hooks={{
-          addImageBlobHook: onUploadImage,
-        }}
-      />
+        <button
+          onClick={handleSave}
+          className="my-3 px-3 py-2 text-lg font-semibold rounded-lg bg-conceptSkyBlue text-white hover:bg-hoverConceptSkyBlue"
+        >
+          저장
+        </button>
 
-      <button
-        onClick={handleSave}
-        className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
-      >
-        저장
-      </button>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg w-1/3">
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleModalClose}
-                className="px-4 py-2 bg-gray-300 rounded-lg"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleModalSave}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-              >
-                저장
-              </button>
-              <ToastContainer />
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-5 rounded-lg w-1/3">
+              <section className="font-bold text-xl py-6">
+                게시물을 정말 작성 하시겠습니까?
+              </section>
+              <section className="flex justify-end space-x-3">
+                <button
+                  onClick={handleModalClose}
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleModalSave}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                  작성
+                </button>
+                <ToastContainer />
+              </section>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </section>
+      <section className="col-span-1"></section>
     </div>
   );
 };

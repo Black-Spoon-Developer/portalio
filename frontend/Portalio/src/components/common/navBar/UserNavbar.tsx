@@ -26,7 +26,7 @@ const UserNavbar: React.FC = () => {
   const userProfile = useSelector(
     (state: RootState) => state.auth.memberPicture
   );
-
+  const userId = Number(useSelector((state: RootState) => state.auth.memberId));
   const userName = useSelector((state: RootState) => state.auth.memberName);
   const userNickname = useSelector(
     (state: RootState) => state.auth.memberNickname
@@ -111,7 +111,7 @@ const UserNavbar: React.FC = () => {
         >
           <MenuItem
             onClick={() => {
-              navigate("/mypage");
+              navigate(`/users/profile/${userId}`);
               handleMenuClose();
             }}
           >
