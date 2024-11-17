@@ -26,7 +26,7 @@ const AudioAnalysisPage: React.FC = () => {
   };
 
   // 몇번 질문을 골랐는지에 대한 변수
-  const selectedQuestion = questions.find((q) => q.id === selectedTab);
+  // const selectedQuestion = questions.find((q) => q.id === selectedTab);
 
   return (
     <div className="grid grid-cols-6 gap-4 p-4 my-4">
