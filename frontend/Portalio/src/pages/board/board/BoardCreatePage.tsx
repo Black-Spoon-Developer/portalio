@@ -151,105 +151,111 @@ const BoardCreatePage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex mb-5">
-        <input
-          type="text"
-          placeholder="제목을 입력하세요"
-          className="w-full p-3 text-4xl rounded-lg"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
+    <div className="grid grid-cols-6">
+      <section className="col-span-1"></section>
+      <section className="col-span-4">
+        <div className="flex mb-5">
+          <input
+            type="text"
+            placeholder="제목을 입력하세요"
+            className="w-full p-3 text-4xl rounded-lg"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
 
-      <div className="p-4">
-        <Accordion>
-          <AccordionDetails>
-            <div className="mb-4">
-              <Select
-                value={board || ""}
-                onChange={handleMainCategoryChange}
-                displayEmpty
-                className="w-full"
-              >
-                <MenuItem value="" disabled>
-                  게시판 선택
-                </MenuItem>
-                {Categories.map((category) => (
-                  <MenuItem key={category.id} value={category.value}>
-                    {category.name}
+        <div className="p-4">
+          <Accordion>
+            <AccordionDetails>
+              <div className="mb-4">
+                <Select
+                  value={board || ""}
+                  onChange={handleMainCategoryChange}
+                  displayEmpty
+                  className="w-full"
+                >
+                  <MenuItem value="" disabled>
+                    게시판 선택
                   </MenuItem>
-                ))}
-              </Select>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      </div>
-
-      <Editor
-        ref={editorRef}
-        initialValue="Hello, Toast UI Editor with Plugins!"
-        previewStyle="vertical"
-        height="1000px"
-        initialEditType="markdown"
-        useCommandShortcut={true}
-        hooks={{
-          addImageBlobHook: onUploadImage,
-        }}
-      />
-
-      <button
-        onClick={handleSave}
-        className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
-      >
-        저장
-      </button>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg w-1/3">
-            <h2 className="text-xl font-semibold mb-3">썸네일 설정</h2>
-
-            <div className="mb-3">
-              <div
-                onClick={openFileExplorer}
-                className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
-              >
-                {thumbnailUrl ? (
-                  <img
-                    src={thumbnailUrl}
-                    alt="Thumbnail Preview"
-                    className="w-full h-full object-cover rounded"
-                  />
-                ) : (
-                  <p className="text-gray-500">클릭하여 이미지를 선택하세요</p>
-                )}
+                  {Categories.map((category) => (
+                    <MenuItem key={category.id} value={category.value}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
               </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleThumbnailChange}
-                className="hidden"
-              />
-            </div>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleModalClose}
-                className="px-4 py-2 bg-gray-300 rounded-lg"
-              >
-                취소
-              </button>
-              <button
-                onClick={handleModalSave}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-              >
-                저장
-              </button>
-              <ToastContainer />
+            </AccordionDetails>
+          </Accordion>
+        </div>
+
+        <Editor
+          ref={editorRef}
+          initialValue="Hello, Toast UI Editor with Plugins!"
+          previewStyle="vertical"
+          height="1000px"
+          initialEditType="markdown"
+          useCommandShortcut={true}
+          hooks={{
+            addImageBlobHook: onUploadImage,
+          }}
+        />
+
+        <button
+          onClick={handleSave}
+          className="my-3 px-3 py-2 text-lg font-semibold rounded-lg bg-conceptSkyBlue text-white hover:bg-hoverConceptSkyBlue"
+        >
+          저장
+        </button>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-5 rounded-lg w-1/3">
+              <h2 className="text-xl font-semibold mb-3">썸네일 설정</h2>
+
+              <div className="mb-3">
+                <div
+                  onClick={openFileExplorer}
+                  className="w-[200px] h-[200px] bg-gray-300 flex items-center justify-center cursor-pointer rounded"
+                >
+                  {thumbnailUrl ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt="Thumbnail Preview"
+                      className="w-full h-full object-cover rounded"
+                    />
+                  ) : (
+                    <p className="text-gray-500">
+                      클릭하여 이미지를 선택하세요
+                    </p>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleThumbnailChange}
+                  className="hidden"
+                />
+              </div>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={handleModalClose}
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleModalSave}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                >
+                  작성
+                </button>
+                <ToastContainer />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </section>
+      <section className="col-span-1"></section>
     </div>
   );
 };

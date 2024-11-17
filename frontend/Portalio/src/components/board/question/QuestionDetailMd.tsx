@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { boardDetailLike, patchSolveBoard } from "../../../api/BoardAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
@@ -10,20 +10,27 @@ import {
 import { Viewer } from "@toast-ui/react-editor";
 
 interface QuestionDetailMdProps {
-  QuestionContent: string;
+  questionTitle: string;
+  questionContent: string;
   isLiked: boolean;
   memberId: number;
+  memberNickname: string;
+  memberPicture: string;
   solved: boolean;
   setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
-  QuestionContent,
+  questionTitle,
+  questionContent,
   isLiked,
   memberId,
+  memberNickname,
+  memberPicture,
   solved,
   setUpdateDetailTrigger,
 }) => {
+  const navigate = useNavigate();
   const userID = parseInt(
     useSelector((state: RootState) => state.auth.memberId) ?? "0",
     10
@@ -60,9 +67,25 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
     }
   };
 
+  // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
+  const handleAuthorProfile = () => {
+    navigate(`/users/profile/${userID}`);
+  };
+
+  // 글 수정 버튼을 누르면 수정 페이지로 이동
+  const handleEditPost = () => {
+    navigate(`/question/edit/${question_id}`);
+  };
+
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
-      <section className="flex justify-end">
+      <section className="flex justify-between">
+        <div className="flex items-center">
+          <button onClick={handleAuthorProfile}>
+            <img src={memberPicture} alt="" className="size-12 rounded-full" />
+          </button>
+          <div className="ml-4 font-bold">{memberNickname}</div>
+        </div>
         {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
           <button
             onClick={handleLike}
@@ -77,27 +100,40 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
         {/* userID와 memberId가 같을 때 해결 여부에 따라 버튼을 조건부로 표시 */}
         {memberId === userID &&
           (solved ? (
-            <button onClick={handleSolve} className="flex items-center">
-              <IoCheckmarkCircleSharp className="text-conceptSkyBlue mr-1 size-6" />
-              <div className="font-bold">해 결</div>
-            </button>
+            <section className="flex flex-col">
+              <button onClick={handleSolve} className="flex items-center mb-3">
+                <IoCheckmarkCircleSharp className="text-conceptSkyBlue mr-1 size-6" />
+                <div className="font-bold">해 결</div>
+              </button>
+              <button
+                onClick={handleEditPost}
+                className="font-bold text-lg hover:text-conceptSkyBlue"
+              >
+                ✏️ 수정
+              </button>
+            </section>
           ) : (
-            <button onClick={handleSolve} className="flex items-center">
-              <IoCheckmarkCircleOutline className="text-conceptGrey size-6 mr-1" />
-              <div className="text-conceptGrey font-bold tracking-widest">
-                미해결
-              </div>
-            </button>
+            <section className="flex flex-col">
+              <button onClick={handleSolve} className="flex items-center mb-3">
+                <IoCheckmarkCircleOutline className="text-conceptGrey size-6 mr-1" />
+                <div className="text-conceptGrey font-bold tracking-widest">
+                  미해결
+                </div>
+              </button>
+              <button
+                onClick={handleEditPost}
+                className="font-bold text-lg hover:text-conceptSkyBlue"
+              >
+                ✏️ 수정
+              </button>
+            </section>
           ))}
       </section>
 
       <header className="flex items-center">
-        <h1>질문 게시판 제목</h1>
+        <h1>{questionTitle}</h1>
       </header>
-      <Viewer initialValue={QuestionContent} key={QuestionContent} />
-      {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {QuestionContent}
-      </ReactMarkdown> */}
+      <Viewer initialValue={questionContent} key={questionContent} />
     </div>
   );
 };

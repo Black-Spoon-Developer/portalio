@@ -73,9 +73,12 @@ const QuestionDetailPage: React.FC = () => {
       <div className="col-span-1"></div>
       <div className="mx-5 my-8 col-span-3">
         <QuestionDetailMd
-          QuestionContent={post?.boardContent ?? ""}
+          questionTitle={post?.boardTitle ?? ""}
+          questionContent={post?.boardContent ?? ""}
           isLiked={post?.isLiked ?? false}
           memberId={post?.memberId ?? 0}
+          memberNickname={post?.memberNickname ?? ""}
+          memberPicture={post?.picture ?? ""}
           solved={post?.boardSolve ?? false}
           setUpdateDetailTrigger={setUpdateDetailTrigger}
         />

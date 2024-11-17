@@ -73,9 +73,12 @@ const FreeDetailPage: React.FC = () => {
       <div className="col-span-1"></div>
       <div className="mx-5 my-8 col-span-3">
         <FreeDetailMd
-          FreeContent={post?.boardContent ?? ""}
+          freeTitle={post?.boardTitle ?? ""}
+          freeContent={post?.boardContent ?? ""}
           isLiked={post?.isLiked ?? false}
           memberId={post?.memberId ?? 0}
+          memberNickname={post?.memberNickname ?? ""}
+          memberPicture={post?.picture ?? ""}
           setUpdateDetailTrigger={setUpdateDetailTrigger}
         />
         <FreeDetailCommentsInput

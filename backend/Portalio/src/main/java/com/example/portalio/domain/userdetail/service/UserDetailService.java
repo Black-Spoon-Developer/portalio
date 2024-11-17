@@ -96,7 +96,8 @@ public class UserDetailService {
     }
 
     // 유저 소셜링크 저장 및 수정
-    public UserSocialLinkResponse saveUserSocialLink(Long memberId, UserSocialLinkRequest request) {
+    public UserSocialLinkResponse saveUserSocialLink(CustomOAuth2User oauth2User, UserSocialLinkRequest request) {
+        Long memberId = oauth2User.getMemberId();
 
         UserDetail userDetail = userDetailRepository.findByMemberId(memberId)
                 .orElseThrow(NoUserDetailException::new);
