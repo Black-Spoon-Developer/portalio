@@ -6,6 +6,7 @@ import { getMyActivities } from "../../api/BoardAPI";
 import { RootState } from "../../store";
 import { useEffect } from "react";
 import { getRepository } from "../../api/RepositoryAPI";
+import ActivityDetailModal from "../board/activity/ActivityDetailModal";
 
 interface Free {
   boardId: number;
@@ -28,12 +29,19 @@ const PostsBoards: React.FC = () => {
   // 페이지 기본 변수
   const username = useSelector((state: RootState) => state.auth.memberUsername);
   const { user_id } = useParams<{ user_id: string }>();
+
   // 게시판 관련 변수
   const skip = 0;
   const limit = 2;
   const [frees, setFrees] = useState<Free[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  // 모달 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<number | null>(
+    null
+  );
 
   // 긴 글자 -> ... 으로 대체
   const truncateText = (text: string, maxLength: number) => {
@@ -85,6 +93,18 @@ const PostsBoards: React.FC = () => {
     }
   }, []);
 
+  // 활동 게시글 클릭 시 모달 열기
+  const handleActivityClick = (activityId: number) => {
+    setSelectedActivityId(activityId);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedActivityId(null);
+  };
+
   return (
     <div>
       <h2 className="font-bold text-2xl mb-4">작성한 게시글</h2>
@@ -105,17 +125,11 @@ const PostsBoards: React.FC = () => {
               activities.map((activity) => (
                 <li
                   key={activity.activityBoardId}
-                  className="flex items-center"
+                  className="flex items-center text-gray-800 hover:text-blue-500"
+                  onClick={() => handleActivityClick(activity.activityBoardId)}
                 >
-                  <span className="text-gray-600 mr-2">
-                    [{truncateText(activity.repositoryName, 10)}]
-                  </span>
-                  <Link
-                    to={`/activity/${activity.activityBoardId}`}
-                    className="text-gray-800 hover:text-blue-500"
-                  >
-                    {truncateText(activity.activityBoardTitle, 13)}
-                  </Link>
+                  [{truncateText(activity.repositoryName, 10)}]
+                  {truncateText(activity.activityBoardTitle, 13)}
                 </li>
               ))
             ) : (
@@ -170,7 +184,7 @@ const PostsBoards: React.FC = () => {
                 <li key={question.boardId}>
                   <Link
                     to={`/question/${question.boardId}`}
-                    className="text-gray-800 hover:text-blue-500 "
+                    className="text-gray-800 hover:text-blue-500"
                   >
                     {truncateText(question.boardTitle, 20)}
                   </Link>
@@ -182,6 +196,12 @@ const PostsBoards: React.FC = () => {
           </ul>
         </div>
       </section>
+      {isModalOpen && selectedActivityId && (
+        <ActivityDetailModal
+          activityId={selectedActivityId}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };

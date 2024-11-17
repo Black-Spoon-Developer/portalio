@@ -7,10 +7,16 @@ import GitHubIcon from "../../assets/GitHub.svg";
 import { createOrUpdateSocialLink, getSocialLink } from "../../api/MyPageAPI";
 import { UserSocialLinkRequest } from "../../interface/mypage/MyPageInterface";
 import { useParams } from "react-router-dom";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 const SocialLink: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
   const userId = Number(user_id);
+
+  // 설정 버튼 제어 변수
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
+  const isOwner = user_id && memberId ? user_id === memberId : false;
 
   // 소셜 관련 변수
   const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +58,7 @@ const SocialLink: React.FC = () => {
     <div className="w-1/2 pl-4">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-semibold">소셜</h3>
-        {!isEditing && (
+        {isOwner && !isEditing && (
           <button
             onClick={() => setIsEditing(true)}
             className="flex items-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded p-1 transition duration-200"

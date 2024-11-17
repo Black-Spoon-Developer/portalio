@@ -2,6 +2,7 @@ import axios from "axios";
 import store, { RootState } from "../store";
 import { PortfolioRequest, PortfolioResponse } from "../type/PortfolioType";
 import { BASE_URL } from "./BaseVariable";
+import { PortfolioPrimaryResponse } from './../interface/portfolio/PortfolioInterface';
 
 // public으로 사람들이 올려놓은 포트폴리오 리스트 무한 스크롤 조회
 export const fetchMorePosts = async (skip: number, limit: number) => {
@@ -158,3 +159,24 @@ export const getMyPortfolios = async (
   );
   return response;
 };
+
+
+// 대표 포트폴리오 설정하기
+export const setPrimaryPortfolio = async (
+  portfolio_id: number
+): Promise<PortfolioPrimaryResponse> => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  const response = await axios.patch(
+    `${BASE_URL}/api/v1/portfolios/${portfolio_id}/primary`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+}

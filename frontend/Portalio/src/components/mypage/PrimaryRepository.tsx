@@ -41,7 +41,7 @@ const PrimaryRepository: React.FC = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-bold text-2xl">대표 레포지토리</h2>
         <Link
-          to={`/users/profile/${user_id}/activity`}
+          to={`/users/profile/${user_id}/repository`}
           className="text-sm text-blue-500 hover:underline"
         >
           더 보기 →
@@ -64,7 +64,7 @@ const PrimaryRepository: React.FC = () => {
           </Link>
         ))
       ) : (
-        <li className="text-gray-500">대표 레포지토리가 없어요</li>
+        <li className="text-gray-500">아직 생성된 레포지토리가 없어요.</li>
       )}
     </div>
 

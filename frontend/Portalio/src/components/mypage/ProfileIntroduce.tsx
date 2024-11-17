@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import SettingsIcon from "../../assets/Setting.svg";
+import { useParams } from "react-router-dom";
 
 const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
   onClose,
@@ -27,6 +28,11 @@ const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
 );
 
 const ProfileIntroduce: React.FC = () => {
+  // 설정 버튼 제어 변수
+  const { user_id } = useParams<{ user_id: string }>();
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
+  const isOwner = user_id && memberId ? user_id === memberId : false;
+
   // 프로필 사진 관련 변수
   const picture = useSelector((state: RootState) => state.auth.memberPicture);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,6 +69,7 @@ const ProfileIntroduce: React.FC = () => {
           alt="Profile"
           className="profile-image w-48 h-48 rounded-full cursor-pointer" // 둥근 이미지 모양 유지
         />
+
         <button
           className="absolute bottom-2 right-2 hover:bg-gray-300 bg-gray-200 text-gray-700 rounded-full inline-flex items-center justify-center w-10 h-10 text-xl transform transition duration-200"
           onClick={handleProfileClick}
@@ -80,17 +87,19 @@ const ProfileIntroduce: React.FC = () => {
           >
             프로필 사진 보기
           </button>
-          <input
-            type="file"
-            accept="image/*"
-            className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                console.log("선택된 파일:", e.target.files[0]);
-                // 여기서 파일 업로드 처리 로직을 추가하세요
-              }
-            }}
-          />
+          {isOwner && (
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded cursor-pointer"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  console.log("선택된 파일:", e.target.files[0]);
+                  // 여기서 파일 업로드 처리 로직을 추가하세요
+                }
+              }}
+            />
+          )}
         </Modal>
       )}
 
@@ -123,7 +132,7 @@ const ProfileIntroduce: React.FC = () => {
               />
             )}
           </div>
-          {!isEditingIntro && (
+          {isOwner && !isEditingIntro && (
             <button
               onClick={() => setIsEditingIntro(true)}
               className="flex items-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded p-1 transition duration-200 whitespace-nowrap"
