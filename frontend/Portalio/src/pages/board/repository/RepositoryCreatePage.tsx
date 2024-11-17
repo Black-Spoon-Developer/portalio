@@ -17,6 +17,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { userTicketUpdate } from "../../../api/TicketAPI";
 import "react-toastify/dist/ReactToastify.css";
+import { templates } from "../portfolio/PortfolioData";
+
 
 const RepositoryCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -172,8 +174,10 @@ const RepositoryCreatePage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="flex mb-5">
+    <div className="grid grid-cols-6">
+      <section className="col-span-1"></section>
+      <section className="col-span-4">
+      <div className="flex mb-5 mt-10">
         <input
           type="text"
           placeholder="제목을 입력하세요"
@@ -183,6 +187,14 @@ const RepositoryCreatePage: React.FC = () => {
         />
       </div>
 
+      <div>
+        <button
+          onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+          className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+        >
+          MarkDown 사용법
+        </button>
+      </div>
       {/* 시작 날짜와 종료 날짜 입력 */}
       <div className="flex mb-5 space-x-4">
         <TextField
@@ -207,7 +219,7 @@ const RepositoryCreatePage: React.FC = () => {
 
       <Editor
         ref={editorRef}
-        initialValue="Hello, Toast UI Editor with Plugins!"
+        initialValue={templates.defaultMarkdown}
         previewStyle="vertical"
         height="1000px"
         initialEditType="markdown"
@@ -235,6 +247,7 @@ const RepositoryCreatePage: React.FC = () => {
             border: "2px dashed #007bff",
             borderRadius: "8px",
             padding: "20px",
+            margin: "20px",
             textAlign: "center",
             cursor: "pointer",
             color: isDragActive ? "#0056b3" : "#007bff",
@@ -305,7 +318,7 @@ const RepositoryCreatePage: React.FC = () => {
       </div>
       <button
         onClick={handleSave}
-        className="mt-5 px-5 py-3 text-lg font-semibold rounded-lg"
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mb-5"
       >
         저장
       </button>
@@ -345,14 +358,16 @@ const RepositoryCreatePage: React.FC = () => {
               </button>
               <button
                 onClick={handleModalSave}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
               >
                 저장
               </button>
             </div>
           </div>
         </div>
-      )}
+        )}
+        </section>
+      <section className="col-span-1"></section>
     </div>
   );
 };

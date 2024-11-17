@@ -12,6 +12,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { userTicketUpdate } from "../../../api/TicketAPI";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { templates } from "./PortfolioData";
+import Modal from "./Modal";
 
 const PortfolioCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -27,6 +29,26 @@ const PortfolioCreatePage: React.FC = () => {
   const [content, setContent] = useState("");
   const [description, setDescription] = useState("");
   const BASE_URL = "https://k11d202.p.ssafy.io";
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+  const openModal = (template: string) => {
+    setSelectedTemplate(template);
+    setIsModalOpen2(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen2(false);
+    setSelectedTemplate(null);
+  };
+
+  const confirmInsertTemplate = () => {
+    if (selectedTemplate && editorRef.current) {
+      const editorInstance = editorRef.current.getInstance();
+      editorInstance.setMarkdown(selectedTemplate); // 선택한 템플릿 삽입
+    }
+    closeModal();
+  };
 
   const notifyfail = () => {
     toast.error("게시글 내용이 부족합니다.");
@@ -174,7 +196,7 @@ const PortfolioCreatePage: React.FC = () => {
   return (
     <div className="grid grid-cols-6">
       <section className="col-span-1"></section>
-      <section className="col-span-4">
+      <section className="col-span-4 mt-10">
         <div className="flex mb-5">
           <input
             type="text"
@@ -225,13 +247,34 @@ const PortfolioCreatePage: React.FC = () => {
                   </Select>
                 </div>
               )}
+              <div className="button-group">
+                초안 설정하기 : 
+                <button
+                  onClick={() => openModal(templates.portfolioMarkdown)}
+                  className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600"
+                >
+                  포트폴리오
+                </button>
+                <button
+                  onClick={() => openModal(templates.careerMarkdown)}
+                  className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  경력기술서
+                </button>
+                <button
+                  onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+                  className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+                >
+                  MarkDown 사용법
+                </button>
+              </div>
             </AccordionDetails>
           </Accordion>
         </div>
 
         <Editor
           ref={editorRef}
-          initialValue="Hello, Toast UI Editor with Plugins!"
+          initialValue={templates.defaultMarkdown}
           previewStyle="vertical"
           height="1000px"
           initialEditType="markdown"
@@ -321,6 +364,13 @@ const PortfolioCreatePage: React.FC = () => {
         )}
       </section>
       <section className="col-span-1"></section>
+        <Modal
+          isOpen={isModalOpen2}
+          onClose={closeModal}
+          onConfirm={confirmInsertTemplate}
+          message="이 버튼을 누르면 내용이 초기화됩니다. 계속하시겠습니까?"
+      />
+      
     </div>
   );
 };

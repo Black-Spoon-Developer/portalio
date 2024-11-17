@@ -206,7 +206,14 @@ const RepositoryEditPage: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-
+      <div>
+      <button
+          onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+          className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+        >
+          MarkDown 사용법
+        </button>
+      </div>
       <div className="flex mb-5 space-x-4">
         <TextField
           label="시작 날짜"
