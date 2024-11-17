@@ -26,9 +26,9 @@ import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
 import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
-// import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
+import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
 import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
-import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
+// import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -121,7 +121,7 @@ const App: React.FC = () => {
         <Route path="*" element={<NotFoundPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
-        <Route path="/test" element={<AudioAnalysisPage />}></Route>
+        <Route path="/test" element={<TextAnalysisPage />}></Route>
         <Route path="/test/list" element={<AiInterviewRecordsPage />}></Route>
       </Routes>
 
