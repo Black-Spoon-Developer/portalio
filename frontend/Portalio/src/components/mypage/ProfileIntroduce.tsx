@@ -8,6 +8,9 @@ import {
   setUserIntroduction,
 } from "./../../api/MyPageAPI";
 import { uploadProfilePicture } from "../../api/S3ImageUploadAPI";
+import { updateProfilePicture } from "./../../api/MemberAPI";
+import { useDispatch } from "react-redux";
+import { authActions } from "../../store/auth/AuthSlice";
 
 // 모달
 const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
@@ -85,12 +88,22 @@ const ProfileIntroduce: React.FC = () => {
     setIsEditingIntro(false); // 수정 모드 종료
   };
 
+  const dispatch = useDispatch();
   const handleCropComplete = async () => {
     if (uploadedFile) {
-      // 크롭된 이미지를 서버에 업로드하는 API 연결 로직
-      const croppedImage = await uploadProfilePicture(uploadedFile); // API 호출 연결
+      // 크롭된 이미지를 서버에 업로드
+      const croppedImage = await uploadProfilePicture(uploadedFile);
+
       if (croppedImage) {
         console.log("업로드된 URL: ", croppedImage);
+
+        // DB 업데이트
+        const response = await updateProfilePicture(croppedImage);
+
+        if (response) {
+          // 로컬 상태 업데이트
+          dispatch(authActions.updateMemberPicture(croppedImage));
+        }
       }
     }
   };
