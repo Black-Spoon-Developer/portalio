@@ -23,7 +23,6 @@ import BoardPage from "./pages/board/board/BoardPage.tsx";
 import FreeDetailPage from "./pages/board/board/free/FreeDetailPage.tsx";
 import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.tsx";
 import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
-import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
 import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
@@ -86,7 +85,7 @@ const App: React.FC = () => {
         </Route>
         <Route path="/activity" element={<Outlet />}>
           <Route path="create" element={<ActivityCreatePage />} />
-          <Route path=":activity_id" element={<ActivityDetailPage />} />
+          <Route path=":activity_id" element={<QuestionDetailPage />} />
           <Route
             path="edit/:repository_id/:activity_id"
             element={<ActivityEditPage />}
