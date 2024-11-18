@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
             <section className="w-full flex flex-col justify-center">
               <div>
                 <div className="flex justify-around my-4">
-                  <button
+                  {/* <button
                     onClick={() => setIsUserLogin(true)}
                     className={`text-2xl font-bold ${
                       isUserLogin ? "text-conceptSkyBlue" : "text-conceptGrey"
@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
                     } hover:text-conceptSkyBlue`}
                   >
                     채용 담당자
-                  </button>
+                  </button> */}
                 </div>
               </div>
               {/* 로그인 부분 */}
