@@ -62,11 +62,11 @@ const UserFreeListPage: React.FC = () => {
   const currentBoards = boards.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 min-h-screen">
       <TempBoardTab user_id={user_id || ""} />
       <div className="flex justify-end mb-4">
         <button
-          className="bg-[#57D4E2] mt-4 px-4 py-2 text-white rounded-lg font-bold hover:bg-[#48C1CE]"
+          className="bg-sky-200 mt-4 px-4 py-2 text-gray-800 rounded-lg font-bold hover:bg-sky-300 transition"
           onClick={() => navigate("/free/create")}
         >
           작성
@@ -101,7 +101,6 @@ const UserFreeListPage: React.FC = () => {
                     <span className="text-sm text-gray-500">
                       {truncateText(board.boardContent, 50)}
                     </span>
-                    {/* 댓글 및 추천 개수 추가 */}
                     <div className="flex items-center space-x-4 mt-2 text-sm text-gray-400">
                       <span className="flex items-center">
                         💬 {board.boardCommentCount}
@@ -139,7 +138,7 @@ const UserFreeListPage: React.FC = () => {
               onClick={() => handlePageChange(page)}
               className={`px-3 py-1 rounded-md ${
                 currentPage === page
-                  ? "bg-[#57D4E2] text-white font-semibold"
+                  ? "bg-sky-300 text-white font-semibold"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >

@@ -82,8 +82,8 @@ public class UserDetailService {
     }
     
     // 유저 소셜링크 조회
-    public UserSocialLinkResponse getUserSocialLink(Long memberId) {
-        UserDetail userDetail = userDetailRepository.findByMemberId(memberId)
+    public UserSocialLinkResponse getUserSocialLink(String memberUsername) {
+        UserDetail userDetail = userDetailRepository.findByMember_MemberUsername(memberUsername)
                 .orElseThrow(NoUserDetailException::new);
 
         return UserSocialLinkResponse.from(userDetail);
@@ -108,8 +108,8 @@ public class UserDetailService {
     }
 
     // 유저 자기소개 조회
-    public UserIntroductionResponse getIntroductionByMemberId(Long memberId) {
-        UserDetail userDetail = userDetailRepository.findById(memberId)
+    public UserIntroductionResponse getIntroductionByMemberUsername(String memberUsername) {
+        UserDetail userDetail = userDetailRepository.findByMember_MemberUsername(memberUsername)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         return UserIntroductionResponse.from(userDetail);

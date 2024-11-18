@@ -24,9 +24,9 @@ public class JobHistoryService {
     private final MemberRepository memberRepository;
 
     // 유저 경력/이력 전체 조회
-    public JobHistoryListResponse getJobHistoryList(Long memberId) {
+    public JobHistoryListResponse getJobHistoryList(String memberUsername) {
 
-        List<JobHistory> jobHistories = jobHistoryRepository.findAllByMember_MemberId(memberId);
+        List<JobHistory> jobHistories = jobHistoryRepository.findAllByMember_MemberUsername(memberUsername);
 
         return JobHistoryListResponse.from(jobHistories);
     }

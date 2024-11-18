@@ -3,7 +3,7 @@ import AiInterviewContentList from "../../../../components/ai/analysis/record/Ai
 
 const AiInterviewRecordsPage: React.FC = () => {
   return (
-    <div className="grid grid-cols-4 gap-4 p-4 my-4">
+    <div className="grid grid-cols-4 gap-4 p-4 my-4 min-h-screen">
       <div className="col-span-1"></div>
       <div className="col-span-2">
         <header className="flex justify-between">

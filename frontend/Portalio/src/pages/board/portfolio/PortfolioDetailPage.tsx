@@ -87,6 +87,7 @@ const PortfolioDetailPage: React.FC = () => {
               portfolioTitle={portfolio.portfolioTitle}
               portfolioContent={portfolio.portfolioContent}
               memberNickname={portfolio.memberNickname}
+              memberUsername={portfolio.memberUsername}
               memberPicture={portfolio.picture}
               isLiked={portfolio.isLiked}
               memberId={portfolio.memberId}

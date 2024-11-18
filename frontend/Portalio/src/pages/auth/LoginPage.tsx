@@ -9,7 +9,7 @@ const LoginPage: React.FC = () => {
   const [isUserLogin, setIsUserLogin] = useState(true);
 
   return (
-    <div>
+    <div className="min-h-screen">
       {/* 로그인 부분 */}
       <div className="my-8">
         {/* 큰 로고 */}
