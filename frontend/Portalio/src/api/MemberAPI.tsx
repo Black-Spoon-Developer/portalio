@@ -98,3 +98,4 @@ export const authUser = async () => {
     alert(error);
   }
 };
+
