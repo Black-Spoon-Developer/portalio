@@ -87,7 +87,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   return (
     <div className="markdown-viewer p-6 rounded-lg border-2 relative">
       <section className="flex justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center w-10 h-10 rounded-full">
           <button onClick={handleAuthorProfile}>
             <img src={memberPicture} alt="" className="w-10 h-10 rounded-full" />
           </button>
