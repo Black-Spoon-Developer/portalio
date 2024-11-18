@@ -120,7 +120,7 @@ const QuestionPosts: React.FC = () => {
         loader={<LoadingSkeleton />}
         endMessage={<p>더 이상 게시글이 없습니다.</p>}
       >
-        <div className="grid grid-cols-1 gap-4 p-4">
+        <div className="grid grid-cols-2 gap-4 p-4">
           {posts.map((post) => (
             <div
               key={post.boardId}

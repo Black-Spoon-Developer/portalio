@@ -31,7 +31,7 @@ const PopularPortfolio: React.FC = () => {
   return (
     <div>
       <header className="mb-3">🔥 오늘의 인기 포트폴리오</header>
-      <div className="shadow-lg border-2 rounded-md w-[14vw] h-[36vh]">
+      <div className="shadow-lg border-2 rounded-md w-[17vw] h-[36vh] p-3">
         {portfolios.map((portfolio, index) => {
           // 순위에 따른 이미지 설정
           let imageSrc = norank;
@@ -45,8 +45,8 @@ const PopularPortfolio: React.FC = () => {
               className="flex items-center truncate cursor-pointer mb-3"
               onClick={() => handlePortfolioClick(portfolio.portfolioId)} // 클릭 시 상세 페이지로 이동
             >
-              {imageSrc && <img src={imageSrc} alt="" className="w-7 h-7 mr-2" />} {/* 순위에 따라 이미지 표시 */}
-              <h2 className="text-lg">{portfolio.portfolioTitle}</h2>
+              {imageSrc && <img src={imageSrc} alt="" className="w-5 h-5 mr-2" />} {/* 순위에 따라 이미지 표시 */}
+              <h2 className="text-sm">{portfolio.portfolioTitle}</h2>
             </a>
           );
         })}
