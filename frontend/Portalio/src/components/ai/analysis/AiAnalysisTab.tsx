@@ -1,5 +1,3 @@
-import React from "react";
-
 interface AnalysisTabProps<T> {
   questions?: T[];
   selectedTab: number;
