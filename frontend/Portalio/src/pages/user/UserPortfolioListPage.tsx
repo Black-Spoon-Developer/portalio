@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { getMyPortfolios } from "../../api/PortfolioAPI";
 import { Link, useNavigate } from "react-router-dom";
+import { Viewer } from "@toast-ui/react-editor";
 
 interface Portfolio {
   portfolioId: number;
@@ -85,9 +86,9 @@ const UserPortfolioListPage: React.FC = () => {
                       {portfolio.portfolioPost ? "Public" : "Private"}
                     </span>
                   </div>
-                  <p className="text-gray-600 text-sm mb-1">
-                    {portfolio.portfolioContent}
-                  </p>
+                  <div className="text-gray-700 mb-4 line-clamp-4">
+                    <Viewer initialValue={portfolio.portfolioContent} key={portfolio.portfolioContent} />
+                  </div>
                 </div>
                 <div className="text-right">
                   <span className="text-green-600 font-semibold">

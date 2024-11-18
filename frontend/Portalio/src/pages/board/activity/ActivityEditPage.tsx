@@ -113,10 +113,8 @@ const PortfolioEditPage: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-6">
-      <section className="col-span-1"></section>
-      <section className="col-span-4">
-        <div className="flex mb-5">
+    <div>
+        <div className="flex mb-5 mt-10">
           <input
             type="text"
             placeholder="제목을 입력하세요"
@@ -190,8 +188,6 @@ const PortfolioEditPage: React.FC = () => {
             </div>
           </div>
         )}
-      </section>
-      <section className="col-span-1"></section>
     </div>
   );
 };

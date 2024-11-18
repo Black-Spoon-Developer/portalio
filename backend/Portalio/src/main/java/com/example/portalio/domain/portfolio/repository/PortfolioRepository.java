@@ -23,6 +23,6 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
 
     Optional<Portfolio> findByPortfolioIdAndMember_MemberId(Long portfolioId, Long memberId);
 
-    @Query("SELECT p FROM Portfolio p LEFT JOIN PortfolioComment c ON p.portfolioId = c.portfolio.portfolioId WHERE p.portfolioPost = true GROUP BY p.portfolioId, p.portfolioViews, p.portfolioRecommendationCount ORDER BY (p.portfolioViews + p.portfolioRecommendationCount + COUNT(c)) DESC")
+    @Query("SELECT p FROM Portfolio p LEFT JOIN PortfolioComment c ON p.portfolioId = c.portfolio.portfolioId WHERE p.portfolioPost = true GROUP BY p.portfolioId ORDER BY (p.portfolioViews + p.portfolioRecommendationCount + COUNT(c)) DESC")
     List<Portfolio> findTopPortfolios(Pageable pageable);
 }

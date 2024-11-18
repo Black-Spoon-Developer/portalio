@@ -197,7 +197,7 @@ const RepositoryEditPage: React.FC = () => {
 
   return (
     <div> 
-      <div className="flex mb-5">
+      <div className="flex mb-5 mt-10">
         <input 
           type="text" 
           placeholder="제목을 입력하세요" 
