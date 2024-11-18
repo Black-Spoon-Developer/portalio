@@ -1,6 +1,6 @@
 import React from "react";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import { useNavigate } from "react-router-dom";
 
