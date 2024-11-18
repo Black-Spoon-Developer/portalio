@@ -22,6 +22,7 @@ public class PortfolioLikeResponse {
     private LocalDateTime created;
     private Integer portfolioCommentCount;
     private Long memberId;
+    private String memberUsername;
     private String memberNickname;
     private String picture;
     private Boolean isLiked;
@@ -42,6 +43,7 @@ public class PortfolioLikeResponse {
                 .portfolioIsPrimary(portfolio.getPortfolioIsPrimary())
                 .created(portfolio.getCreated())
                 .memberId(portfolio.getMember().getMemberId())
+                .memberUsername(portfolio.getMember().getMemberUsername())
                 .memberNickname(portfolio.getMember().getUserDetail().getUserNickname())
                 .picture(portfolio.getMember().getMemberPicture())
                 .isLiked(isLiked)
