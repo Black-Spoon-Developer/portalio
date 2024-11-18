@@ -59,11 +59,6 @@ const AudioAnalysisContent: React.FC<AudioAnalysisContentProps> = ({
             key={aIndex}
             className="mb-6 p-4 bg-gray-50 rounded-lg shadow-sm border"
           >
-            <div className="mb-4">
-              <audio controls src={answer.audio_url} className="w-full">
-                Your browser does not support the audio element.
-              </audio>
-            </div>
             <p className="mb-4 text-sm text-gray-800">
               <strong>답변 내용:</strong> {answer.content || "답변 없음"}
             </p>
