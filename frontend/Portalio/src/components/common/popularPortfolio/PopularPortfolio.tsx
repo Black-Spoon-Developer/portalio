@@ -10,7 +10,7 @@ const PopularPortfolio: React.FC = () => {
 
         try {
           const response = await getTop10Portfolios();
-          setPortfolios(response);
+          setPortfolios(response.items);
         } catch (error) {
           console.error("레포지토리 리스트 불러오기 오류:", error);
         }
