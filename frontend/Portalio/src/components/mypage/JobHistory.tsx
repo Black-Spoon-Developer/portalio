@@ -13,10 +13,16 @@ import {
   JobHistoryRequest,
   JobHistoryEditRequest,
 } from "../../interface/mypage/MyPageInterface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const JobHistory: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
   const userId = Number(user_id);
+
+  // 수정 버튼 제어 변수
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
+  const isOwner = user_id && memberId ? user_id === memberId : false;
 
   // 이력/경력 관련 변수
   const [isExpanded, setIsExpanded] = useState(false);
@@ -145,7 +151,7 @@ const JobHistory: React.FC = () => {
     <div className="w-1/2 pr-4 border-r border-gray-300">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-semibold">이력 / 경력</h3>
-        {!isAdding && (
+        {isOwner && !isAdding && (
           <button
             className="flex items-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded p-1 transition duration-200"
             onClick={() => setIsAdding(true)}

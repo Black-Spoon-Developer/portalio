@@ -98,3 +98,32 @@ export const authUser = async () => {
     alert(error);
   }
 };
+
+// 프로필 사진 업데이트 함수
+export const updateProfilePicture = async (imageUrl: string) => {
+  try {
+    // Redux
+    const state: RootState = store.getState();
+    const accessToken = state.auth.accessToken;
+    const memberId = state.auth.memberId;
+
+    if (accessToken && memberId) {
+      const request = {
+        memberPicture: imageUrl,
+      };
+
+      const response = await axios.post(
+        `${BASE_URL}/api/v1/users/${memberId}/picture`,
+        request,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`, // 인증 헤더 추가
+          },
+        }
+      );
+      return response;
+    }
+  } catch (error) {
+    console.log("프로필 사진 업데이트 오류: ", error);
+  }
+};

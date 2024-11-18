@@ -95,3 +95,33 @@ export const createOrUpdateSocialLink = async (
 
   return response.data;
 };
+
+// 회원 자기소개 조회
+export const getUserIntroduction = async (memberId: number) => {
+  const response = await axios.get(
+    `${BASE_URL}/api/v1/users/introduction/${memberId}`
+  );
+
+  return response.data;
+};
+
+// 회원 자기소개 저장 및 수정
+export const setUserIntroduction = async (introduction: {
+  userIntroductionTitle: string;
+  userIntroductionContent: string;
+}) => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+
+  const response = await axios.patch(
+    `${BASE_URL}/api/v1/users/introduction/saveOrEdit`,
+    introduction, // 요청 데이터로 전달
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data; // 성공 시 반환된 데이터
+};

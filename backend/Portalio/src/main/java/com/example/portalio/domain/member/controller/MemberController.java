@@ -2,17 +2,14 @@ package com.example.portalio.domain.member.controller;
 
 import com.example.portalio.common.jwt.util.JwtUtil;
 import com.example.portalio.domain.member.dto.MemberDTO;
+import com.example.portalio.domain.member.dto.UpdateMemberPictureDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -64,5 +61,13 @@ public class MemberController {
         }
     }
 
-
+    // 프로필 사진 업데이트 엔드포인트
+    @Operation(summary = "[회원] 프로필 사진 업데이트", description = "회원의 프로필 사진을 업데이트합니다.")
+    @PostMapping("/{memberId}/picture")
+    public ResponseEntity<?> updateMemberPicture(
+            @PathVariable("memberId") Long memberId,
+            @RequestBody UpdateMemberPictureDTO updateMemberPictureDTO) {
+        memberService.updateMemberPicture(memberId, updateMemberPictureDTO);
+        return ResponseEntity.ok("프로필 사진이 성공적으로 업데이트되었습니다.");
+    }
 }

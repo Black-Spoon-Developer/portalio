@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { portfolioDetailLike } from "../../../api/PortfolioAPI";
+import {
+  portfolioDetailLike,
+  setPrimaryPortfolio,
+} from "../../../api/PortfolioAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { Viewer } from "@toast-ui/react-editor";
@@ -14,6 +17,7 @@ interface PortfolioDetailMdProps {
   memberNickname: string;
   memberPicture: string;
   setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
+  portfolioIsPrimary: boolean;
 }
 
 const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
@@ -24,6 +28,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   isLiked,
   memberId,
   setUpdateDetailTrigger,
+  portfolioIsPrimary,
 }) => {
   const navigate = useNavigate();
   const userID = parseInt(
@@ -32,6 +37,11 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   );
   const { portfolio_id } = useParams<{ portfolio_id: string }>();
 
+  const [isSettingPrimary, setIsSettingPrimary] = useState(false); // 로딩 상태
+  const [isPrimary, setIsPrimary] = useState(portfolioIsPrimary); // 초기 상태 설정
+  console.log("PortfolioDetailMd.tsx: ", isPrimary);
+
+  // 좋아요 처리 함수
   const handleLike = async () => {
     if (!portfolio_id) {
       alert("포트폴리오 ID가 없습니다.");
@@ -46,12 +56,30 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
     }
   };
 
-  // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
-  const handleAuthorProfile = () => {
-    navigate(`/users/profile/${userID}`);
+  // 대표 설정 상태 토글 함수
+  const handleTogglePrimaryPortfolio = async () => {
+    if (!portfolio_id) {
+      alert("포트폴리오 ID가 없습니다.");
+      return;
+    }
+
+    setIsSettingPrimary(true); // 로딩 상태 활성화
+    try {
+      await setPrimaryPortfolio(Number(portfolio_id)); // API 호출로 상태 토글
+      setIsPrimary((prev) => !prev); // 상태 반전
+      setUpdateDetailTrigger(true); // 상세 정보 트리거 업데이트
+    } catch (error) {
+      console.error("대표 포트폴리오 설정 실패:", error);
+      alert("대표 포트폴리오 설정에 실패했습니다.");
+    } finally {
+      setIsSettingPrimary(false); // 로딩 상태 비활성화
+    }
   };
 
-  // 글 수정 버튼을 누르면 수정 페이지로 이동
+  const handleAuthorProfile = () => {
+    navigate(`/users/profile/${memberId}`);
+  };
+
   const handleEditPost = () => {
     navigate(`/portfolio/edit/${portfolio_id}`);
   };
@@ -66,14 +94,38 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
           <div className="ml-4 font-bold">{memberNickname}</div>
         </div>
         {memberId === userID && (
-          <button
-            onClick={handleEditPost}
-            className="font-bold text-lg hover:text-conceptSkyBlue"
-          >
-            ✏️ 수정
-          </button>
+          <div className="flex space-x-4 items-center">
+            {/* 수정 버튼 */}
+            <button
+              onClick={handleEditPost}
+              className="flex items-center px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-blue-100 font-bold"
+            >
+              ✏️ <span className="ml-2">수정</span>
+            </button>
+
+            {/* 대표 포트폴리오 버튼 */}
+            <button
+              onClick={handleTogglePrimaryPortfolio}
+              className={`flex items-center px-4 py-2 rounded-lg font-bold ${
+                isSettingPrimary
+                  ? "bg-gray-400 cursor-not-allowed text-gray-600"
+                  : isPrimary
+                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : "bg-gray-200 text-gray-800 hover:bg-blue-100"
+              }`}
+              disabled={isSettingPrimary}
+              title={
+                isPrimary
+                  ? "현재 대표 포트폴리오입니다."
+                  : "대표 포트폴리오로 설정"
+              }
+            >
+              <span className="text-xl mr-2">{isPrimary ? "★" : "☆"}</span>
+              {isPrimary ? "대표 포트폴리오" : "대표로 설정"}
+            </button>
+          </div>
         )}
-        {memberId !== userID && ( // userID와 memberId가 다를 때만 버튼을 표시
+        {memberId !== userID && (
           <button
             onClick={handleLike}
             className={`flex items-center justify-center p-2 rounded-full text-xl ${

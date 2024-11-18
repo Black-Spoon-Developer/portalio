@@ -95,4 +95,16 @@ public class AwsS3Controller {
 
         return ResponseEntity.ok(outputDocumentId);
     }
+
+    @Operation(summary = "프로필 사진 업로드", description = "회원 프로필 사진을 업로드하고 S3 URL을 반환")
+    @PostMapping(value = "/profile-picture", consumes = "multipart/form-data")
+    public ResponseEntity<String> updateProfilePicture(
+            @RequestParam MultipartFile file) {
+
+        String folderName = "Member"; // S3 폴더명
+
+        String  fileUrl = awsS3Service.upLoadFile(List.of(file), folderName); // S3에 업로드 및 URL 반환
+
+        return ResponseEntity.ok(fileUrl);
+    }
 }

@@ -45,6 +45,12 @@ public class UserDetail {
     @Column(name = "user_github")
     private String userGithub;
 
+    @Column(name = "user_introduction_title", length = 50)
+    private String userIntroductionTitle;
+
+    @Column(name = "user_introduction_content", length = 100)
+    private String userIntroductionContent;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "member_id", insertable = false, updatable = false)
@@ -70,6 +76,20 @@ public class UserDetail {
 
     public void setUserGithub(String github) {this.userGithub = github;}
 
+    public void setUserIntroductionTitle(String userIntroductionTitle) {
+        if (userIntroductionTitle.length() > 50) {
+            throw new IllegalArgumentException("회원 소개 제목은 50자를 초과할 수 없습니다.");
+        }
+        this.userIntroductionTitle = userIntroductionTitle;
+    }
+
+    public void setUserIntroductionContent(String userIntroductionContent) {
+        if (userIntroductionContent.length() > 100) {
+            throw new IllegalArgumentException("회원 소개 내용은 100자를 초과할 수 없습니다.");
+        }
+        this.userIntroductionContent = userIntroductionContent;
+    }
+
     public static UserDetail of(String userEmail, String userNickname, Member member) {
         UserDetail userDetail = new UserDetail();
         userDetail.userEmail = userEmail;
@@ -77,6 +97,5 @@ public class UserDetail {
         userDetail.member = member;
         return userDetail;
     }
-
 
 }

@@ -4,6 +4,7 @@ import com.example.portalio.domain.jobsubcategory.entity.JobSubCategory;
 import com.example.portalio.domain.jobsubcategory.error.JobSubCategoryNotFoundException;
 import com.example.portalio.domain.jobsubcategory.repository.JobSubCategoryRepository;
 import com.example.portalio.domain.member.dto.MemberDTO;
+import com.example.portalio.domain.member.dto.UpdateMemberPictureDTO;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
@@ -54,6 +55,19 @@ public class MemberService {
 
         // 회원 삭제
         memberRepository.delete(member);
+    }
+
+    // 프로필 사진 업데이트 메서드
+    public void updateMemberPicture(Long memberId, UpdateMemberPictureDTO updateMemberPictureDTO) {
+        // 회원 정보 조회
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        // 새로운 프로필 사진 URL 설정
+        member.setMemberPicture(updateMemberPictureDTO.getMemberPicture());
+
+        // 변경된 회원 정보 저장
+        memberRepository.save(member);
     }
 
 }
