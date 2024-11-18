@@ -74,6 +74,7 @@ public class PortfolioService {
 
     // 페이지네이션, 무한스크롤에 사용하려고 만들어 둠
     // 최신 글 10개씩 가져오는 거임
+    @Transactional
     public PortfolioLikeListResponse getPortfolioList(int skip, int limit, CustomOAuth2User oauth2User) {
 
         Pageable pageable = PageRequest.of(skip/limit, limit);
