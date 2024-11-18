@@ -1,4 +1,3 @@
-// AnswerInput.tsx
 // 텍스트 면접에서 답변을 입력하는 입력란
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
