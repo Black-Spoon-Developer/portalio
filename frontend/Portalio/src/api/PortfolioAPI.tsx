@@ -158,3 +158,8 @@ export const getMyPortfolios = async (
   );
   return response;
 };
+
+export const getTop10Portfolios = async () => {
+  const response = await axios.get(`${BASE_URL}/api/v1/portfolios/popular/top10`);
+  return response.data
+};

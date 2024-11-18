@@ -198,6 +198,11 @@ public class PortfolioService {
         return PortfolioPostResponse.from(portfolio);
     }
 
+    public List<Portfolio> getTop10Portfolios() {
+        Pageable topTen = PageRequest.of(0, 10); // 첫 번째 페이지, 10개 항목
+        return portfolioRepository.findTopPortfolios(topTen);
+    }
+
     private JobSubCategory findJobSubCategory(Long jobId) {
         return jobSubCategoryRepository.findById(jobId)
                 .orElseThrow(JobSubCategoryNotFoundException::new);
