@@ -31,15 +31,13 @@ const PopularPortfolio: React.FC = () => {
       <header className="mb-3">🔥 오늘의 인기 포트폴리오</header>
       <div>
         {portfolios.map((portfolio) => (
-          <div
+          <p
             key={portfolio.portfolioId}
             className="shadow-lg border-2 rounded-md w-[14vw] h-[36vh] p-4 flex flex-col justify-between"
             onClick={() => handlePortfolioClick(portfolio.portfolioId)} // 클릭 시 상세 페이지로 이동
           >
-            <div>
-              <h2 className="text-lg font-semibold">{portfolio.portfolioTitle}</h2>
-            </div>
-          </div>
+            <h2 className="text-lg font-semibold">{portfolio.portfolioTitle}</h2>
+          </p>
         ))}
       </div>
       <div className="shadow-lg border-2 rounded-md w-[14vw] h-[36vh]"></div>
