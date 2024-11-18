@@ -1,0 +1,150 @@
+/* 전체 페이지 레이아웃 */
+/* .user-profile-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+  } */
+
+/* 컨테이너 스타일 */
+.activity-section,
+.portfolio-section,
+.repositories-and-posts {
+  border: 2px solid #bfbfbf;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+/* 대표 포트폴리오, 레포지토리 및 게시글 섹션 */
+
+/* 포트폴리오 헤더 */
+.portfolio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.portfolio-section h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* 포트폴리오 관리 링크 */
+.portfolio-settings-link {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #666;
+  text-decoration: none;
+}
+
+.portfolio-settings-link:hover {
+  color: #333;
+}
+
+.settings-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+}
+
+/* 대표 레포지토리 및 작성한 게시글을 한 섹션 안에서 좌우로 배치 */
+.repository-and-posts-section {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  border: 2px solid #bfbfbf;
+  border-radius: 5px;
+}
+
+/* 대표 레포지토리 섹션 */
+.repository-section {
+  flex: 1;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.section-header h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.repository-item {
+  padding: 10px;
+  border: 1px solid #bfbfbf;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.repository-item h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.repository-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* 작성한 게시글 섹션 */
+.posts-section {
+  flex: 1;
+}
+
+.posts-section h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post-category {
+  margin-bottom: 15px;
+}
+
+.post-category h3 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+}
+
+.post-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.post-category ul li {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* 공통 스타일 */
+.more-link {
+  font-size: 0.9rem;
+  color: #666;
+  text-decoration: none;
+}
+
+.post-title {
+  border-bottom: 1px solid #bfbfbf;
+}
+
+.more-link:hover {
+  color: #333;
+}
