@@ -29,17 +29,17 @@ const PopularPortfolio: React.FC = () => {
   return (
     <div>
       <header className="mb-3">🔥 오늘의 인기 포트폴리오</header>
-      <div>
+      <div  className="shadow-lg border-2 rounded-md w-[14vw] h-[36vh]">
         {portfolios.map((portfolio) => (
-          <p
+          <a
             key={portfolio.portfolioId}
+            className="block truncate cursor-pointer"
             onClick={() => handlePortfolioClick(portfolio.portfolioId)} // 클릭 시 상세 페이지로 이동
           >
             <h2 className="text-lg">{portfolio.portfolioTitle}</h2>
-          </p>
+          </a>
         ))}
       </div>
-      <div className="shadow-lg border-2 rounded-md w-[14vw] h-[36vh]"></div>
     </div>
   );
 };
