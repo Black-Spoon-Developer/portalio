@@ -139,7 +139,9 @@ const FreePosts: React.FC = () => {
               </div>
               {/* 제목 또는 내용 */}
               {/* <p className="text-gray-700 mb-4">{post.boardContent}</p> */}
-              <Viewer initialValue={post.boardContent} key={post.boardContent} />
+              <div className="text-gray-700 mb-4 line-clamp-4">
+                <Viewer initialValue={post.boardContent} key={post.boardContent} />
+              </div>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 {/* 댓글 수 */}
                 <div className="text-lg tracking-widest">
