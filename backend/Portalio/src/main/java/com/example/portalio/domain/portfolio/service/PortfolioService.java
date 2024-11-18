@@ -197,9 +197,14 @@ public class PortfolioService {
         return PortfolioPostResponse.from(portfolio);
     }
 
-    public List<Portfolio> getTop10Portfolios() {
+    public PortfolioListResponse getTop10Portfolios() {
+
         Pageable topTen = PageRequest.of(0, 10); // 첫 번째 페이지, 10개 항목
-        return portfolioRepository.findTopPortfolios(topTen);
+
+        List<Portfolio> portfolios = portfolioRepository.findTopPortfolios(topTen);
+
+
+        return PortfolioListResponse.from(portfolios);
     }
 
     private JobSubCategory findJobSubCategory(Long jobId) {

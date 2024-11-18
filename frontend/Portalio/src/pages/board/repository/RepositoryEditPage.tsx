@@ -44,7 +44,7 @@ const RepositoryEditPage: React.FC = () => {
       if (repository_id) {
         try {
           const response = await getRepositoryDetail(parseInt(repository_id, 10));
-          const data: RepositoryRequest = response.data;
+          const data: RepositoryRequest = response;
           setTitle(data.repositoryTitle);
           setContent(data.repositoryContent);
           setStartDate(data.startDate);

@@ -150,7 +150,10 @@ public class PortfolioController {
 
     @Operation(summary = "[포트폴리오] 인기 포트폴리오", description = "인기 포트폴리오 불러오기")
     @GetMapping("/popular/top10")
-    public List<Portfolio> getTop10Portfolios() {
-        return portfolioService.getTop10Portfolios();
+    public ResponseEntity<PortfolioListResponse> getTop10Portfolios() {
+
+        PortfolioListResponse response = portfolioService.getTop10Portfolios();
+
+        return ResponseEntity.ok(response);
     }
 }
