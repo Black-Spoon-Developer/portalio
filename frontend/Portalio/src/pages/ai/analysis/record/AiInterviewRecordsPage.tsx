@@ -87,7 +87,7 @@ const AiInterviewContentList: React.FC = () => {
 
               <div className="p-4 border-t text-right">
                 <a
-                  href={`/interview/${report.interview_id}`}
+                  href={`interview/${report.interview_type}/analysis/${report.interview_id}`}
                   className="text-blue-500 hover:underline text-sm font-medium flex items-center justify-end"
                 >
                   상세 페이지{" "}
@@ -153,7 +153,7 @@ const AiInterviewContentList: React.FC = () => {
             <p className="text-xl font-bold">티켓 수: {userData.memberTicket}</p>
           </div>
         </div>
-        <a href="">
+        <a href="/ai/introduce">
         <div className="flex items-center justify-center border-2 p-3 shadow-lg w-full my-10 h-60">
           <img src={AIimage} className="w-auto h-auto max-w-full max-h-full" alt="AI Image" />
         </div>

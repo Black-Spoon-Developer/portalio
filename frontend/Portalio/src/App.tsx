@@ -160,6 +160,7 @@ const App: React.FC = () => {
           ></Route>
           {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
           <Route path="record/:record_id" element={<AIRecordPage />} /> */}
+          <Route path="interview" element={<AiInterviewRecordsPage />}></Route>
         </Route>
 
         {/* Exception handling */}
@@ -167,7 +168,6 @@ const App: React.FC = () => {
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
         <Route path="/test" element={<TextAnalysisPage />}></Route>
-        <Route path="/test/list" element={<AiInterviewRecordsPage />}></Route>
         <Route path="/markdown-guide" element={<MarkdownGuide />} />
       </Routes>
 
