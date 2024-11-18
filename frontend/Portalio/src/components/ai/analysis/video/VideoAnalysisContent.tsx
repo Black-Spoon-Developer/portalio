@@ -1,10 +1,12 @@
-import React from "react";
-import { AudioInterviewResult } from "../../../../interface/aiInterview/AudioInterviewInterface";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, registerables } from "chart.js";
+ChartJS.register(...registerables);
+import { VideoInterviewResult } from "../../../../interface/aiInterview/VideoInterviewInterface";
 import LoadingSpinner from "../../../spinner/LoadingSpinner";
 
 interface VideoAnalysisContentProps {
-  result?: AudioInterviewResult;
+  result?: VideoInterviewResult;
   selectedTab: number;
 }
 
@@ -12,19 +14,19 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
   result,
   selectedTab,
 }) => {
-  // 점수를 애니메이션으로 증가시키기 위한 상태
   const [animatedScores, setAnimatedScores] = useState<{
     [key: string]: number;
   }>({});
 
   useEffect(() => {
-    const targetScores = selectedQuestion.answers[0]?.feedback.scores || {};
-
-    // 애니메이션 시작: setTimeout을 이용해 점수를 한 번에 설정
-    setTimeout(() => {
-      setAnimatedScores(targetScores);
-    }, 100); // 0.1초 딜레이 후 애니메이션 시작
-  }, [selectedTab]);
+    if (result) {
+      const targetScores =
+        result.questions[selectedTab]?.answers[0]?.feedback.scores || {};
+      setTimeout(() => {
+        setAnimatedScores(targetScores);
+      }, 100);
+    }
+  }, [selectedTab, result]);
 
   if (!result) {
     return <LoadingSpinner mode="Analysis" />;
@@ -32,7 +34,6 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
 
   const selectedQuestion = result.questions[selectedTab];
 
-  // 점수 라벨링
   const scoreLabels: { [key: string]: string } = {
     overall: "전반적 평가",
     job_understanding: "직무 이해도",
@@ -47,6 +48,67 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
     attitude: "태도",
   };
 
+  const generateChartData = (timeSeries: string[]) => {
+    // JSON 파싱 및 데이터 추출
+    const parsedData = timeSeries.map((item) => JSON.parse(item));
+
+    const labels = parsedData.map((data) => `시간 ${data.time}`);
+    const gazeFocusData = parsedData.map((data) => data.gaze_focus);
+    const movementFocusData = parsedData.map((data) => data.movement_focus);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "시선 집중도",
+          data: gazeFocusData,
+          borderColor: "rgba(75,192,192,1)",
+          backgroundColor: "rgba(75,192,192,0.2)",
+          fill: true,
+          tension: 0.4,
+        },
+        {
+          label: "움직임 집중도",
+          data: movementFocusData,
+          borderColor: "rgba(255,99,132,1)",
+          backgroundColor: "rgba(255,99,132,0.2)",
+          fill: true,
+          tension: 0.4,
+        },
+      ],
+    };
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem: any) => `${tooltipItem.raw} 점`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "시간",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "값",
+        },
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
     <>
       <section className="mb-8">
@@ -59,15 +121,10 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
             key={aIndex}
             className="mb-6 p-4 bg-gray-50 rounded-lg shadow-sm border"
           >
-            <div className="mb-4">
-              <audio controls src={answer.audio_url} className="w-full">
-                Your browser does not support the audio element.
-              </audio>
-            </div>
+            <div className="mb-4"></div>
             <p className="mb-4 text-sm text-gray-800">
               <strong>답변 내용:</strong> {answer.content || "답변 없음"}
             </p>
-            {/* 점수 */}
             <section className="mb-4">
               <h3 className="text-lg font-semibold mb-2">점수</h3>
               <div className="grid grid-cols-4 gap-4">
@@ -81,7 +138,7 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
                         className="bg-blue-500 h-4 rounded-full"
                         style={{
                           width: `${animatedScores[key] || 0}%`,
-                          transition: "width 1s ease-in-out", // 애니메이션 적용
+                          transition: "width 1s ease-in-out",
                         }}
                       ></div>
                     </div>
@@ -108,6 +165,7 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
                 </div>
               ))}
             </section>
+
             {/* 개선점 */}
             <section className="mb-4">
               <h3 className="text-lg font-semibold mb-2">개선점</h3>
@@ -166,6 +224,20 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
                 </div>
               </div>
             </section>
+
+            {/* 시간대별 변화 섹션 */}
+            <section className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">시간대별 변화</h3>
+              <div className="relative w-full h-64 bg-white rounded-lg border shadow-md p-4">
+                <Line
+                  data={generateChartData(
+                    answer.analysis.video_metrics.time_series
+                  )}
+                  options={options}
+                />
+              </div>
+            </section>
+
             {/* 전반적 피드백 */}
             <section>
               <h3 className="text-lg font-semibold mb-2">전반적 피드백</h3>

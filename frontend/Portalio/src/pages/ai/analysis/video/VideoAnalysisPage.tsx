@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import AiAnalysisTab from "../../../../components/ai/analysis/AiAnalysisTab";
-// import VideoAnalysisContent from "../../../../components/ai/analysis/video/VideoAnalysisContent";
+import VideoAnalysisContent from "../../../../components/ai/analysis/video/VideoAnalysisContent";
 import { useDispatch } from "react-redux";
 import LoadingSpinner from "../../../../components/spinner/LoadingSpinner";
 import { getAiInterviewAnalysis } from "../../../../api/AiInterviewCommonAPI";
 import { useParams } from "react-router-dom";
-import { TextInterviewResult } from "../../../../interface/aiInterview/TextInterviewInterface";
+import { VideoInterviewResult } from "../../../../interface/aiInterview/VideoInterviewInterface";
 import { InterviewActions } from "../../../../store/aiInterview/InterviewSlice";
 
 const VideoAnalysisPage: React.FC = () => {
@@ -16,7 +16,7 @@ const VideoAnalysisPage: React.FC = () => {
   const interviewID = Number(interview_id);
 
   // 결과를 담을 상태
-  const [analysisResult, setAnalysisResult] = useState<TextInterviewResult>();
+  const [analysisResult, setAnalysisResult] = useState<VideoInterviewResult>();
 
   // 탭 번호 상태
   const [selectedTab, setSelectedTab] = useState(0);
@@ -64,10 +64,10 @@ const VideoAnalysisPage: React.FC = () => {
 
         {/* 질문 출력 부분 */}
         <main>
-          {/* <VideoAnalysisContent
+          <VideoAnalysisContent
             result={analysisResult}
             selectedTab={selectedTab}
-          /> */}
+          />
         </main>
       </section>
       <section className="col-span-1"></section>
