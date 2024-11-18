@@ -203,7 +203,7 @@ public class PortfolioService {
 
     public PortfolioListResponse getTop10Portfolios() {
 
-        Pageable topTen = PageRequest.of(0, 10); // 첫 번째 페이지, 10개 항목
+        Pageable topTen = PageRequest.of(0, 5); // 첫 번째 페이지, 5개 항목
 
         List<Portfolio> portfolios = portfolioRepository.findTopPortfolios(topTen);
 
