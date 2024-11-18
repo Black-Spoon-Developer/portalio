@@ -14,7 +14,7 @@ const PopularPortfolio: React.FC = () => {
   const navigate = useNavigate();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
-  const [postsPerPage] = useState(5); // 한 페이지에 보여줄 항목 수
+  const [postsPerPage] = useState(3); // 한 페이지에 보여줄 항목 수
 
   useEffect(() => {
     const fetchTop10Portfolio = async () => {

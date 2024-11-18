@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AI_BASE_URL } from "./BaseVariable";
+import { BASE_URL } from "./BaseVariable";
 import { RootState } from "../store";
 import store from "../store";
 
@@ -10,7 +10,7 @@ export const submitAudioAnswer = async (formData: FormData) => {
   const accessToken = state.auth.accessToken;
 
   const response = await axios.post(
-    `${AI_BASE_URL}/api/v1/mock-interview/audio/submit-answer`,
+    `${BASE_URL}/api/v1/mock-interview/audio/submit-answer`,
     formData,
     {
       headers: {
@@ -28,7 +28,7 @@ export const fetchQuestionsApi = async () => {
   const accessToken = state.auth.accessToken;
   try {
     const response = await axios.post(
-      `${AI_BASE_URL}/interview/questions`,
+      `${BASE_URL}/interview/questions`,
       {},
       {
         headers: {
