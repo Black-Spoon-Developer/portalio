@@ -51,6 +51,10 @@ const VideoProcessPage: React.FC = () => {
         audio: true,
       });
 
+      console.log("Stream Tracks:", stream.getTracks());
+      console.log("Audio Tracks:", stream.getAudioTracks());
+      console.log("Video Tracks:", stream.getVideoTracks());
+
       streamRef.current = stream; // 스트림 저장
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -72,14 +76,23 @@ const VideoProcessPage: React.FC = () => {
       // 데이터 수집
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
+          console.log("Video chunk received:", event.data);
           setRecordedChunks((prev) => [...prev, event.data]);
+        } else {
+          console.error("No video data available in chunk.");
         }
       };
       audioRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
+          console.log("Audio chunk received:", event.data);
           setAudioChunks((prev) => [...prev, event.data]);
+        } else {
+          console.error("No audio data available in chunk.");
         }
       };
+
+      console.log("Recorded Video Chunks:", recordedChunks);
+      console.log("Recorded Audio Chunks:", audioChunks);
 
       mediaRecorder.start();
       audioRecorder.start();
@@ -93,22 +106,39 @@ const VideoProcessPage: React.FC = () => {
   // 녹화 및 녹음을 멈췄을 때
   const stopRecording = async () => {
     if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.onstop = () => {
+        console.log("Video recorder stopped.");
+      };
       mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream
-        .getTracks()
-        .forEach((track) => track.stop());
     }
 
     if (audioRecorderRef.current) {
+      audioRecorderRef.current.onstop = () => {
+        console.log("Audio recorder stopped.");
+      };
       audioRecorderRef.current.stop();
-      audioRecorderRef.current.stream
-        .getTracks()
-        .forEach((track) => track.stop());
     }
 
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
     }
+    // if (mediaRecorderRef.current) {
+    //   mediaRecorderRef.current.stop();
+    //   mediaRecorderRef.current.stream
+    //     .getTracks()
+    //     .forEach((track) => track.stop());
+    // }
+
+    // if (audioRecorderRef.current) {
+    //   audioRecorderRef.current.stop();
+    //   audioRecorderRef.current.stream
+    //     .getTracks()
+    //     .forEach((track) => track.stop());
+    // }
+
+    // if (streamRef.current) {
+    //   streamRef.current.getTracks().forEach((track) => track.stop());
+    // }
 
     dispatch(InterviewActions.endIsRecording());
   };
@@ -138,6 +168,18 @@ const VideoProcessPage: React.FC = () => {
         formData.append("video_file", videoBlob, "recording.webm");
         formData.append("audio_file", audioBlob, "recording.webm");
         formData.append("request", JSON.stringify(requestData));
+
+        console.log(
+          "Recorded video blob size:",
+          recordedChunks.reduce((acc, chunk) => acc + chunk.size, 0)
+        );
+        console.log(
+          "Recorded audio blob size:",
+          audioChunks.reduce((acc, chunk) => acc + chunk.size, 0)
+        );
+
+        console.log("Final Video Blob Size:", videoBlob.size);
+        console.log("Final Audio Blob Size:", audioBlob.size);
 
         submitVideoAnswer(formData);
 
