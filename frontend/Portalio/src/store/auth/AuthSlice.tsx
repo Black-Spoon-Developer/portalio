@@ -61,6 +61,10 @@ const authSlice = createSlice({
     updateTicket(state, action) {
       state.memberTicket = action.payload;
     },
+
+    updateMemberPicture(state, action) {
+      state.memberPicture = action.payload; // 업데이트된 프로필 이미지 URL 설정
+    },
   },
 });
 

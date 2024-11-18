@@ -26,3 +26,10 @@ export interface PortfolioCommetsResponse {
   memberPicture: string;
   created: string;
 }
+
+export interface PortfolioPrimaryResponse {
+  portfolioId: number;
+  memberId: number;
+  portfolioPost: boolean; // 이 값은 필요하지 않을 수도 있음
+  portfolioIsPrimary: boolean;
+}

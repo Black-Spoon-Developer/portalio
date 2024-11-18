@@ -51,18 +51,24 @@ export const uploadFilesAsZip = async (
   }
 };
 
-export const uploadFilesToS3AndSaveToMongo = async (files: File[]): Promise<string | null> => {
+export const uploadFilesToS3AndSaveToMongo = async (
+  files: File[]
+): Promise<string | null> => {
   try {
     const formData = new FormData();
     files.forEach((file) => {
       formData.append("multipartFile", file);
     });
 
-    const response = await axios.post(`${BASE_URL}/api/v1/s3/repofiles`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await axios.post(
+      `${BASE_URL}/api/v1/s3/repofiles`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
     return response.data; // MongoDB 문서 ID 반환
   } catch (error) {
@@ -76,25 +82,56 @@ export const getmyfiles = async (documentId: String) => {
     `${BASE_URL}/api/v1/files/info/${documentId}`
   );
   return response.data;
-}
+};
 
-export const repoupdate = async (documentId: String, files: File[]): Promise<string | null> => {
+export const repoupdate = async (
+  documentId: String,
+  files: File[]
+): Promise<string | null> => {
   try {
     const formData = new FormData();
     files.forEach((file) => {
       formData.append("files", file);
     });
 
-    const response = await axios.post(`${BASE_URL}/api/v1/s3/repofiles/update/${documentId}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log(response.data)
+    const response = await axios.post(
+      `${BASE_URL}/api/v1/s3/repofiles/update/${documentId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    console.log(response.data);
 
     return response.data;
   } catch (error) {
     console.error("S3:", error);
     return null;
   }
-}
+};
+
+// 프로필 사진 업로드 함수
+export const uploadProfilePicture = async (
+  file: File
+): Promise<string | null> => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file); // Swagger 문서에 표시된 file로 파일 추가
+    const response = await axios.post(
+      `${BASE_URL}/api/v1/s3/profile-picture`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response.data; // 서버에서 반환된 S3 URL
+  } catch (error) {
+    console.error("프로필 사진 업로드 오류: ", error);
+    return null;
+  }
+};

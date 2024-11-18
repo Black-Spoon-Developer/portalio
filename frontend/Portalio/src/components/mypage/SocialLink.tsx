@@ -7,10 +7,16 @@ import GitHubIcon from "../../assets/GitHub.svg";
 import { createOrUpdateSocialLink, getSocialLink } from "../../api/MyPageAPI";
 import { UserSocialLinkRequest } from "../../interface/mypage/MyPageInterface";
 import { useParams } from "react-router-dom";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 const SocialLink: React.FC = () => {
   const { user_id } = useParams<{ user_id: string }>();
   const userId = Number(user_id);
+
+  // 설정 버튼 제어 변수
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
+  const isOwner = user_id && memberId ? user_id === memberId : false;
 
   // 소셜 관련 변수
   const [isEditing, setIsEditing] = useState(false);
@@ -20,6 +26,18 @@ const SocialLink: React.FC = () => {
     instagram: "",
     github: "",
   });
+
+  // 입력 필드 포커스가 벗어날 때 호출되는 함수
+  const handleSocialInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let updatedValue = value.trim();
+
+    // 프로토콜이 없는 경우 'https://' 추가
+    if (updatedValue && !/^https?:\/\//i.test(updatedValue)) {
+      updatedValue = `https://${updatedValue}`;
+      setSocialLinks((prevLinks) => ({ ...prevLinks, [name]: updatedValue }));
+    }
+  };
 
   // 소셜 바인딩 핸들러 함수
   const handleSocialInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +70,7 @@ const SocialLink: React.FC = () => {
     <div className="w-1/2 pl-4">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-semibold">소셜</h3>
-        {!isEditing && (
+        {isOwner && !isEditing && (
           <button
             onClick={() => setIsEditing(true)}
             className="flex items-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded p-1 transition duration-200"
@@ -68,10 +86,11 @@ const SocialLink: React.FC = () => {
       </div>
       <ul className={`social-list ${isEditing ? "space-y-4" : "space-y-6"}`}>
         <li className="flex items-center space-x-2">
+          {/* facebook */}
           <a
-            href={socialLinks.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={socialLinks.facebook} // 이동할 링크
+            target="_blank" // 새로운 탭에서 열기
+            rel="noopener noreferrer" // 보안을 위해 사용
           >
             <img src={FacebookIcon} alt="Facebook" className="w-8 h-8" />
           </a>
@@ -80,22 +99,25 @@ const SocialLink: React.FC = () => {
             <input
               type="text"
               name="facebook"
-              value={socialLinks.facebook}
-              onChange={handleSocialInputChange}
+              value={socialLinks.facebook} // 입력값을 연결할 변수
+              onBlur={handleSocialInputBlur} // url 프로토콜 자동 추가 함수
+              onChange={handleSocialInputChange} // 입력 값 처리 함수
               placeholder="Facebook 링크"
               className="border p-2 rounded w-full"
             />
           ) : (
             <a
-              href={socialLinks.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={socialLinks.facebook} // 이동할 링크
+              target="_blank" // 새로운 탭에서 열기
+              rel="noopener noreferrer" // 보안을 위해 사용
               className="text-blue-800 hover:underline"
             >
               Facebook
             </a>
           )}
         </li>
+
+        {/* LinkedIn */}
         <li className="flex items-center space-x-2">
           <a
             href={socialLinks.linkedin}
@@ -110,6 +132,7 @@ const SocialLink: React.FC = () => {
               type="text"
               name="linkedin"
               value={socialLinks.linkedin}
+              onBlur={handleSocialInputBlur}
               onChange={handleSocialInputChange}
               placeholder="LinkedIn 링크"
               className="border p-2 rounded w-full"
@@ -125,6 +148,8 @@ const SocialLink: React.FC = () => {
             </a>
           )}
         </li>
+
+        {/* Instagram */}
         <li className="flex items-center space-x-2">
           <a
             href={socialLinks.instagram}
@@ -139,6 +164,7 @@ const SocialLink: React.FC = () => {
               type="text"
               name="instagram"
               value={socialLinks.instagram}
+              onBlur={handleSocialInputBlur}
               onChange={handleSocialInputChange}
               placeholder="Instagram 링크"
               className="border p-2 rounded w-full"
@@ -154,6 +180,8 @@ const SocialLink: React.FC = () => {
             </a>
           )}
         </li>
+
+        {/* GitHub */}
         <li className="flex items-center space-x-2">
           <a
             href={socialLinks.github}
@@ -168,6 +196,7 @@ const SocialLink: React.FC = () => {
               type="text"
               name="github"
               value={socialLinks.github}
+              onBlur={handleSocialInputBlur}
               onChange={handleSocialInputChange}
               placeholder="GitHub 링크"
               className="border p-2 rounded w-full"
