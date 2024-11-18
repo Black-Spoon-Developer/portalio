@@ -137,7 +137,7 @@ const PortfolioPosts: React.FC = () => {
                 <img
                   src={post.picture}
                   alt="프로필 이미지"
-                  className="w-10 h-10 rounded-full mr-4"
+                  className="w-full h-full object-cover"
                 />
                 <div>
                   <p className="font-semibold">{post.memberNickname}</p>
