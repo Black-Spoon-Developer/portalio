@@ -61,6 +61,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String username = customUserDetails.getUsername();
         String role = auth.getAuthority();
 
+
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
 
