@@ -1,7 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, registerables } from "chart.js";
-ChartJS.register(...registerables);
+import { Line } from "react-chartjs-2"; // React 컴포넌트
+import {
+  Chart as ChartJS, // Chart.js 기본 객체
+  Title, // 제목 플러그인
+  Tooltip, // 툴팁 플러그인
+  Legend, // 범례 플러그인
+  CategoryScale, // x축 카테고리 스케일
+  LinearScale, // y축 선형 스케일
+  PointElement, // 데이터 포인트
+  LineElement, // 선
+  Filler, // 채우기 옵션 (예: 선 아래에 색상)
+  TooltipItem,
+} from "chart.js";
+
+// Chart.js에 플러그인 등록
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler
+);
 import { VideoInterviewResult } from "../../../../interface/aiInterview/VideoInterviewInterface";
 import LoadingSpinner from "../../../spinner/LoadingSpinner";
 
@@ -88,7 +110,7 @@ const VideoAnalysisContent: React.FC<VideoAnalysisContentProps> = ({
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: any) => `${tooltipItem.raw} 점`,
+          label: (tooltipItem: TooltipItem<"line">) => `${tooltipItem.raw} 점`,
         },
       },
     },
