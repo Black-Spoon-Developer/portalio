@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AI_BASE_URL } from "./BaseVariable";
+import { BASE_URL } from "./BaseVariable";
 import {
   GenerateQuestionsRequest,
   GenerateQuestionsResponse,
@@ -14,7 +14,7 @@ export const fetchPreInterview = async () => {
     const accessToken = state.auth.accessToken;
 
     const response = await axios.post<MemberInfoDTO>(
-      `${AI_BASE_URL}/api/v1/mock-interview/pre-interview`,
+      `${BASE_URL}/api/v1/mock-interview/pre-interview`,
       {},
       {
         headers: {
@@ -39,7 +39,7 @@ export const generateQuestions = async (request: GenerateQuestionsRequest) => {
     const accessToken = state.auth.accessToken;
 
     const response = await axios.post<GenerateQuestionsResponse>(
-      `${AI_BASE_URL}/api/v1/mock-interview/generate-questions`,
+      `${BASE_URL}/api/v1/mock-interview/generate-questions`,
       request,
       {
         headers: {

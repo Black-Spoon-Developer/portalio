@@ -3,14 +3,19 @@ import { CgProfile } from "react-icons/cg";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
 import { sideNavActions } from "../../../../store/nav/SideNavSlice";
+import { useNavigate } from "react-router-dom";
 
 const MyPageButton: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const memberUsername = useSelector((state: RootState) => state.auth.memberUsername);
+
 
   const selectState = useSelector((state: RootState) => state.sideNav.tabState);
 
   const onClick = () => {
     dispatch(sideNavActions.selectMypage());
+    navigate(`/users/profile/${memberUsername}`); // 특정 URL로 이동
   };
 
   return (
