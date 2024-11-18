@@ -92,3 +92,20 @@ export const getRepository = async (repositoryId: number) => {
   console.log("API Response:", response.status, response.data);
   return response.data;
 };
+
+// 레포지토리 글 삭제
+export const deleteRepository = async (repositoryId: number): Promise<void> => {
+  const state: RootState = store.getState();
+  const accessToken = state.auth.accessToken;
+  
+  const response = await axios.delete(
+    `${BASE_URL}/api/v1/repository/${repositoryId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  
+  return response.data;
+};

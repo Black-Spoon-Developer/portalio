@@ -22,6 +22,10 @@ const PrimaryPortfolio: React.FC = () => {
   const picture = useSelector((state: RootState) => state.auth.memberPicture);
   const username = useSelector((state: RootState) => state.auth.memberUsername);
 
+  // 설정 버튼 제어 변수
+  const memberId = useSelector((state: RootState) => state.auth.memberId);
+  const isOwner = user_id && memberId ? user_id === memberId : false;
+
   const [portfolio, setPortfolio] = useState<Portfolio>();
 
   // 대표 레포지토리 조회 함수
@@ -48,14 +52,18 @@ const PrimaryPortfolio: React.FC = () => {
       <header className="flex justify-between p-4">
         <h2 className="font-bold text-2xl">대표 포트폴리오</h2>
         <div className="flex items-center">
-          <Link to={`/users/profile/${user_id}/portfolio`} className="flex">
-            <img
-              src={SettingsIcon}
-              alt="포트폴리오 관리"
-              className="w-6 h-6 mx-2"
-            />
-            <div>포트폴리오 관리</div>
-          </Link>
+          {isOwner ? (
+            <Link to={`/users/profile/${user_id}/portfolio`} className="flex">
+              <img
+                src={SettingsIcon}
+                alt="포트폴리오 관리"
+                className="w-6 h-6 mx-2"
+              />
+              <div>포트폴리오 관리</div>
+            </Link>
+          ) : (
+            <></>
+          )}
         </div>
       </header>
       {/* portfolio */}

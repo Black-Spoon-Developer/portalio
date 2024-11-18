@@ -1,76 +1,100 @@
-// UserFreeListPage.tsx
 import React, { useState, useEffect } from "react";
 import TempBoardTab from "../../components/common/tab/TempBoardTab";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { getMyActivities } from "../../api/BoardAPI";
+import { getRepository } from "../../api/RepositoryAPI";
+import ActivityDetailModal from "../../components/board/activity/ActivityDetailModal";
 
-const ITEMS_PER_PAGE = 10; // 한 페이지에 보여줄 아이템 수
+const ITEMS_PER_PAGE = 10;
 
 interface Board {
   activityBoardId: number;
   activityBoardTitle: string;
   activityBoardContent: string;
   activityBoardDate: Date;
+  created: string;
+  repositoryId: number;
+  repositoryName?: string; // 추가된 레포지토리 이름
+  picture: string; // 보드 관련 이미지
   member: {
     memberId: number;
-    name: string;
+    memberNickname: string;
   };
 }
 
+const truncateText = (text: string, maxLength: number) => {
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+};
+
 const UserActivityListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [boards, setBoards] = useState<Board[]>([]); // Board 배열 상태 정의
-  const itemsPerPage = 10;
+  const [boards, setBoards] = useState<Board[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
+  const [selectedBoardId, setSelectedBoardId] = useState<number | null>(null); // 선택된 게시글 ID
   const username = useSelector((state: RootState) => state.auth.memberUsername);
-  const { user_id } = useParams<{ user_id: string }>(); // URL에서 user_id 추출
+  const { user_id } = useParams<{ user_id: string }>();
 
   const skip = (currentPage - 1) * ITEMS_PER_PAGE;
   const limit = ITEMS_PER_PAGE;
 
-  // api 요청
   useEffect(() => {
     if (username) {
-      const fetchMyBoards = async () => {
+      const fetchActivitiesWithRepositories = async () => {
         try {
-          const response = await getMyActivities(username, skip, limit);
-          setBoards(response.data.items);
-          // console.log("API 응답 데이터:", response.items);
+          // 활동 게시글 불러오기
+          const activitiesResponse = await getMyActivities(
+            username,
+            skip,
+            limit
+          );
+
+          // 각 활동 게시글의 repositoryId로 레포지토리 이름 가져오기
+          const activitiesWithRepositoryNames = await Promise.all(
+            activitiesResponse.data.items.map(async (activity: Board) => {
+              const repository = await getRepository(activity.repositoryId);
+              return {
+                ...activity,
+                repositoryName: repository.repositoryTitle, // 레포지토리 이름 추가
+              };
+            })
+          );
+
+          setBoards(activitiesWithRepositoryNames);
         } catch (error) {
-          console.error("Failed to fetch boards:", error);
+          console.error("Failed to fetch activities or repositories:", error);
         }
       };
-      fetchMyBoards();
+
+      fetchActivitiesWithRepositories();
     }
-  }, [username, currentPage]); // currentPage가 바뀔 때마다 요청
+  }, [username, currentPage]);
 
-  const totalPages = Math.ceil(boards.length / itemsPerPage);
-
-  // 한 번에 보여줄 페이지 버튼의 범위
-  const getPageNumbers = () => {
-    const pageNumbers: number[] = [];
-    const startPage = Math.max(1, currentPage - 2);
-    const endPage = Math.min(totalPages, startPage + 4);
-    for (let page = startPage; page <= endPage; page++) {
-      pageNumbers.push(page);
-    }
-    return pageNumbers;
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBoards = boards.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(boards.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  // 게시글 클릭 시 모달 열기
+  const handlePostClick = (boardId: number) => {
+    setSelectedBoardId(boardId);
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBoardId(null);
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <TempBoardTab user_id={user_id || ""} /> {/* 임시 보드 탭 추가 */}
+      <TempBoardTab user_id={user_id || ""} />
       <div className="flex justify-end mb-4">
         <button
-          className="bg-[#57D4E2] text-white py-2 px-4 rounded-md font-semibold"
+          className="bg-[#57D4E2] mt-4 px-4 py-2 text-white rounded-lg font-bold hover:bg-[#48C1CE]"
           onClick={() => console.log("작성 버튼 클릭")}
         >
           작성
@@ -78,32 +102,45 @@ const UserActivityListPage: React.FC = () => {
       </div>
       <div className="bg-white shadow-md rounded-lg border">
         <ul>
-          {currentBoards.map((board) => (
-            <Link
-              to={`/activity/${board.activityBoardId}`}
+          {boards.map((board) => (
+            <li
               key={board.activityBoardId}
+              onClick={() => handlePostClick(board.activityBoardId)} // 클릭 시 모달 열기
+              className="flex items-center justify-between p-4 border-b border-gray-300 hover:bg-gray-100 hover:shadow-md transition duration-200 cursor-pointer"
             >
-              <li
-                key={board.activityBoardId}
-                className="flex justify-between items-center p-4 border-b last:border-b-0"
-              >
-                <div className="flex-1">
+              <div className="flex items-center space-x-4 w-full">
+                {board.picture && (
+                  <img
+                    src={board.picture}
+                    alt="Activity Thumbnail"
+                    className="w-16 h-16 rounded-md object-cover"
+                  />
+                )}
+                <div className="flex flex-col w-full">
                   <span className="text-lg font-semibold">
-                    {board.activityBoardTitle}
+                    {truncateText(board.activityBoardTitle, 30)}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {truncateText(board.activityBoardContent, 50)}
+                  </span>
+                  <span className="text-sm text-gray-400 mt-2">
+                    레포지토리:{" "}
+                    <span className="font-medium text-gray-600">
+                      {board.repositoryName || "알 수 없는 레포지토리"}
+                    </span>
                   </span>
                 </div>
-                <div className="flex items-center">
-                  {/* 날짜 표시 */}
-                  <span className="text-gray-500">
-                    {new Date().toLocaleDateString()}
-                  </span>
-                </div>
-              </li>
-            </Link>
+              </div>
+              <span className="text-sm text-gray-400  whitespace-nowrap">
+                {new Date(board.created)
+                  .toISOString()
+                  .slice(0, 10)
+                  .replace(/-/g, ".")}
+              </span>
+            </li>
           ))}
         </ul>
       </div>
-      {/* 페이지네이션 버튼 */}
       <div className="flex justify-center mt-4 space-x-2">
         {currentPage > 1 && (
           <button
@@ -113,19 +150,21 @@ const UserActivityListPage: React.FC = () => {
             이전
           </button>
         )}
-        {getPageNumbers().map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={`px-3 py-1 rounded-md ${
-              currentPage === page
-                ? "bg-[#57D4E2] text-white font-semibold"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+          (page) => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`px-3 py-1 rounded-md ${
+                currentPage === page
+                  ? "bg-[#57D4E2] text-white font-semibold"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {page}
+            </button>
+          )
+        )}
         {currentPage < totalPages && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
@@ -135,6 +174,14 @@ const UserActivityListPage: React.FC = () => {
           </button>
         )}
       </div>
+
+      {/* 모달 */}
+      {isModalOpen && selectedBoardId && (
+        <ActivityDetailModal
+          activityId={selectedBoardId}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };

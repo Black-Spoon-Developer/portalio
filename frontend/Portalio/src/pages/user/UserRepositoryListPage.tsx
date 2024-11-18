@@ -201,26 +201,55 @@ const UserRepositoryListPage: React.FC = () => {
         {paginatedRepos.map((repo, index) => (
           <li
             key={index}
-            className="repository-item"
+            className="repository-item flex justify-between items-center p-4 mb-4 rounded-lg shadow-md hover:shadow-lg transition-shadow bg-white border border-gray-200 cursor-pointer"
             onClick={() => navigate(`/repository/${repo.repositoryId}`)}
             onMouseEnter={() => handleMouseEnter(repo.startDate, repo.endDate)}
             onMouseLeave={handleMouseLeave}
           >
-            <div className="repository-content">
-              <div className="title-row">
-                <h2 className="repository-title">{repo.repositoryTitle}</h2>
+            <div className="repository-content w-3/4">
+              {/* 제목 */}
+              <div className="flex items-center mb-2">
+                <h2 className="repository-title text-lg font-semibold text-gray-800 mr-2">
+                  {repo.repositoryTitle}
+                </h2>
                 <span
-                  className={`visibility-badge ${repo.repositoryPost
-                    .toString()
-                    .toLowerCase()}`}
+                  className={`px-2 py-1 text-xs font-bold rounded ${
+                    repo.repositoryPost
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
                 >
-                  {repo.repositoryPost ? "public" : "private"}
+                  {repo.repositoryPost ? "Public" : "Private"}
                 </span>
               </div>
 
-              <div className="repository-date">
+              {/* 설명 */}
+              <p className="repository-content text-sm text-gray-600 mb-2">
+                {repo.repositoryContent || "레포지토리 내용 없음"}
+              </p>
+
+              {/* 날짜 */}
+              <div className="repository-date text-xs text-gray-500">
                 {repo.startDate} ~ {repo.endDate}
               </div>
+            </div>
+
+            {/* 아이콘 또는 강조 섹션 */}
+            <div className="flex-shrink-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-400 hover:text-gray-600 transition-colors"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </div>
           </li>
         ))}
@@ -228,16 +257,18 @@ const UserRepositoryListPage: React.FC = () => {
 
       {/* 활동 섹션 */}
       <div className="activity-section">
-        <div className="activity-header">
-          <h3>
+        <div className="activity-header mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
             {totalContributions} contributions in {selectedYear}
           </h3>
-          <div className="year-selector">
+          <div className="year-selector flex space-x-2">
             {years.map((year) => (
               <button
                 key={year}
-                className={`year-button ${
-                  selectedYear === year ? "active" : ""
+                className={`year-button px-3 py-1 rounded-md ${
+                  selectedYear === year
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 text-gray-600 hover:bg-gray-300"
                 }`}
                 onClick={() => setSelectedYear(year)}
               >
@@ -248,7 +279,7 @@ const UserRepositoryListPage: React.FC = () => {
         </div>
 
         {/* 활동 월 표시 */}
-        <div className="months">
+        <div className="months text-gray-500 flex justify-between px-6 mb-3 text-sm">
           <span>Jan</span>
           <span>Feb</span>
           <span>Mar</span>
@@ -265,7 +296,7 @@ const UserRepositoryListPage: React.FC = () => {
 
         {/* 활동 그래프 */}
         <div className="activity-grid">
-          <div className="left-box">
+          <div className="left-box text-gray-500 text-xs">
             <p>Mon</p>
             <p>Wed</p>
             <p>Fri</p>
@@ -275,24 +306,22 @@ const UserRepositoryListPage: React.FC = () => {
           {dummyData.map((week, weekIndex) => (
             <div key={weekIndex} className="week">
               {week.map((day, dayIndex) => {
-                // `isHighlighted`는 현재 요일이 하이라이트 대상인지 여부
                 const isHighlighted = highlightedDays.some(
                   ([highlightedWeek, highlightedDay]) =>
                     highlightedWeek === weekIndex && highlightedDay === dayIndex
-                ); // 현재 주와 요일 인덱스가 하이라이트 대상인지 확인
+                );
 
                 return (
                   <div
                     key={dayIndex}
-                    className={`day ${isHighlighted ? "highlighted" : ""}`} // 하이라이트 여부에 따라 클래스 설정
+                    className={`day ${isHighlighted ? "highlighted" : ""}`}
                     style={{
                       backgroundColor: isHighlighted
-                        ? highlightColor // 하이라이트인 경우 랜덤 파스텔색상
-                        : day > 0 // 활동이 있는 날(day > 0)이면 연한 녹색
+                        ? highlightColor
+                        : day > 0
                         ? "#A5D6A7"
-                        : "#e0e0e0", // 활동이 없는 날은 회색
+                        : "#e0e0e0",
                     }}
-                    title={day ? "활동" : "휴식"} // 활동 여부에 따라 툴팁 표시
                   />
                 );
               })}
