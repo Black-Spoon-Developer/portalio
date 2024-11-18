@@ -42,6 +42,7 @@ import MarkdownGuide from "./components/board/HowToUseMD.tsx";
 // import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
 // import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
 import VideoProcessPage from "./pages/ai/analysis/video/VideoProcessPage.tsx";
+import VideoAnalysisPage from "./pages/ai/analysis/video/VideoAnalysisPage.tsx";
 import AudioProcessPage from "./pages/ai/analysis/audio/AudioProcessPage.tsx";
 import TextProcessPage from "./pages/ai/analysis/text/TextProcessPage.tsx";
 import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
@@ -135,6 +136,10 @@ const App: React.FC = () => {
             element={<VideoProcessPage />}
           ></Route>
           {/* 화상 면접 분석 조회 페이지 */}
+          <Route
+            path="interview/video/analysis/:interview_id"
+            element={<VideoAnalysisPage />}
+          ></Route>
 
           {/* 음성 면접 */}
           {/* 음성 면접 진행 페이지 */}

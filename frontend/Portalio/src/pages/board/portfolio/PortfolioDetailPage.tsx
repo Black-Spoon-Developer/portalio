@@ -4,7 +4,6 @@ import PortfolioDetailMd from "../../../components/board/portfolio/PortfolioDeta
 import PortfolioDetailComments from "../../../components/board/portfolio/PortfolioDetailComments";
 import SideNavBar from "../../../components/common/navBar/SideNavBar";
 import PortfolioDetailCommentsInput from "../../../components/board/portfolio/PortfolioDetailCommentsInput";
-import PortfolioDetailPdf from "../../../components/board/portfolio/PortfolioDetailPdf";
 import {
   fetchPortfolioDetail,
   fetchPortfolioDetailComments,
@@ -103,11 +102,7 @@ const PortfolioDetailPage: React.FC = () => {
           <p>Loading...</p>
         )}
       </div>
-      <div className="col-span-1">
-        <PortfolioDetailPdf
-          portfolioContent={portfolio?.portfolioContent ?? ""}
-        />
-      </div>
+      <div className="col-span-1"></div>
     </div>
   );
 };

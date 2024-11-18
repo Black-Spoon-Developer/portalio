@@ -7,6 +7,7 @@ import { submitVideoAnswer } from "../../../../api/VideoInterviewAPI";
 import { VideoAnswerRequest } from "../../../../interface/aiInterview/VideoInterviewInterface";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../../components/spinner/LoadingSpinner";
+import { AI_BASE_URL } from "../../../../api/BaseVariable";
 
 const VideoProcessPage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,8 +26,8 @@ const VideoProcessPage: React.FC = () => {
   } = useSelector((state: RootState) => state.aiInterview);
 
   //chunk 관련
-  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  // const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  // const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
 
   // 지금 답변하려는 질문 출력을 위한 상태
   const [currentQuestion, setCurrentQuestion] = useState<QuestionDTO>();
@@ -34,26 +35,29 @@ const VideoProcessPage: React.FC = () => {
   // 제출 로딩 스피너를 위한 상태
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // const [videoUrl, setVideoUrl] = useState("");
+
+  // // audioUrl 관련 상태
+  // const [audioUrl, setAudioUrl] = useState("");
+
   // useRef의 초기값과 타입 명시, 레코더, 비디오, 오디오, 스트림 참조
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null); // MediaStream 타입 명시
 
+  // chunkRef
+  const videoChunksRef = useRef<Blob[]>([]);
+  const audioChunkRef = useRef<Blob[]>([]);
+
   // 녹화 및 녹음 시작 함수
   const startRecording = async () => {
     try {
-      setRecordedChunks([]);
-      setAudioChunks([]);
-
+      // 비디오 오디오 사용
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
-
-      console.log("Stream Tracks:", stream.getTracks());
-      console.log("Audio Tracks:", stream.getAudioTracks());
-      console.log("Video Tracks:", stream.getVideoTracks());
 
       streamRef.current = stream; // 스트림 저장
       if (videoRef.current) {
@@ -62,37 +66,37 @@ const VideoProcessPage: React.FC = () => {
 
       // 비디오 레코더 설정
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "video/webm",
+        mimeType: "video/mp4",
       });
       mediaRecorderRef.current = mediaRecorder;
 
       // 오디오 레코더 설정
+      // 필요 없음
       const audioStream = new MediaStream([stream.getAudioTracks()[0]]);
+      // 필요 있음
       const audioRecorder = new MediaRecorder(audioStream, {
         mimeType: "audio/webm",
       });
       audioRecorderRef.current = audioRecorder;
 
-      // 데이터 수집
+      // 데이터 수집 - 잘됨
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          console.log("Video chunk received:", event.data);
-          setRecordedChunks((prev) => [...prev, event.data]);
+          // setRecordedChunks((prev) => [...prev, event.data]);
+          videoChunksRef.current.push(event.data);
         } else {
           console.error("No video data available in chunk.");
         }
       };
+
       audioRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          console.log("Audio chunk received:", event.data);
-          setAudioChunks((prev) => [...prev, event.data]);
+          // setAudioChunks((prev) => [...prev, event.data]);
+          audioChunkRef.current.push(event.data);
         } else {
           console.error("No audio data available in chunk.");
         }
       };
-
-      console.log("Recorded Video Chunks:", recordedChunks);
-      console.log("Recorded Audio Chunks:", audioChunks);
 
       mediaRecorder.start();
       audioRecorder.start();
@@ -103,58 +107,81 @@ const VideoProcessPage: React.FC = () => {
     }
   };
 
-  // 녹화 및 녹음을 멈췄을 때
-  const stopRecording = async () => {
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.onstop = () => {
-        console.log("Video recorder stopped.");
+  //녹화 및 녹음을 멈췄을 때
+  const stopRecording = async (): Promise<{
+    videoUrl: string;
+    audioUrl: string;
+  }> => {
+    return new Promise((resolve, reject) => {
+      const urls: { videoUrl?: string; audioUrl?: string } = {};
+      let stopCount = 0; // 두 녹음기가 멈췄는지 확인하는 카운터
+
+      const checkAndResolve = () => {
+        stopCount++;
+        if (stopCount === 2) {
+          if (urls.videoUrl && urls.audioUrl) {
+            resolve(urls as { videoUrl: string; audioUrl: string });
+          } else {
+            reject(new Error("Failed to generate video or audio URL"));
+          }
+        }
       };
-      mediaRecorderRef.current.stop();
-    }
 
-    if (audioRecorderRef.current) {
-      audioRecorderRef.current.onstop = () => {
-        console.log("Audio recorder stopped.");
-      };
-      audioRecorderRef.current.stop();
-    }
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current.onstop = () => {
+          const videoBlob = new Blob(videoChunksRef.current, {
+            type: "video/mp4",
+          });
+          const videoUrl = URL.createObjectURL(videoBlob);
+          urls.videoUrl = videoUrl;
 
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-    }
-    // if (mediaRecorderRef.current) {
-    //   mediaRecorderRef.current.stop();
-    //   mediaRecorderRef.current.stream
-    //     .getTracks()
-    //     .forEach((track) => track.stop());
-    // }
+          videoChunksRef.current = [];
 
-    // if (audioRecorderRef.current) {
-    //   audioRecorderRef.current.stop();
-    //   audioRecorderRef.current.stream
-    //     .getTracks()
-    //     .forEach((track) => track.stop());
-    // }
+          checkAndResolve();
+        };
+        mediaRecorderRef.current.stop();
+      } else {
+        checkAndResolve();
+      }
 
-    // if (streamRef.current) {
-    //   streamRef.current.getTracks().forEach((track) => track.stop());
-    // }
+      if (audioRecorderRef.current) {
+        audioRecorderRef.current.onstop = () => {
+          const audioBlob = new Blob(audioChunkRef.current, {
+            type: "audio/webm",
+          });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          urls.audioUrl = audioUrl;
 
-    dispatch(InterviewActions.endIsRecording());
+          audioChunkRef.current = [];
+
+          checkAndResolve();
+        };
+        audioRecorderRef.current.stop();
+      } else {
+        checkAndResolve();
+      }
+
+      // Stream 정리
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+
+      dispatch(InterviewActions.endIsRecording());
+    });
   };
 
   // 답변 제출 -> 마지막 질문이 아니면 다음 질문 가져오기, 마지막 제출 요청을 다보내면 분석페이지로가기
   const handleAnswerSubmit = async () => {
     try {
       // 답변 중지
-      await stopRecording();
+      const { videoUrl, audioUrl } = await stopRecording();
 
       // 만약 마지막 질문이 아니면 다음 질문을 가져와서 세팅하기
       if (currentIndex < 4) {
         // 서버에 보내기 위한 formData 정의
         // 비디오와 오디오 Blob 생성
-        const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        const audioBlob = await fetch(audioUrl).then((r) => r.blob());
+        const videoBlob = await fetch(videoUrl).then((r) => r.blob());
 
         // FormData 구성
         const formData = new FormData();
@@ -165,23 +192,15 @@ const VideoProcessPage: React.FC = () => {
           ...(repositoryId && { repository_id: Number(repositoryId) }),
         };
 
-        formData.append("video_file", videoBlob, "recording.webm");
+        formData.append("video_file", videoBlob, "recording.mp4");
         formData.append("audio_file", audioBlob, "recording.webm");
         formData.append("request", JSON.stringify(requestData));
 
-        console.log(
-          "Recorded video blob size:",
-          recordedChunks.reduce((acc, chunk) => acc + chunk.size, 0)
-        );
-        console.log(
-          "Recorded audio blob size:",
-          audioChunks.reduce((acc, chunk) => acc + chunk.size, 0)
-        );
-
-        console.log("Final Video Blob Size:", videoBlob.size);
-        console.log("Final Audio Blob Size:", audioBlob.size);
-
         submitVideoAnswer(formData);
+
+        // Chunk 데이터 초기화
+        videoChunksRef.current = [];
+        audioChunkRef.current = [];
 
         // 다음 질문으로 넘어가기 처리
         const nextIndex = currentIndex + 1;
@@ -193,10 +212,11 @@ const VideoProcessPage: React.FC = () => {
       } else {
         // 서버에 보내기 위한 formData 정의
         // 비디오와 오디오 Blob 생성
-        const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        const audioBlob = await fetch(audioUrl).then((r) => r.blob());
+        const videoBlob = await fetch(videoUrl).then((r) => r.blob());
 
         // FormData 구성
+        console.log(questionId);
         const formData = new FormData();
         const requestData: VideoAnswerRequest = {
           question_id: Number(questionId),
@@ -205,19 +225,24 @@ const VideoProcessPage: React.FC = () => {
           ...(repositoryId && { repository_id: Number(repositoryId) }),
         };
 
-        formData.append("video_file", videoBlob, "recording.webm");
+        formData.append("video_file", videoBlob, "recording.mp4");
         formData.append("audio_file", audioBlob, "recording.webm");
         formData.append("request", JSON.stringify(requestData));
 
         // 로딩 시작
         setIsSubmitting(true);
-
         await submitVideoAnswer(formData);
-
         // 로딩 종료
         setIsSubmitting(false);
 
+        // **마이크와 비디오 정리**
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach((track) => track.stop());
+          streamRef.current = null; // 스트림을 null로 설정하여 참조 제거
+        }
+
         // 라우터로 분석 페이지 이동
+        navigate(`/ai/interview/video/analysis/${interviewId}`);
       }
     } catch (error) {
       alert(
