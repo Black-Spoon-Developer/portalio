@@ -2,14 +2,14 @@ import React from "react";
 import { HiOutlineDocumentSearch } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../store";
-import { sideNavActions } from "../../../../store/nav/SideNavSlice";
+import { useNavigate } from "react-router-dom";
 
 const TrendButton: React.FC = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const selectState = useSelector((state: RootState) => state.sideNav.tabState);
 
   const onClick = () => {
-    dispatch(sideNavActions.selectJobInfo());
+    navigate("/employment")
   };
 
   return (
