@@ -6,18 +6,33 @@ import { QuestionDTO } from "../../../../interface/aiInterview/AICommonInterface
 import { submitVideoAnswer } from "../../../../api/VideoInterviewAPI";
 import { VideoAnswerRequest } from "../../../../interface/aiInterview/VideoInterviewInterface";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../../../components/spinner/LoadingSpinner";
 
-const VideoProcessPage:React.FC = () => {
+const VideoProcessPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // 중앙 저장소에서 필요한 상태들을 가져오기
   // 생성된 질문들, 녹화,녹음중 상태, question ID랑 interviewID는 요청보낼때 필요하고  portfolioId 랑 repositoryId 는 옵션, currentIndex는 질문 인덱스
-  const {questions, isRecording, questionId, interviewId, portfolioId, repositoryId, currentIndex } = useSelector((state:RootState) => state.aiInterview)
+  const {
+    questions,
+    isRecording,
+    questionId,
+    interviewId,
+    portfolioId,
+    repositoryId,
+    currentIndex,
+  } = useSelector((state: RootState) => state.aiInterview);
 
   //chunk 관련
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+
+  // 지금 답변하려는 질문 출력을 위한 상태
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionDTO>();
+
+  // 제출 로딩 스피너를 위한 상태
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // useRef의 초기값과 타입 명시, 레코더, 비디오, 오디오, 스트림 참조
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -28,12 +43,9 @@ const VideoProcessPage:React.FC = () => {
   // 녹화 및 녹음 시작 함수
   const startRecording = async () => {
     try {
-      // 여기서 녹화 관련 상태를 초기화 하고 시작
-      // 타이머도 있으면 여기에 하기
       setRecordedChunks([]);
       setAudioChunks([]);
 
-      // 비디오 및 오디오 스트림 요청
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
@@ -48,71 +60,55 @@ const VideoProcessPage:React.FC = () => {
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: "video/webm",
       });
+      mediaRecorderRef.current = mediaRecorder;
 
       // 오디오 레코더 설정
       const audioStream = new MediaStream([stream.getAudioTracks()[0]]);
       const audioRecorder = new MediaRecorder(audioStream, {
         mimeType: "audio/webm",
       });
+      audioRecorderRef.current = audioRecorder;
 
-      // 비디오 데이터 수집
-      const videoChunks: Blob[] = [];
+      // 데이터 수집
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          videoChunks.push(event.data);
+          setRecordedChunks((prev) => [...prev, event.data]);
         }
       };
-
-      // 오디오 데이터 수집
-      const audioChunks: Blob[] = [];
       audioRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          audioChunks.push(event.data);
+          setAudioChunks((prev) => [...prev, event.data]);
         }
       };
-
-      mediaRecorder.onstop = () => {
-        const videoBlob = new Blob(videoChunks, { type: "video/webm" });
-        setRecordedChunks(videoChunks);
-
-      };
-
-      audioRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        setAudioChunks(audioChunks);
-
-      };
-
-      mediaRecorderRef.current = mediaRecorder;
-      audioRecorderRef.current = audioRecorder;
 
       mediaRecorder.start();
       audioRecorder.start();
 
       dispatch(InterviewActions.startIsRecording());
-
     } catch (err) {
       console.error("Error accessing media devices:", err);
     }
   };
 
   // 녹화 및 녹음을 멈췄을 때
-  const stopRecording = () => {
-
-    // mediaRecorder 중지를 통한 비디오 및 오디오 중지
-    if (mediaRecorderRef.current && audioRecorderRef.current) {
+  const stopRecording = async () => {
+    if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
-      audioRecorderRef.current.stop();
-      audioRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+      mediaRecorderRef.current.stream
+        .getTracks()
+        .forEach((track) => track.stop());
     }
 
-    // 비디오 및 오디오를 통합한 mediastream 트랙 중지
+    if (audioRecorderRef.current) {
+      audioRecorderRef.current.stop();
+      audioRecorderRef.current.stream
+        .getTracks()
+        .forEach((track) => track.stop());
+    }
+
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
     }
-
-
 
     dispatch(InterviewActions.endIsRecording());
   };
@@ -120,142 +116,157 @@ const VideoProcessPage:React.FC = () => {
   // 답변 제출 -> 마지막 질문이 아니면 다음 질문 가져오기, 마지막 제출 요청을 다보내면 분석페이지로가기
   const handleAnswerSubmit = async () => {
     try {
+      // 답변 중지
+      await stopRecording();
+
       // 만약 마지막 질문이 아니면 다음 질문을 가져와서 세팅하기
-      if(currentIndex < 4) {
-      // 서버에 보내기 위한 formData 정의
-      const formData = new FormData();
-
-      // requestData 생성
-      const requestData:VideoAnswerRequest = {
-        question_id:Number(questionId),
-        interview_id:Number(interviewId),
-        ...(portfolioId && { portfolio_id:Number(portfolioId)}),
-        ...(repositoryId && {repository_id:Number(repositoryId)})
-      };
-
-      // 비디오 Blob 추가
-      const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
-      formData.append("video_file", videoBlob, "recording.mp4");
-
-      // 오디오 Blob 추가
-      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      formData.append("audio_file", audioBlob, "recording.mp3");
-
-      submitVideoAnswer(formData);
-
-      } else {
-
+      if (currentIndex < 4) {
         // 서버에 보내기 위한 formData 정의
-      const formData = new FormData();
+        // 비디오와 오디오 Blob 생성
+        const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
 
-      // requestData 생성
-      const requestData:VideoAnswerRequest = {
-        question_id:Number(questionId),
-        interview_id:Number(interviewId),
-        ...(portfolioId && { portfolio_id:Number(portfolioId)}),
-        ...(repositoryId && {repository_id:Number(repositoryId)})
-      };
+        // FormData 구성
+        const formData = new FormData();
+        const requestData: VideoAnswerRequest = {
+          question_id: Number(questionId),
+          interview_id: Number(interviewId),
+          ...(portfolioId && { portfolio_id: Number(portfolioId) }),
+          ...(repositoryId && { repository_id: Number(repositoryId) }),
+        };
 
-      // 비디오 Blob 추가
-      const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
-      formData.append("video_file", videoBlob, "recording.mp4");
+        formData.append("video_file", videoBlob, "recording.webm");
+        formData.append("audio_file", audioBlob, "recording.webm");
+        formData.append("request", JSON.stringify(requestData));
 
-      // 오디오 Blob 추가
-      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-      formData.append("audio_file", audioBlob, "recording.mp3");
+        submitVideoAnswer(formData);
 
-      await submitVideoAnswer(formData);
+        // 다음 질문으로 넘어가기 처리
+        const nextIndex = currentIndex + 1;
+        setCurrentQuestion(questions[nextIndex]); // 바로 다음 질문 설정
+        dispatch(InterviewActions.incrementCurrentIndex());
+        dispatch(
+          InterviewActions.setQuestionId(questions[nextIndex].question_id)
+        );
+      } else {
+        // 서버에 보내기 위한 formData 정의
+        // 비디오와 오디오 Blob 생성
+        const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
 
+        // FormData 구성
+        const formData = new FormData();
+        const requestData: VideoAnswerRequest = {
+          question_id: Number(questionId),
+          interview_id: Number(interviewId),
+          ...(portfolioId && { portfolio_id: Number(portfolioId) }),
+          ...(repositoryId && { repository_id: Number(repositoryId) }),
+        };
+
+        formData.append("video_file", videoBlob, "recording.webm");
+        formData.append("audio_file", audioBlob, "recording.webm");
+        formData.append("request", JSON.stringify(requestData));
+
+        // 로딩 시작
+        setIsSubmitting(true);
+
+        await submitVideoAnswer(formData);
+
+        // 로딩 종료
+        setIsSubmitting(false);
+
+        // 라우터로 분석 페이지 이동
       }
-
+    } catch (error) {
+      alert(
+        error instanceof Error
+          ? error.message
+          : "알 수 없는 오류가 발생했습니다."
+      );
+      console.error("Error:", error);
     }
+  };
 
-  // // 업로드 함수
-  // const handleUpload = async () => {
-  //   if (recordedChunks.length === 0 || audioChunks.length === 0) return;
+  // 페이지에 들어오면
+  useEffect(() => {
+    if (questions && questions.length > 0 && questions[currentIndex]) {
+      setCurrentQuestion(questions[currentIndex]); // 현재 질문 업데이트
+      dispatch(
+        InterviewActions.setQuestionId(questions[currentIndex].question_id)
+      ); // 첫번째 질문 ID 설정
+    }
+  }, []);
 
-  //   try {
-  //     // 폼 데이터
-  //     const formData = new FormData();
+  // 몇 번 질문인지에 따라서 나타내는 번호 이모지
+  const getEmojiById = (id: number): string => {
+    switch (id) {
+      case 1:
+        return "1️⃣";
+      case 2:
+        return "2️⃣";
+      case 3:
+        return "3️⃣";
+      case 4:
+        return "4️⃣";
+      case 5:
+        return "5️⃣";
+      default:
+        return "❓"; // 기본값 (알 수 없는 번호)
+    }
+  };
 
-  //     // requestData
-  //     const requestData:VideoAnswerRequest = {
-  //       question_id:Number(questionId),
-  //       interview_id:Number(interviewId),
-  //       ...(portfolioId && { portfolio_id:Number(portfolioId)}),
-  //       ...(repositoryId && {repository_id:Number(repositoryId)})
-  //     };
+  // 번호 이모지 함수
+  const emoji = getEmojiById(currentIndex + 1);
 
-  //     // 비디오 Blob 추가
-  //     const videoBlob = new Blob(recordedChunks, { type: "video/webm" });
-  //     formData.append("video_file", videoBlob, "recording.mp4");
-
-  //     // 오디오 Blob 추가
-  //     const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-  //     formData.append("audio_file", audioBlob, "recording.mp3");
-
-  //     await submitVideoAnswer(formData);
-
-  //   }
-  // }
+  if (isSubmitting) {
+    return <LoadingSpinner mode="Submitting" />;
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 border rounded-lg shadow-md">
-      <h1 className="text-xl font-bold mb-4">Video & Audio Recorder</h1>
-      <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4">
-        {/* 실시간 스트림 표시 */}
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="w-full h-full object-cover"
-        />
+    <>
+      <div className="grid grid-cols-6 h-screen">
+        <section className="col-span-1"></section>
+        {/* 메인 컨텐츠 */}
+        <section className="col-span-4 flex justify-center items-center border-2 my-auto p-10 rounded-lg h-5/6 shadow-sm">
+          <section className="grid grid-cols-2 w-full h-2/3">
+            {/* 왼쪽에 면접 화면 출력 */}
+            <section className="col-span-1 flex flex-col items-center justify-center bg-gray-100 rounded-lg p-4 shadow-md">
+              {/* 실시간 스트림 표시 */}
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-full object-cover"
+              />
+            </section>
+            {/* 오른쪽에 질문 및 버튼 */}
+            <section className="col-span-1 flex flex-col justify-around ml-10">
+              <div className="text-2xl font-bold">{emoji} 질문</div>
+              <div>{currentQuestion?.question_text}</div>
+              {/* 녹화 버튼 - 시작 버튼 종료 버튼 2개를 만들어서 isRecording 상태에 따라서 다르게 보여주기 */}
+              {!isRecording ? (
+                <button
+                  onClick={startRecording}
+                  className="p-3 w-full bg-conceptSkyBlue rounded-3xl font-bold text-white hover:bg-hoverConceptSkyBlue"
+                >
+                  답변 시작
+                </button>
+              ) : (
+                <button
+                  onClick={handleAnswerSubmit}
+                  className="p-3 w-full bg-conceptSkyBlue rounded-3xl font-bold text-white hover:bg-hoverConceptSkyBlue"
+                >
+                  답변 종료
+                </button>
+              )}
+            </section>
+          </section>
+        </section>
+        <section className="col-span-1"></section>
       </div>
-
-      <div className="flex gap-4 justify-center mb-4">
-        {!isRecording ? (
-          <button
-            onClick={startRecording}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Start Recording
-          </button>
-        ) : (
-          <button
-            onClick={stopRecording}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Stop Recording
-          </button>
-        )}
-
-        {/* {recordedChunks.length > 0 && (
-          <button
-            onClick={handleUpload}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          >
-            Upload
-          </button>
-        )} */}
-      </div>
-
-      {/* {error && (
-        <div className="bg-red-100 text-red-600 p-4 rounded mb-4">
-          <p>{error}</p>
-        </div>
-      )} */}
-
-      {/* {preview && (
-        <div className="space-y-4">
-          <h3 className="font-medium">Preview:</h3>
-          <video src={preview} controls className="w-full rounded mb-2" />
-          <audio src={audioPreview} controls className="w-full" />
-        </div>
-      )} */}
-    </div>
+    </>
   );
-}
+};
 
 export default VideoProcessPage;

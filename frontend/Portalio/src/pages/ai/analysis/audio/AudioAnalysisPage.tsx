@@ -61,15 +61,12 @@ const AudioAnalysisPage: React.FC = () => {
             onTabClick={handleTabClick}
           />
         </header>
-
-        {!analysisResult ? (
-          <div>분석 결과를 불러오는 중...</div>
-        ) : (
+        <main>
           <AudioAnalysisContent
             result={analysisResult}
             selectedTab={selectedTab}
           />
-        )}
+        </main>
       </section>
       <section className="col-span-1"></section>
     </div>

@@ -51,8 +51,7 @@ const AudioAnalysisContent: React.FC<AudioAnalysisContentProps> = ({
     <>
       <section className="mb-8">
         <header className="flex items-center mb-4 text-xl font-bold">
-          <span className="mr-2">Q{selectedTab + 1}.</span>
-          {selectedQuestion.content}
+          <div>{selectedQuestion.content}</div>
         </header>
 
         {selectedQuestion.answers.map((answer, aIndex) => (

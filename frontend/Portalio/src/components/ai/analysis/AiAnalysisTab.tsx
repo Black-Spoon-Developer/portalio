@@ -1,17 +1,16 @@
 import React from "react";
-import { Question } from "../../../interface/aiInterview/AudioInterviewInterface";
 
-interface AnalysisTabProps {
-  questions?: Question[];
+interface AnalysisTabProps<T> {
+  questions?: T[];
   selectedTab: number;
   onTabClick: (id: number) => void;
 }
 
-const AiAnalysisTab: React.FC<AnalysisTabProps> = ({
+const AiAnalysisTab = <T extends { content?: string }>({
   questions,
   selectedTab,
   onTabClick,
-}) => {
+}: AnalysisTabProps<T>) => {
   return (
     <div className="flex space-x-4 mb-4">
       {questions?.map((_, index) => (

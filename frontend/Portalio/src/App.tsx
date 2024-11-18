@@ -43,6 +43,8 @@ import UserActivityListPage from "./pages/user/UserActivityListPage";
 import VideoProcessPage from "./pages/ai/analysis/video/VideoProcessPage.tsx";
 import AudioProcessPage from "./pages/ai/analysis/audio/AudioProcessPage.tsx";
 import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
+import TextProcessPage from "./pages/ai/analysis/text/TextProcessPage.tsx";
+import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
 import InterviewIntroPage from "./pages/common/InterviewIntroPage.tsx";
 import InterviewSetupPage from "./pages/common/InterviewSetupPage.tsx";
 import InterviewQuestionPage from "./pages/common/InterviewQuestionPage.tsx";
@@ -133,6 +135,8 @@ const App: React.FC = () => {
             path="interview/video/process"
             element={<VideoProcessPage />}
           ></Route>
+          {/* 화상 면접 분석 조회 페이지 */}
+
           {/* 음성 면접 */}
           {/* 음성 면접 진행 페이지 */}
           <Route
@@ -143,6 +147,17 @@ const App: React.FC = () => {
           <Route
             path="interview/audio/analysis/:interview_id"
             element={<AudioAnalysisPage />}
+          ></Route>
+          {/* 텍스트 면접 */}
+          {/* 텍스트 면접 진행 페이지 */}
+          <Route
+            path="interview/text/process"
+            element={<TextProcessPage />}
+          ></Route>
+          {/* 텍스트 면접 결과 분석 조회 페이지 */}
+          <Route
+            path="interview/text/analysis/:interview_id"
+            element={<TextAnalysisPage />}
           ></Route>
           {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
           <Route path="record/:record_id" element={<AIRecordPage />} /> */}
