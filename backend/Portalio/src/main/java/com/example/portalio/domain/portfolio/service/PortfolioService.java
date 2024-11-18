@@ -67,6 +67,10 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(PortfolioNotFoundException::new);
 
+        portfolio.setPortfolioViews(portfolio.getPortfolioViews() + 1);
+
+        portfolioRepository.save(portfolio);
+
         Boolean likeStatus = portfolioRecomRepository.existsByMemberAndPortfolio(member, portfolio);
 
         return PortfolioLikeResponse.from(portfolio, likeStatus);

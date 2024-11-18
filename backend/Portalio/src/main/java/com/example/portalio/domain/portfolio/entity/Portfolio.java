@@ -103,4 +103,6 @@ public class Portfolio extends AuditableCreatedEntity {
     public void setPortfolioIsPrimary(Boolean portfolioIsPrimary) { this.portfolioIsPrimary = portfolioIsPrimary; }
 
     public void setPortfolioDescription(String portfolioDescription) { this.portfolioDescription = portfolioDescription; }
+
+    public void setPortfolioViews(Integer portfolioViews) { this.portfolioViews = portfolioViews; }
 }

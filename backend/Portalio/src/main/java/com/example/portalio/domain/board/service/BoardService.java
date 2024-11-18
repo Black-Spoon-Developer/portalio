@@ -64,6 +64,10 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
 
+        board.setBoardViews(board.getBoardViews() + 1);
+
+        boardRepository.save(board);
+
         Boolean likeStatus = boardRecomRepository.existsByMemberAndBoard(member, board);
 
         return BoardLikeResponse.from(board, likeStatus);
