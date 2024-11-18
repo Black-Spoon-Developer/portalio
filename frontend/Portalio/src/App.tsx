@@ -26,10 +26,8 @@ import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
 import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
-// import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
-import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
-// import AudioProcessPage from "./pages/ai/analysis/audio/AudioProcessPage.tsx";
-import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
+
+import UserActivityListPage from "./pages/user/UserActivityListPage";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
 // import RecruiterPage from "./pages/recruiter/RecruiterPage.tsx";
@@ -40,7 +38,16 @@ import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 // import PortfolioPage from "./pages/board/PortfolioPage.tsx";
-import UserActivityListPage from "./pages/user/UserActivityListPage";
+// import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
+// import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
+import VideoProcessPage from "./pages/ai/analysis/video/VideoProcessPage.tsx";
+import AudioProcessPage from "./pages/ai/analysis/audio/AudioProcessPage.tsx";
+import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
+import InterviewIntroPage from "./pages/common/InterviewIntroPage.tsx";
+import InterviewSetupPage from "./pages/common/InterviewSetupPage.tsx";
+import InterviewQuestionPage from "./pages/common/InterviewQuestionPage.tsx";
+import LoadingSpinner from "./components/spinner/LoadingSpinner.tsx";
+// import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -111,19 +118,41 @@ const App: React.FC = () => {
         {/* <Route path="/recruiter" element={<RecruiterPage />} /> */}
 
         {/* AI (주석 처리) */}
-        {/* <Route path="/ai" element={<Outlet />}>
-          <Route path="introduce" element={<AIIntroducePage />} />
-          <Route path="interview/:interview_id" element={<AIInterviewPage />} />
-          <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
-          <Route path="record/:record_id" element={<AIRecordPage />} />
-        </Route> */}
+        <Route path="/ai" element={<Outlet />}>
+          {/* 히어로 페이지 */}
+          <Route path="introduce" element={<InterviewIntroPage />} />
+          {/* 질문 생성 페이지 */}
+          <Route path="question" element={<InterviewQuestionPage />}></Route>
+          <Route
+            path="interview-setup"
+            element={<InterviewSetupPage />}
+          ></Route>
+          {/* 화상 면접 */}
+          {/* 화상 면접 페이지 */}
+          <Route
+            path="interview/video/process"
+            element={<VideoProcessPage />}
+          ></Route>
+          {/* 음성 면접 */}
+          {/* 음성 면접 진행 페이지 */}
+          <Route
+            path="interview/audio/process"
+            element={<AudioProcessPage />}
+          />
+          {/* 음성 면접 결과 분석 조회 페이지 */}
+          <Route
+            path="interview/audio/analysis/:interview_id"
+            element={<AudioAnalysisPage />}
+          ></Route>
+          {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
+          <Route path="record/:record_id" element={<AIRecordPage />} /> */}
+        </Route>
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
-        <Route path="/test" element={<AudioAnalysisPage />}></Route>
-        <Route path="/test/list" element={<AiInterviewRecordsPage />}></Route>
+        <Route path="/test" element={<LoadingSpinner />}></Route>
       </Routes>
 
       {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}

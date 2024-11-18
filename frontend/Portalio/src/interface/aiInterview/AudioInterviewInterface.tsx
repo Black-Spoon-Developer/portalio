@@ -5,7 +5,7 @@ export interface AudioInterviewResult {
   questions: Question[];
 }
 
-interface Question {
+export interface Question {
   content: string;
   intent: string;
   tag: string;
@@ -75,4 +75,11 @@ interface PronunciationAnalysis {
 interface SpeakingPattern {
   seperation_speed: string; // 이전 '전반적 속도'
   point: string[] | null; // 이전 '특징'
+}
+
+export interface AudioAnswerRequest {
+  question_id: number;
+  interview_id: number;
+  portfolio_id?: number;
+  repository_id?: number;
 }

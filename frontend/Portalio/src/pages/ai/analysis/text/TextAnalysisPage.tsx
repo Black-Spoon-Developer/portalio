@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import AiAnalysisTab from "../../../../components/ai/analysis/AiAnalysisTab";
 import TextAnalysisContent from "../../../../components/ai/analysis/text/TextAnalysisContent";
-
-interface Question {
-  id: number;
-  question: string;
-}
+import { Question } from "../../../../interface/aiInterview/AudioInterviewInterface";
 
 const TextAnalysisPage: React.FC = () => {
   // useEffect로 질문 가져온 후 questions에 넣기
