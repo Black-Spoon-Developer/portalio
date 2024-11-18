@@ -76,15 +76,12 @@ public class PortfolioService {
     // 최신 글 10개씩 가져오는 거임
     @Transactional
     public PortfolioLikeListResponse getPortfolioList(int skip, int limit, CustomOAuth2User oauth2User) {
-
-        Pageable pageable = PageRequest.of(skip/limit, limit);
+        Pageable pageable = PageRequest.of(skip / limit, limit);
 
         List<Portfolio> portfolios = portfolioRepository.findAllByPortfolioPostTrueOrderByCreatedDesc(pageable);
 
-
         Map<Long, Boolean> likeStatusMap = new HashMap<>();
         if (oauth2User != null) {
-            // 인증된 경우 좋아요 상태를 조회
             Member member = findMember(oauth2User.getMemberId());
 
             List<PortfolioRecom> likes = portfolioRecomRepository.findAllByMemberAndPortfolioIn(member, portfolios);
@@ -94,6 +91,7 @@ public class PortfolioService {
 
         return PortfolioLikeListResponse.from(portfolios, likeStatusMap);
     }
+
 
     public PortfolioListResponse getMyPortfolioList(int skip, int limit, String username) {
 
