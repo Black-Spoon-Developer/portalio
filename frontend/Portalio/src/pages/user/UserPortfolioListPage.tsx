@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { getMyPortfolios } from "../../api/PortfolioAPI";
 import { Link, useNavigate } from "react-router-dom";
-import { Viewer } from "@toast-ui/react-editor";
 
 interface Portfolio {
   portfolioId: number;
