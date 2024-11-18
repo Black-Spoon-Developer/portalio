@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getTop10Portfolios } from "../../../api/PortfolioAPI"
 import { Portfolio } from "../../../interface/portfolio/PortfolioInterface";
+import { useNavigate } from "react-router-dom";
 
 const PopularPortfolio: React.FC = () => {
+  const navigate = useNavigate();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
 
   useEffect(() => {
@@ -19,25 +21,23 @@ const PopularPortfolio: React.FC = () => {
     fetchTop10Portfolio();
   }, []);
 
+  const handlePortfolioClick = (portfolioId: number) => {
+    // 포트폴리오 상세 페이지로 이동
+    navigate(`/portfolio/${portfolioId}`);
+  };
+
   return (
     <div>
       <header className="mb-3">🔥 오늘의 인기 포트폴리오</header>
-      <div className="grid grid-cols-2 gap-4">
+      <div>
         {portfolios.map((portfolio) => (
           <div
             key={portfolio.portfolioId}
             className="shadow-lg border-2 rounded-md w-[14vw] h-[36vh] p-4 flex flex-col justify-between"
+            onClick={() => handlePortfolioClick(portfolio.portfolioId)} // 클릭 시 상세 페이지로 이동
           >
             <div>
-              <img
-                src={portfolio.portfolioThumbnailImg}
-                alt={portfolio.portfolioTitle}
-                className="w-full h-[60%] object-cover rounded-md mb-3"
-              />
               <h2 className="text-lg font-semibold">{portfolio.portfolioTitle}</h2>
-            </div>
-            <div className="text-sm text-gray-500">
-              조회수: {portfolio.portfolioViews} | 추천: {portfolio.portfolioRecommendationCount} | 댓글: {portfolio.portfolioCommentCount}
             </div>
           </div>
         ))}
