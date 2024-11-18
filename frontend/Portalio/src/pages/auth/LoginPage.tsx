@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Logo from "../../assets/Logo.png";
 import TempImg from "../../assets/TempServiceImg.png";
 import UserLogin from "../../components/auth/user/UserLogin";
@@ -6,7 +6,7 @@ import RecruiterLogin from "../../components/auth/recruiter/RecruiterLogin";
 
 const LoginPage: React.FC = () => {
   // 개인 & 채용 담당자 상태 관리 (기본값: 개인)
-  const [isUserLogin, setIsUserLogin] = useState(true);
+  // const [isUserLogin, setIsUserLogin] = useState(true);
 
   return (
     <div className="min-h-screen">
@@ -52,7 +52,7 @@ const LoginPage: React.FC = () => {
                 </div>
               </div>
               {/* 로그인 부분 */}
-              {isUserLogin ? <UserLogin /> : <RecruiterLogin />}
+              {/* {isUserLogin ? <UserLogin /> : <RecruiterLogin />} */}
             </section>
           </div>
         </body>
