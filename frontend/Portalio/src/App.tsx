@@ -50,6 +50,7 @@ import InterviewIntroPage from "./pages/common/InterviewIntroPage.tsx";
 import InterviewSetupPage from "./pages/common/InterviewSetupPage.tsx";
 import InterviewQuestionPage from "./pages/common/InterviewQuestionPage.tsx";
 import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
+import Employment from "./components/common/employment/Employment.tsx";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -66,6 +67,7 @@ const App: React.FC = () => {
       <Routes>
         {/* Main */}
         <Route path="/" element={<BoardPage />} />
+        <Route path="/employment" element={<Employment />} />
 
         {/* User */}
         <Route path="/users" element={<Outlet />}>
