@@ -156,7 +156,7 @@ const UserProfilePage: React.FC = () => {
   const displayedCareers = isExpanded ? careerData : careerData.slice(0, 3);
 
   return (
-    <div className="user-profile-page">
+    <div className="user-profile-page min-h-screen">
       {/* 프로필 및 이력 / 경력, 소셜 섹션 */}
       <div className="user-profile-container">
         <div className="profile-header">

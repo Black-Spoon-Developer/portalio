@@ -17,12 +17,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
 const JobHistory: React.FC = () => {
-  const { user_id } = useParams<{ user_id: string }>();
-  const userId = Number(user_id);
+  const { username } = useParams<{ username: string }>();
 
   // 수정 버튼 제어 변수
-  const memberId = useSelector((state: RootState) => state.auth.memberId);
-  const isOwner = user_id && memberId ? user_id === memberId : false;
+  const memberUsername = useSelector((state: RootState) => state.auth.memberUsername);
+  const isOwner = username && memberUsername ? username === memberUsername : false;
 
   // 이력/경력 관련 변수
   const [isExpanded, setIsExpanded] = useState(false);
@@ -57,7 +56,7 @@ const JobHistory: React.FC = () => {
 
   // 경력/이력 조회 함수
   const fetchJobHistory = async () => {
-    const response = await getjobHistory(userId);
+    const response = await getjobHistory(username || '');
     setCareers(response);
   };
 

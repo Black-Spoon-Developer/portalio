@@ -78,10 +78,10 @@ public class UserDetailController {
     
     // 유저 소셜 링크 조회
     @Operation(summary = "[개인회원] 소셜 링크 조회", description = "memberId 값으로 조회")
-    @GetMapping("/social/{memberId}")
-    public ResponseEntity<?> getUserSocialLink(@PathVariable("memberId") Long memberId) {
+    @GetMapping("/social/{memberUsername}")
+    public ResponseEntity<?> getUserSocialLink(@PathVariable("memberUsername") String memberUsername) {
 
-        UserSocialLinkResponse response = userDetailService.getUserSocialLink(memberId);
+        UserSocialLinkResponse response = userDetailService.getUserSocialLink(memberUsername);
 
         return ResponseEntity.ok(response);
     }
@@ -102,10 +102,10 @@ public class UserDetailController {
 
     // 유저 자기소개 조회
     @Operation(summary = "[개인회원] 유저 자기소개 조회", description = "memberId 값으로 자기소개 조회")
-    @GetMapping("/introduction/{memberId}")
-    public ResponseEntity<?> getUserIntroduction(@PathVariable("memberId") Long memberId) {
+    @GetMapping("/introduction/{memberUsername}")
+    public ResponseEntity<?> getUserIntroduction(@PathVariable("memberUsername") String memberUsername) {
 
-        UserIntroductionResponse response = userDetailService.getIntroductionByMemberId(memberId);
+        UserIntroductionResponse response = userDetailService.getIntroductionByMemberUsername(memberUsername);
 
         return ResponseEntity.ok(response);
     }

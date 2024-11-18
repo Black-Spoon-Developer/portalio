@@ -43,7 +43,7 @@ const ActivityDetailModal: React.FC<ActivityDetailMdProps> = ({
 
   // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
   const handleAuthorProfile = () => {
-    navigate(`/users/profile/${activityDetailInfo?.memberId}`);
+    navigate(`/users/profile/${activityDetailInfo?.memberUsername}`);
   };
 
   // 글 수정 버튼을 누르면 수정 페이지로 이동

@@ -8,7 +8,7 @@ import {
   setUserIntroduction,
 } from "./../../api/MyPageAPI";
 import { uploadProfilePicture } from "../../api/S3ImageUploadAPI";
-import { updateProfilePicture } from "./../../api/MemberAPI";
+import { updateProfilePicture, getProfilePicture } from "./../../api/MemberAPI";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/auth/AuthSlice";
 
@@ -22,13 +22,13 @@ const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
     onClick={onClose}
   >
     <div
-      className="modal-content bg-white p-4 rounded shadow-lg"
+      className="modal-content bg-white p-8 rounded shadow-lg relative"
       onClick={(e) => e.stopPropagation()}
     >
       {children}
       <button
         onClick={onClose}
-        className="mt-4 text-right w-full htransition-all duration-200 flex leading-none"
+        className="absolute bottom-3 right-3 text-gray-500 hover:text-gray-700"
       >
         닫기
       </button>
@@ -38,14 +38,20 @@ const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
 
 const ProfileIntroduce: React.FC = () => {
   // Redux 에서 memberId와 프로필 사진 정보 추출
-  const memberId = useSelector((state: RootState) => state.auth.memberId);
-  const picture = useSelector((state: RootState) => state.auth.memberPicture);
+  const memberUsername = useSelector(
+    (state: RootState) => state.auth.memberUsername
+  );
+  const oAuthPicture = useSelector(
+    (state: RootState) => state.auth.memberPicture
+  );
 
   // URL에서 user_id 파라미터 추출
-  const { user_id } = useParams<{ user_id: string }>();
-  const isOwner = user_id && memberId ? user_id === memberId : false;
+  const { username } = useParams<{ username: string }>();
+  const isOwner =
+    username && memberUsername ? username === memberUsername : false;
 
   // 상태 관리
+  const [picture, setPicture] = useState(oAuthPicture);
   const [isModalOpen, setIsModalOpen] = useState(false); // 프로필 사진 변경 모달
   const [isViewModalOpen, setIsViewModalOpen] = useState(false); // 프로필 사진 보기 모달
   const [isFileUploadModalOpen, setIsFileUploadModalOpen] = useState(false); // 파일 업로드 모달 상태
@@ -64,11 +70,23 @@ const ProfileIntroduce: React.FC = () => {
   // Redux 디스패치
   const dispatch = useDispatch();
 
-  // 유저 소개 데이터 조회 함수
+  // 유저 사진 조회 함수
   useEffect(() => {
-    const fetchUserIntroduction = async () => {
-      if (memberId) {
-        const data = await getUserIntroduction(Number(memberId));
+    const fetchUserPicture = async () => {
+      if (username) {
+        const data = await getProfilePicture(username);
+        setPicture(data.memberPicture);
+      }
+    };
+
+    fetchUserPicture();
+  }, [username]);
+
+  // 유저 프로필 데이터 조회 함수
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (username) {
+        const data = await getUserIntroduction(username);
         setIntroduction({
           userIntroductionTitle: data.userIntroductionTitle,
           userIntroductionContent: data.userIntroductionContent,
@@ -76,8 +94,8 @@ const ProfileIntroduce: React.FC = () => {
       }
     };
 
-    fetchUserIntroduction();
-  }, [memberId]);
+    fetchUserInfo();
+  }, [username]);
 
   // 유저 소개 저장 함수
   const handleSaveIntro = async () => {
@@ -100,6 +118,8 @@ const ProfileIntroduce: React.FC = () => {
         if (response) {
           // 로컬 상태 업데이트
           dispatch(authActions.updateMemberPicture(croppedImage));
+          setPicture(croppedImage); // 로컬 상태 업데이트
+          setIsCropModalOpen(false); // 크롭 모달 닫기
         }
       }
     }
@@ -126,16 +146,18 @@ const ProfileIntroduce: React.FC = () => {
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           {/* 프로필 사진 변경 버튼 */}
-          <button
-            className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded"
-            onClick={() => {
-              setIsModalOpen(false); // 현재 모달 닫기
-              setIsViewModalOpen(false); // 사진 보기 모달도 닫기
-              setIsFileUploadModalOpen(true); // 파일 업로드 모달 열기
-            }}
-          >
-            프로필 사진 변경
-          </button>
+          {isOwner && (
+            <button
+              className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded"
+              onClick={() => {
+                setIsModalOpen(false); // 현재 모달 닫기
+                setIsViewModalOpen(false); // 사진 보기 모달도 닫기
+                setIsFileUploadModalOpen(true); // 파일 업로드 모달 열기
+              }}
+            >
+              프로필 사진 변경
+            </button>
+          )}
           {/* 기존 프로필 사진 보기 버튼 */}
           <button
             className="w-full text-left mb-2 hover:bg-gray-100 p-2 rounded"
@@ -184,7 +206,6 @@ const ProfileIntroduce: React.FC = () => {
               <button
                 onClick={() => {
                   handleCropComplete(); // 크롭 완료 로직 (추후 API 호출로 연결)
-                  setIsCropModalOpen(false); // 크롭 모달 닫기
                 }}
                 className="text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-700"
               >

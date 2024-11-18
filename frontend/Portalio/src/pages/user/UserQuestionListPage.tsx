@@ -63,11 +63,11 @@ const UserQuestionListPage: React.FC = () => {
   const currentBoards = boards.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 min-h-screen">
       <TempBoardTab user_id={user_id || ""} />
       <div className="flex justify-end mb-4">
         <button
-          className="bg-[#57D4E2] mt-4 px-4 py-2 text-white rounded-lg font-bold hover:bg-[#48C1CE]"
+          className="bg-sky-200 text-gray-800 px-4 py-2 rounded-lg font-bold hover:bg-sky-300 transition mt-4"
           onClick={() => navigate("/question/create")}
         >
           작성
@@ -112,18 +112,18 @@ const UserQuestionListPage: React.FC = () => {
                       <span
                         className={`flex items-center space-x-2 text-sm font-medium ${
                           board.boardSolve
-                            ? "text-conceptSkyBlue"
-                            : "text-conceptGrey"
+                            ? "text-green-500"
+                            : "text-gray-400"
                         }`}
                       >
                         {board.boardSolve ? (
                           <>
-                            <IoCheckmarkCircleSharp className="text-conceptSkyBlue size-5" />
+                            <IoCheckmarkCircleSharp className="text-green-500 size-5" />
                             <span>해결됨</span>
                           </>
                         ) : (
                           <>
-                            <IoCheckmarkCircleOutline className="text-conceptGrey size-5" />
+                            <IoCheckmarkCircleOutline className="text-gray-400 size-5" />
                             <span>미해결</span>
                           </>
                         )}
@@ -158,7 +158,7 @@ const UserQuestionListPage: React.FC = () => {
               onClick={() => handlePageChange(page)}
               className={`px-3 py-1 rounded-md ${
                 currentPage === page
-                  ? "bg-[#57D4E2] text-white font-semibold"
+                  ? "bg-sky-300 text-white font-semibold"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >

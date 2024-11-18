@@ -169,12 +169,8 @@ export const getMyBoards = async (
   limit: number,
   boardCategory: string
 ) => {
-  const state: RootState = store.getState();
-  const accessToken = state.auth.accessToken;
   const response = await axios.get(`${BASE_URL}/api/v1/boards/my/${username}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+
     params: {
       skip: skip,
       limit: limit,
@@ -191,14 +187,9 @@ export const getMyActivities = async (
   skip: number,
   limit: number
 ) => {
-  const state: RootState = store.getState();
-  const accessToken = state.auth.accessToken;
   const response = await axios.get(
     `${BASE_URL}/api/v1/activity/my/${username}`,
     {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
       params: {
         skip: skip,
         limit: limit,

@@ -8,7 +8,7 @@ import PostsBoards from "../../components/mypage/PostBoards";
 
 const UserProfilePage: React.FC = () => {
   return (
-    <div className="grid grid-cols-4">
+    <div className="grid grid-cols-4 min-h-screen">
       <div className="col-span-1"></div>
       {/* 프로필 및 이력 / 경력, 소셜 섹션 */}
       <div className="col-span-2 my-8 flex flex-col ">

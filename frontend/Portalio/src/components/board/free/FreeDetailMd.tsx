@@ -11,6 +11,7 @@ interface FreeDetailMdProps {
   freeContent: string;
   isLiked: boolean;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   memberPicture: string;
   setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +21,7 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
   freeTitle,
   freeContent,
   isLiked,
+  memberUsername,
   memberNickname,
   memberPicture,
   memberId,
@@ -50,7 +52,7 @@ const FreeDetailMd: React.FC<FreeDetailMdProps> = ({
 
   // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
   const handleAuthorProfile = () => {
-    navigate(`/users/profile/${userID}`);
+    navigate(`/users/profile/${memberUsername}`);
   };
 
   // 글 수정 버튼을 누르면 수정 페이지로 이동

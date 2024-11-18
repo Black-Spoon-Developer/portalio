@@ -61,7 +61,7 @@ const App: React.FC = () => {
         <Route path="/users" element={<Outlet />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<UserSignupPage />} />
-          <Route path="profile/:user_id" element={<Outlet />}>
+          <Route path="profile/:username" element={<Outlet />}>
             <Route index element={<UserProfilePage />} />
             <Route path="free" element={<UserFreeListPage />} />
             <Route path="setting" element={<UserSettingPage />} />

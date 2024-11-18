@@ -8,8 +8,8 @@ import {
 import axios from "axios";
 
 // 경력/이력 조회
-export const getjobHistory = async (memberId: number) => {
-  const response = await axios.get(`${BASE_URL}/api/v1/jobHistory/${memberId}`);
+export const getjobHistory = async (username: string) => {
+  const response = await axios.get(`${BASE_URL}/api/v1/jobHistory/${username}`);
 
   return response.data.items;
 };
@@ -68,9 +68,9 @@ export const deleteJobHistory = async (jobHistoryId: number) => {
 };
 
 // 소셜 링크 조회
-export const getSocialLink = async (memberId: number) => {
+export const getSocialLink = async (username: string) => {
   const response = await axios.get(
-    `${BASE_URL}/api/v1/users/social/${memberId}`
+    `${BASE_URL}/api/v1/users/social/${username}`
   );
 
   return response.data;
@@ -97,9 +97,9 @@ export const createOrUpdateSocialLink = async (
 };
 
 // 회원 자기소개 조회
-export const getUserIntroduction = async (memberId: number) => {
+export const getUserIntroduction = async (username: string) => {
   const response = await axios.get(
-    `${BASE_URL}/api/v1/users/introduction/${memberId}`
+    `${BASE_URL}/api/v1/users/introduction/${username}`
   );
 
   return response.data;
