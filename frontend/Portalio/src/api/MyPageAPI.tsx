@@ -114,7 +114,7 @@ export const setUserIntroduction = async (introduction: {
   const accessToken = state.auth.accessToken;
 
   const response = await axios.patch(
-    `${BASE_URL}/api/v1/users/introduction/saveOrEdit/`,
+    `${BASE_URL}/api/v1/users/introduction/saveOrEdit`,
     introduction, // 요청 데이터로 전달
     {
       headers: {
