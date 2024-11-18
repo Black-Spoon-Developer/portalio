@@ -45,6 +45,7 @@ const PortfolioEditPage: React.FC = () => {
         try {
           const response = await fetchPortfolioDetail(portfolio_id); // API 호출
           const data: PortfolioRequest = response.data; // response의 data를 PortfolioResponse로 타입 지정
+          console.log(data)
 
           setTitle(data.portfolioTitle);
           setContent(data.portfolioContent);
