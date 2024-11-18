@@ -31,8 +31,8 @@ const truncateText = (text: string, maxLength: number) => {
 const UserActivityListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [boards, setBoards] = useState<Board[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태
-  const [selectedBoardId, setSelectedBoardId] = useState<number | null>(null); // 선택된 게시글 ID
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBoardId, setSelectedBoardId] = useState<number | null>(null);
   const username = useSelector((state: RootState) => state.auth.memberUsername);
   const { user_id } = useParams<{ user_id: string }>();
 
@@ -43,20 +43,18 @@ const UserActivityListPage: React.FC = () => {
     if (username) {
       const fetchActivitiesWithRepositories = async () => {
         try {
-          // 활동 게시글 불러오기
           const activitiesResponse = await getMyActivities(
             username,
             skip,
             limit
           );
 
-          // 각 활동 게시글의 repositoryId로 레포지토리 이름 가져오기
           const activitiesWithRepositoryNames = await Promise.all(
             activitiesResponse.data.items.map(async (activity: Board) => {
               const repository = await getRepository(activity.repositoryId);
               return {
                 ...activity,
-                repositoryName: repository.repositoryTitle, // 레포지토리 이름 추가
+                repositoryName: repository.repositoryTitle,
               };
             })
           );
@@ -77,24 +75,22 @@ const UserActivityListPage: React.FC = () => {
     setCurrentPage(page);
   };
 
-  // 게시글 클릭 시 모달 열기
   const handlePostClick = (boardId: number) => {
     setSelectedBoardId(boardId);
     setIsModalOpen(true);
   };
 
-  // 모달 닫기
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedBoardId(null);
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 min-h-screen">
       <TempBoardTab user_id={user_id || ""} />
       <div className="flex justify-end mb-4">
         <button
-          className="bg-[#57D4E2] mt-4 px-4 py-2 text-white rounded-lg font-bold hover:bg-[#48C1CE]"
+          className="bg-sky-200 mt-4 px-4 py-2 text-gray-800 rounded-lg font-bold hover:bg-sky-300 transition"
           onClick={() => console.log("작성 버튼 클릭")}
         >
           작성
@@ -105,7 +101,7 @@ const UserActivityListPage: React.FC = () => {
           {boards.map((board) => (
             <li
               key={board.activityBoardId}
-              onClick={() => handlePostClick(board.activityBoardId)} // 클릭 시 모달 열기
+              onClick={() => handlePostClick(board.activityBoardId)}
               className="flex items-center justify-between p-4 border-b border-gray-300 hover:bg-gray-100 hover:shadow-md transition duration-200 cursor-pointer"
             >
               <div className="flex items-center space-x-4 w-full">
@@ -157,7 +153,7 @@ const UserActivityListPage: React.FC = () => {
               onClick={() => handlePageChange(page)}
               className={`px-3 py-1 rounded-md ${
                 currentPage === page
-                  ? "bg-[#57D4E2] text-white font-semibold"
+                  ? "bg-sky-300 text-white font-semibold"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
             >
@@ -175,7 +171,6 @@ const UserActivityListPage: React.FC = () => {
         )}
       </div>
 
-      {/* 모달 */}
       {isModalOpen && selectedBoardId && (
         <ActivityDetailModal
           activityId={selectedBoardId}

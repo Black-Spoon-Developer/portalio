@@ -25,9 +25,9 @@ import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.t
 import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
-import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
+import UserActivityListPage from "./pages/user/UserActivityListPage";
 import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
-import MarkdownGuide from "./components/board/HowToUseMD.tsx"
+import MarkdownGuide from "./components/board/HowToUseMD.tsx";
 // import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
@@ -39,7 +39,16 @@ import MarkdownGuide from "./components/board/HowToUseMD.tsx"
 // import AIAnalyzePage from "./pages/ai/AIAnalyzePage.tsx";
 // import AIRecordPage from "./pages/ai/AIRecordPage.tsx";
 // import PortfolioPage from "./pages/board/PortfolioPage.tsx";
-import UserActivityListPage from "./pages/user/UserActivityListPage";
+// import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
+// import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
+import VideoProcessPage from "./pages/ai/analysis/video/VideoProcessPage.tsx";
+import AudioProcessPage from "./pages/ai/analysis/audio/AudioProcessPage.tsx";
+import TextProcessPage from "./pages/ai/analysis/text/TextProcessPage.tsx";
+import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
+import InterviewIntroPage from "./pages/common/InterviewIntroPage.tsx";
+import InterviewSetupPage from "./pages/common/InterviewSetupPage.tsx";
+import InterviewQuestionPage from "./pages/common/InterviewQuestionPage.tsx";
+import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -61,7 +70,7 @@ const App: React.FC = () => {
         <Route path="/users" element={<Outlet />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<UserSignupPage />} />
-          <Route path="profile/:user_id" element={<Outlet />}>
+          <Route path="profile/:username" element={<Outlet />}>
             <Route index element={<UserProfilePage />} />
             <Route path="free" element={<UserFreeListPage />} />
             <Route path="setting" element={<UserSettingPage />} />
@@ -110,12 +119,48 @@ const App: React.FC = () => {
         {/* <Route path="/recruiter" element={<RecruiterPage />} /> */}
 
         {/* AI (주석 처리) */}
-        {/* <Route path="/ai" element={<Outlet />}>
-          <Route path="introduce" element={<AIIntroducePage />} />
-          <Route path="interview/:interview_id" element={<AIInterviewPage />} />
-          <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
-          <Route path="record/:record_id" element={<AIRecordPage />} />
-        </Route> */}
+        <Route path="/ai" element={<Outlet />}>
+          {/* 히어로 페이지 */}
+          <Route path="introduce" element={<InterviewIntroPage />} />
+          {/* 질문 생성 페이지 */}
+          <Route path="question" element={<InterviewQuestionPage />}></Route>
+          <Route
+            path="interview-setup"
+            element={<InterviewSetupPage />}
+          ></Route>
+          {/* 화상 면접 */}
+          {/* 화상 면접 페이지 */}
+          <Route
+            path="interview/video/process"
+            element={<VideoProcessPage />}
+          ></Route>
+          {/* 화상 면접 분석 조회 페이지 */}
+
+          {/* 음성 면접 */}
+          {/* 음성 면접 진행 페이지 */}
+          <Route
+            path="interview/audio/process"
+            element={<AudioProcessPage />}
+          />
+          {/* 음성 면접 결과 분석 조회 페이지 */}
+          <Route
+            path="interview/audio/analysis/:interview_id"
+            element={<AudioAnalysisPage />}
+          ></Route>
+          {/* 텍스트 면접 */}
+          {/* 텍스트 면접 진행 페이지 */}
+          <Route
+            path="interview/text/process"
+            element={<TextProcessPage />}
+          ></Route>
+          {/* 텍스트 면접 결과 분석 조회 페이지 */}
+          <Route
+            path="interview/text/analysis/:interview_id"
+            element={<TextAnalysisPage />}
+          ></Route>
+          {/* <Route path="analyze/:analyze_id" element={<AIAnalyzePage />} />
+          <Route path="record/:record_id" element={<AIRecordPage />} /> */}
+        </Route>
 
         {/* Exception handling */}
         <Route path="*" element={<NotFoundPage />}></Route>

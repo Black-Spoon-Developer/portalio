@@ -14,7 +14,7 @@ const AIinterviewButton: React.FC = () => {
   // 탭 상태 변환
   const onClick = () => {
     dispatch(sideNavActions.selectAIinterview());
-    navigate("/test");
+    navigate("/ai/introduce");
   };
 
   // 나중에 라우터 경로 설정을 통해서 페이지 이동하게 하면 됩니다.

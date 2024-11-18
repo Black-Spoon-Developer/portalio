@@ -21,6 +21,7 @@ public class BoardResponse {
     private Integer boardCommentCount;
     private LocalDateTime created;
     private Long memberId;
+    private String memberUsername;
 
     public static BoardResponse from(Board board) {
         return BoardResponse.builder()
@@ -35,6 +36,7 @@ public class BoardResponse {
                 .boardCommentCount(board.getBoardComments().size())
                 .created(board.getCreated())
                 .memberId(board.getMember().getMemberId())
+                .memberUsername(board.getMember().getMemberUsername())
                 .build();
     }
 }

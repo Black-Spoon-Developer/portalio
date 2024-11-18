@@ -14,6 +14,7 @@ interface PortfolioDetailMdProps {
   portfolioContent: string;
   isLiked: boolean;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   memberPicture: string;
   setUpdateDetailTrigger: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +24,7 @@ interface PortfolioDetailMdProps {
 const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   portfolioTitle,
   portfolioContent,
+  memberUsername,
   memberNickname,
   memberPicture,
   isLiked,
@@ -77,7 +79,7 @@ const PortfolioDetailMd: React.FC<PortfolioDetailMdProps> = ({
   };
 
   const handleAuthorProfile = () => {
-    navigate(`/users/profile/${memberId}`);
+    navigate(`/users/profile/${memberUsername}`);
   };
 
   const handleEditPost = () => {

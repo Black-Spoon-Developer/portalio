@@ -129,7 +129,7 @@ const ActivityCreatePage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
         <div className="flex mb-5 mt-10">
           <input
             type="text"

@@ -17,6 +17,7 @@ public class ActivityBoardResponse {
     private LocalDateTime created;
     private Long repositoryId;
     private Long memberId;
+    private String memberUsername;
     private String memberNickname;
     private String picture;
 
@@ -29,6 +30,7 @@ public class ActivityBoardResponse {
                 .created(activityBoard.getCreated())
                 .repositoryId(activityBoard.getRepository().getRepositoryId())
                 .memberId(activityBoard.getRepository().getMember().getMemberId())
+                .memberUsername(activityBoard.getRepository().getMember().getMemberUsername())
                 .memberNickname(activityBoard.getRepository().getMember().getUserDetail().getUserNickname())
                 .picture(activityBoard.getRepository().getMember().getMemberPicture())
                 .build();
