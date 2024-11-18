@@ -23,11 +23,11 @@ import BoardPage from "./pages/board/board/BoardPage.tsx";
 import FreeDetailPage from "./pages/board/board/free/FreeDetailPage.tsx";
 import QuestionDetailPage from "./pages/board/board/qustion/QuestionDetailPage.tsx";
 import ActivityCreatePage from "./pages/board/activity/ActivityCreatePage.tsx";
-import ActivityDetailPage from "./pages/board/activity/ActivityDetailPage.tsx";
 import ActivityEditPage from "./pages/board/activity/ActivityEditPage.tsx";
 import UserQuestionListPage from "./pages/user/UserQuestionListPage.tsx";
 import TextAnalysisPage from "./pages/ai/analysis/text/TextAnalysisPage.tsx";
 import AiInterviewRecordsPage from "./pages/ai/analysis/record/AiInterviewRecordsPage.tsx";
+import MarkdownGuide from "./components/board/HowToUseMD.tsx"
 // import AudioAnalysisPage from "./pages/ai/analysis/audio/AudioAnalysisPage.tsx";
 
 // Recruiter (주석 처리 - 당장 사용하지 않음)
@@ -45,7 +45,7 @@ const App: React.FC = () => {
   const location = useLocation();
 
   // Footer를 표시하지 않을 URL 목록
-  const hideFooterPaths = ["/", "/users/signup"];
+  const hideFooterPaths = ["/", "/users/signup", "/markdown-guide"];
 
   // 현재 경로가 hideFooterPaths에 포함되면 Footer를 숨깁니다.
   const shouldShowFooter = !hideFooterPaths.includes(location.pathname);
@@ -85,7 +85,7 @@ const App: React.FC = () => {
         </Route>
         <Route path="/activity" element={<Outlet />}>
           <Route path="create" element={<ActivityCreatePage />} />
-          <Route path=":activity_id" element={<ActivityDetailPage />} />
+          <Route path=":activity_id" element={<QuestionDetailPage />} />
           <Route
             path="edit/:repository_id/:activity_id"
             element={<ActivityEditPage />}
@@ -123,6 +123,7 @@ const App: React.FC = () => {
         <Route path="/user/signup" element={<UserSignupPage />}></Route>
         <Route path="/test" element={<TextAnalysisPage />}></Route>
         <Route path="/test/list" element={<AiInterviewRecordsPage />}></Route>
+        <Route path="/markdown-guide" element={<MarkdownGuide />} />
       </Routes>
 
       {/* shouldShowFooter가 true일 때만 Footer 렌더링 */}

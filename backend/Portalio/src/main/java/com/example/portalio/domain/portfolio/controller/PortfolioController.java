@@ -7,10 +7,12 @@ import com.example.portalio.domain.portfolio.dto.PortfolioListResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioPostResponse;
 import com.example.portalio.domain.portfolio.dto.PortfolioRequest;
 import com.example.portalio.domain.portfolio.dto.PortfolioResponse;
+import com.example.portalio.domain.portfolio.entity.Portfolio;
 import com.example.portalio.domain.portfolio.service.PortfolioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -146,4 +148,12 @@ public class PortfolioController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "[포트폴리오] 인기 포트폴리오", description = "인기 포트폴리오 불러오기")
+    @GetMapping("/popular/top10")
+    public ResponseEntity<PortfolioListResponse> getTop10Portfolios() {
+
+        PortfolioListResponse response = portfolioService.getTop10Portfolios();
+
+        return ResponseEntity.ok(response);
+    }
 }

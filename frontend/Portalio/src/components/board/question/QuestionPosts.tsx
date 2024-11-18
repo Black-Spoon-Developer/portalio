@@ -9,6 +9,7 @@ import {
   IoCheckmarkCircleSharp,
 } from "react-icons/io5";
 import QuestionSearch from "./QuestionSearch";
+import { Viewer } from "@toast-ui/react-editor";
 
 const QuestionPosts: React.FC = () => {
   const navigate = useNavigate();
@@ -155,7 +156,9 @@ const QuestionPosts: React.FC = () => {
                 )}
               </section>
               {/* 제목 또는 내용 */}
-              <p className="text-gray-700 mb-4">{post.boardContent}</p>
+              <div className="text-gray-700 mb-4 line-clamp-4">
+                <Viewer initialValue={post.boardContent} key={post.boardContent} />
+              </div>
               <div className="flex justify-evenly text-gray-500 text-sm">
                 {/* 댓글 수 */}
                 <div className="text-lg tracking-widest">

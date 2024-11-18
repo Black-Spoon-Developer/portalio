@@ -113,10 +113,8 @@ const PortfolioEditPage: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-6">
-      <section className="col-span-1"></section>
-      <section className="col-span-4">
-        <div className="flex mb-5">
+    <div>
+        <div className="flex mb-5 mt-10">
           <input
             type="text"
             placeholder="제목을 입력하세요"
@@ -124,6 +122,14 @@ const PortfolioEditPage: React.FC = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+        </div>
+        <div>
+          <button
+            onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+            className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+          >
+            MarkDown 사용법
+          </button>
         </div>
 
         {/* 시작 날짜와 종료 날짜 입력 */}
@@ -182,8 +188,6 @@ const PortfolioEditPage: React.FC = () => {
             </div>
           </div>
         )}
-      </section>
-      <section className="col-span-1"></section>
     </div>
   );
 };

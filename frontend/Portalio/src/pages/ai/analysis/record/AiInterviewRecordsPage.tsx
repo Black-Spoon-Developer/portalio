@@ -1,5 +1,6 @@
 import React from "react";
 import AiInterviewContentList from "../../../../components/ai/analysis/record/AiInterviewContentList";
+import one from "../../../../assets/1.png"
 
 const AiInterviewRecordsPage: React.FC = () => {
   return (
@@ -10,6 +11,12 @@ const AiInterviewRecordsPage: React.FC = () => {
           {/* 타이틀 */}
           <h2 className="text-5xl font-bold mb-7 pb-3 border-b-2">
             📋 AI 모의 면접 분석 기록
+            <a
+            className="flex items-center truncate cursor-pointer"
+          >
+            <img src={one} alt="" className="w-7 h-7" />
+            <span className="text-lg">dd</span>
+          </a>
           </h2>
         </header>
 

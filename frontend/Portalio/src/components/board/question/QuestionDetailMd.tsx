@@ -82,7 +82,7 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
       <section className="flex justify-between">
         <div className="flex items-center">
           <button onClick={handleAuthorProfile}>
-            <img src={memberPicture} alt="" className="size-12 rounded-full" />
+            <img src={memberPicture} alt="" className="w-10 h-10 rounded-full" />
           </button>
           <div className="ml-4 font-bold">{memberNickname}</div>
         </div>
