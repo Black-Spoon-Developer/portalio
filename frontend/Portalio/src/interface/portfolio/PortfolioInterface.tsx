@@ -13,6 +13,7 @@ export interface Portfolio {
   portfolioCommentCount: number;
   memberId: number;
   memberNickname: string;
+  memberUsername: string;
   picture: string;
   isLiked: boolean;
 }
@@ -22,6 +23,7 @@ export interface PortfolioCommetsResponse {
   portfolioId: number;
   content: string;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   memberPicture: string;
   created: string;

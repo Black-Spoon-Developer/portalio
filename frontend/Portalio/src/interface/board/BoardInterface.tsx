@@ -9,6 +9,7 @@ export interface BoardLikeResponse {
   boardCommentCount: number;
   created: string;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   picture: string;
   isLiked: boolean;
@@ -20,6 +21,7 @@ export interface BoardCommentsResponse {
   content: string;
   boardId: number;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   picture: string;
   created: string;

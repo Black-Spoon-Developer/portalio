@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getMyBoards } from "../../api/BoardAPI";
-import { useSelector } from "react-redux";
 import { getMyActivities } from "../../api/BoardAPI";
-import { RootState } from "../../store";
 import { useEffect } from "react";
 import { getRepository } from "../../api/RepositoryAPI";
 import ActivityDetailModal from "../board/activity/ActivityDetailModal";
@@ -27,8 +25,7 @@ interface Activity {
 
 const PostsBoards: React.FC = () => {
   // 페이지 기본 변수
-  const username = useSelector((state: RootState) => state.auth.memberUsername);
-  const { user_id } = useParams<{ user_id: string }>();
+  const { username } = useParams<{ username: string }>();
 
   // 게시판 관련 변수
   const skip = 0;
@@ -114,7 +111,7 @@ const PostsBoards: React.FC = () => {
           <h3 className="flex justify-between items-center mb-3">
             <span className="font-bold text-xl">활동 게시글</span>
             <Link
-              to={`/users/profile/${user_id}/activity`}
+              to={`/users/profile/${username}/activity`}
               className="text-sm text-blue-500 hover:underline"
             >
               더 보기 →
@@ -143,7 +140,7 @@ const PostsBoards: React.FC = () => {
           <h3 className="flex justify-between items-center mb-3">
             <span className="font-bold text-xl">자유 게시글</span>
             <Link
-              to={`/users/profile/${user_id}/free`}
+              to={`/users/profile/${username}/free`}
               className="text-sm text-blue-500 hover:underline"
             >
               더 보기 →
@@ -172,7 +169,7 @@ const PostsBoards: React.FC = () => {
           <h3 className="flex justify-between items-center mb-3">
             <span className="font-bold text-xl">질문 게시글</span>
             <Link
-              to={`/users/profile/${user_id}/question`}
+              to={`/users/profile/${username}/question`}
               className="text-sm text-blue-500 hover:underline"
             >
               더 보기 →

@@ -154,7 +154,7 @@ const BoardEditPage: React.FC = () => {
 
   return (
     <div>
-        <div className="flex mb-5 mt-10">
+        <div className="flex mb-5 mt-10 min-h-screen">
           <input
             type="text"
             placeholder="제목을 입력하세요"

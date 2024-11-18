@@ -29,7 +29,7 @@ const AudioAnalysisPage: React.FC = () => {
   // const selectedQuestion = questions.find((q) => q.id === selectedTab);
 
   return (
-    <div className="grid grid-cols-6 gap-4 p-4 my-4">
+    <div className="grid grid-cols-6 gap-4 p-4 my-4 min-h-screen">
       <section className="col-span-1"></section>
       <section className="col-span-4">
         <header className="flex justify-between">

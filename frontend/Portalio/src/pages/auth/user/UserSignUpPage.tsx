@@ -167,7 +167,7 @@ const UserSignupPage: React.FC = () => {
   };
 
   return (
-    <div className="my-8">
+    <div className="my-8 min-h-screen">
       {/* 로고 */}
       <section className="">
         <div className="flex justify-center">

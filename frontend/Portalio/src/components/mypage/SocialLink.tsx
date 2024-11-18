@@ -11,12 +11,11 @@ import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 
 const SocialLink: React.FC = () => {
-  const { user_id } = useParams<{ user_id: string }>();
-  const userId = Number(user_id);
+  const { username } = useParams<{ username: string }>();
 
   // 설정 버튼 제어 변수
-  const memberId = useSelector((state: RootState) => state.auth.memberId);
-  const isOwner = user_id && memberId ? user_id === memberId : false;
+  const memberUsername = useSelector((state: RootState) => state.auth.memberUsername);
+  const isOwner = memberUsername && username ? memberUsername === username : false;
 
   // 소셜 관련 변수
   const [isEditing, setIsEditing] = useState(false);
@@ -45,8 +44,8 @@ const SocialLink: React.FC = () => {
     setSocialLinks((prevLinks) => ({ ...prevLinks, [name]: value }));
   };
 
-  const handleGetSociallink = async (memberId: number) => {
-    const response = await getSocialLink(memberId);
+  const handleGetSociallink = async (username: string) => {
+    const response = await getSocialLink(username);
     setSocialLinks(response);
   };
 
@@ -63,7 +62,7 @@ const SocialLink: React.FC = () => {
   };
 
   useEffect(() => {
-    handleGetSociallink(userId);
+    handleGetSociallink(username || '');
   }, []);
 
   return (

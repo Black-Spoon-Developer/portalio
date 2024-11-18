@@ -6,6 +6,7 @@ export interface ActivityList {
   activityBoardImageKey: string;
   created: string;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   picture: string;
   repositoryId: number;
@@ -20,6 +21,7 @@ export interface ActivityDetail {
   created: string;
   repositoryId: number;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   picture: string;
 }
