@@ -37,26 +37,20 @@ const Modal: React.FC<{ onClose: () => void; children: React.ReactNode }> = ({
 );
 
 const ProfileIntroduce: React.FC = () => {
-  // URL에서 user_id 파라미터 추출
-  const { user_id } = useParams<{ user_id: string }>();
-
   // Redux 에서 memberId와 프로필 사진 정보 추출
   const memberId = useSelector((state: RootState) => state.auth.memberId);
-  const isOwner = user_id && memberId ? user_id === memberId : false;
-
-  // 현재 사용자가 프로필 소유자인지 확인
   const picture = useSelector((state: RootState) => state.auth.memberPicture);
 
-  // 모달 표시 상태 관리
+  // URL에서 user_id 파라미터 추출
+  const { user_id } = useParams<{ user_id: string }>();
+  const isOwner = user_id && memberId ? user_id === memberId : false;
+
+  // 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false); // 프로필 사진 변경 모달
   const [isViewModalOpen, setIsViewModalOpen] = useState(false); // 프로필 사진 보기 모달
   const [isFileUploadModalOpen, setIsFileUploadModalOpen] = useState(false); // 파일 업로드 모달 상태
   const [isCropModalOpen, setIsCropModalOpen] = useState(false); // 이미지 크롭 모달 상태
   const [uploadedFile, setUploadedFile] = useState<File | null>(null); // 업로드된 파일 상태
-  const [cropValue, setCropValue] = useState<number>(50); // 크롭 값 상태
-  const [currentModal, setCurrentModal] = useState<
-    "view" | "fileUpload" | "crop" | null
-  >(null);
 
   // 유저 소개 데이터 변수
   const [introduction, setIntroduction] = useState({
@@ -66,6 +60,9 @@ const ProfileIntroduce: React.FC = () => {
 
   // 유저 소개 수정 버튼 제어 변수
   const [isEditingIntro, setIsEditingIntro] = useState(false);
+
+  // Redux 디스패치
+  const dispatch = useDispatch();
 
   // 유저 소개 데이터 조회 함수
   useEffect(() => {
@@ -88,7 +85,7 @@ const ProfileIntroduce: React.FC = () => {
     setIsEditingIntro(false); // 수정 모드 종료
   };
 
-  const dispatch = useDispatch();
+  // 프로필 사진 업로드 및 업데이트
   const handleCropComplete = async () => {
     if (uploadedFile) {
       // 크롭된 이미지를 서버에 업로드
@@ -172,19 +169,17 @@ const ProfileIntroduce: React.FC = () => {
         <Modal onClose={() => setIsCropModalOpen(false)}>
           {/* 이미지 크롭 UI */}
           <div className="crop-container">
-            <img
-              src={URL.createObjectURL(uploadedFile)}
-              alt="Preview"
-              className="w-full h-auto"
-            />
+            {uploadedFile ? ( // uploadedFile이 null인지 확인
+              <img
+                src={URL.createObjectURL(uploadedFile)} // null이 아니면 Blob으로 변환
+                alt="Preview"
+                className="w-full h-auto"
+              />
+            ) : (
+              <p>이미지가 없습니다.</p> // null인 경우 메시지 표시
+            )}
             {/* 크롭 슬라이더 UI */}
-            <input
-              type="range"
-              min="1"
-              max="100"
-              className="w-full mt-2"
-              onChange={(e) => setCropValue(e.target.value)} // 크롭 값 상태 관리
-            />
+            <input type="range" min="1" max="100" className="w-full mt-2" />
             <div className="flex justify-end mt-4">
               <button
                 onClick={() => {
