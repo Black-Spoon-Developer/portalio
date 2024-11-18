@@ -5,15 +5,13 @@ import {
   GenerateQuestionsResponse,
 } from "../interface/aiInterview/AICommonInterface";
 import { MemberInfoDTO } from "../interface/aiInterview/AICommonInterface";
-
-const accessToken =
-  "eyJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJJZCI6NCwibmFtZSI6IuycpOuvvOyerCIsInVzZXJuYW1lIjoiTHJuVFJYazlscy1DSFRwNXMyQzVPMEJHMmpic3NZd3VNeWpxZXEwYkJGYyIsInBpY3R1cmUiOiJkZWZhdWx0X3BpY3R1cmVfdXJsIiwiY2F0ZWdvcnkiOiJhY2Nlc3MiLCJlbWFpbCI6InN0eWxpc2h5MjUyOUBuYXZlci5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMTgzMzcxNCwiZXhwIjoxNzM0NDI1NzE0fQ.PjA4wOtuEQeaXcUFxuQmr3iwXH5dBi3hNWtquFPEKx4";
+import store from "../store";
 
 // 인터뷰 준비
 export const fetchPreInterview = async () => {
   try {
-    // const state = store.getState();
-    // const accessToken = state.auth.accessToken;
+    const state = store.getState();
+    const accessToken = state.auth.accessToken;
 
     const response = await axios.post<MemberInfoDTO>(
       `${AI_BASE_URL}/api/v1/mock-interview/pre-interview`,
@@ -37,8 +35,8 @@ export const fetchPreInterview = async () => {
 // 질문 생성 요청 API 함수
 export const generateQuestions = async (request: GenerateQuestionsRequest) => {
   try {
-    // const state = store.getState();
-    // const accessToken = state.auth.accessToken;
+    const state = store.getState();
+    const accessToken = state.auth.accessToken;
 
     const response = await axios.post<GenerateQuestionsResponse>(
       `${AI_BASE_URL}/api/v1/mock-interview/generate-questions`,

@@ -7,7 +7,6 @@ import { submitVideoAnswer } from "../../../../api/VideoInterviewAPI";
 import { VideoAnswerRequest } from "../../../../interface/aiInterview/VideoInterviewInterface";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../../components/spinner/LoadingSpinner";
-import { AI_BASE_URL } from "../../../../api/BaseVariable";
 
 const VideoProcessPage: React.FC = () => {
   const navigate = useNavigate();

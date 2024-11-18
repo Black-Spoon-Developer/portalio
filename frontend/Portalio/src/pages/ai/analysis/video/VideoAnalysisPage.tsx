@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AiAnalysisTab from "../../../../components/ai/analysis/AiAnalysisTab";
-import VideoAnalysisContent from "../../../../components/ai/analysis/video/VideoAnalysisContent";
+// import VideoAnalysisContent from "../../../../components/ai/analysis/video/VideoAnalysisContent";
 import { useDispatch } from "react-redux";
 import LoadingSpinner from "../../../../components/spinner/LoadingSpinner";
 import { getAiInterviewAnalysis } from "../../../../api/AiInterviewCommonAPI";
@@ -64,10 +64,10 @@ const VideoAnalysisPage: React.FC = () => {
 
         {/* 질문 출력 부분 */}
         <main>
-          <VideoAnalysisContent
+          {/* <VideoAnalysisContent
             result={analysisResult}
             selectedTab={selectedTab}
-          />
+          /> */}
         </main>
       </section>
       <section className="col-span-1"></section>
