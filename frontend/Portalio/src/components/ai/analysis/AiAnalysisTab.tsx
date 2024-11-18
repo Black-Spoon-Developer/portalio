@@ -1,31 +1,27 @@
 import React from "react";
 
-interface Question {
-  id: number;
-  question: string;
-}
-interface AnalysisTabProps {
-  questions: Question[];
+interface AnalysisTabProps<T> {
+  questions?: T[];
   selectedTab: number;
   onTabClick: (id: number) => void;
 }
 
-const AiAnalysisTab: React.FC<AnalysisTabProps> = ({
+const AiAnalysisTab = <T extends { content?: string }>({
   questions,
   selectedTab,
   onTabClick,
-}) => {
+}: AnalysisTabProps<T>) => {
   return (
     <div className="flex space-x-4 mb-4">
-      {questions.map((q) => (
+      {questions?.map((_, index) => (
         <button
-          key={q.id}
-          onClick={() => onTabClick(q.id)}
+          key={index}
+          onClick={() => onTabClick(index)}
           className={`px-4 py-2 text-md font-medium ${
-            selectedTab === q.id ? " text-conceptSkyBlue" : "text-gray-600"
+            selectedTab === index ? " text-conceptSkyBlue" : "text-gray-600"
           }`}
         >
-          질문 {q.id}
+          질문 {index + 1}
         </button>
       ))}
     </div>

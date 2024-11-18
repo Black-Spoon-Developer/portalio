@@ -6,7 +6,7 @@ import { RootState } from "../../../store";
 import { authActions } from "../../../store/auth/AuthSlice";
 import SideNavBar from "../../../components/common/navBar/SideNavBar";
 import PopularPortfolio from "../../../components/common/popularPortfolio/PopularPortfolio";
-import AIinterviewPost from "../../../components/common/aiInterviewPost/AIinterviewPost";
+import AIinterviewPost from "../../../components/ai/aiInterviewPost/AIinterviewPost";
 import BoardTab from "../../../components/common/tab/BoardTab";
 import PortfolioPosts from "../../../components/board/portfolio/PortfolioPosts";
 import ActivityPosts from "../../../components/board/activity/ActivityPosts";
