@@ -44,7 +44,7 @@ const PortfolioEditPage: React.FC = () => {
       if (portfolio_id) {
         try {
           const response = await fetchPortfolioDetail(portfolio_id); // API 호출
-          const data: PortfolioRequest = response.data; // response의 data를 PortfolioResponse로 타입 지정
+          const data: PortfolioRequest = response; // response의 data를 PortfolioResponse로 타입 지정
 
           setTitle(data.portfolioTitle);
           setContent(data.portfolioContent);
@@ -188,10 +188,8 @@ const PortfolioEditPage: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-6">
-      <section className="col-span-1"></section>
-      <section className="col-span-4">
-        <div className="flex mb-5">
+    <div>
+        <div className="flex mb-5 mt-10 min-h-screen">
           <input
             type="text"
             placeholder="제목을 입력하세요"
@@ -241,6 +239,14 @@ const PortfolioEditPage: React.FC = () => {
                   </Select>
                 </div>
               )}
+              <div>
+              <button
+                  onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+                  className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+                >
+                  MarkDown 사용법
+                </button>
+              </div>
             </AccordionDetails>
           </Accordion>
         </div>
@@ -334,8 +340,6 @@ const PortfolioEditPage: React.FC = () => {
             </div>
           </div>
         )}
-      </section>
-      <section className="col-span-1"></section>
     </div>
   );
 };

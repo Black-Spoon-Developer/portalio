@@ -14,5 +14,4 @@ public interface PortfolioRecomRepository extends JpaRepository<PortfolioRecom, 
     PortfolioRecom findByMemberAndPortfolio(Member member, Portfolio portfolio);
 
     List<PortfolioRecom> findAllByMemberAndPortfolioIn(Member member, List<Portfolio> portfolios);
-
 }

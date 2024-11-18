@@ -77,6 +77,7 @@ const FreeDetailPage: React.FC = () => {
           freeContent={post?.boardContent ?? ""}
           isLiked={post?.isLiked ?? false}
           memberId={post?.memberId ?? 0}
+          memberUsername={post?.memberUsername ?? ""}
           memberNickname={post?.memberNickname ?? ""}
           memberPicture={post?.picture ?? ""}
           setUpdateDetailTrigger={setUpdateDetailTrigger}

@@ -125,7 +125,7 @@ const PortfolioPosts: React.FC = () => {
         loader={<LoadingSkeleton />}
         endMessage={<p>더 이상 게시글이 없습니다.</p>}
       >
-        <div className="grid grid-cols-1 gap-4 p-4">
+        <div className="grid grid-cols-2 gap-4 p-4">
           {posts.map((post) => (
             <div
               key={post.portfolioId}
@@ -146,12 +146,16 @@ const PortfolioPosts: React.FC = () => {
                   </p>
                 </div>
               </div>
+              <div className="h-80">
+
               <img
                 src={post.portfolioThumbnailImg}
                 alt="no-image"
-                className="bg-gray-300 h-40 mb-2 w-full"
-              />
+                className="bg-gray-300 mb-2 w-full h-full object-cover"
+                />
+                </div>
               <p className="text-gray-700 mb-4 line-clamp-3">
+                {post.portfolioTitle}
                 {post.portfolioDescription}
               </p>
               <div className="flex justify-evenly text-gray-500 text-sm">

@@ -67,6 +67,10 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(portfolioId)
                 .orElseThrow(PortfolioNotFoundException::new);
 
+        portfolio.setPortfolioViews(portfolio.getPortfolioViews() + 1);
+
+        portfolioRepository.save(portfolio);
+
         Boolean likeStatus = portfolioRecomRepository.existsByMemberAndPortfolio(member, portfolio);
 
         return PortfolioLikeResponse.from(portfolio, likeStatus);
@@ -74,16 +78,14 @@ public class PortfolioService {
 
     // 페이지네이션, 무한스크롤에 사용하려고 만들어 둠
     // 최신 글 10개씩 가져오는 거임
+    @Transactional
     public PortfolioLikeListResponse getPortfolioList(int skip, int limit, CustomOAuth2User oauth2User) {
-
-        Pageable pageable = PageRequest.of(skip/limit, limit);
+        Pageable pageable = PageRequest.of(skip / limit, limit);
 
         List<Portfolio> portfolios = portfolioRepository.findAllByPortfolioPostTrueOrderByCreatedDesc(pageable);
 
-
         Map<Long, Boolean> likeStatusMap = new HashMap<>();
         if (oauth2User != null) {
-            // 인증된 경우 좋아요 상태를 조회
             Member member = findMember(oauth2User.getMemberId());
 
             List<PortfolioRecom> likes = portfolioRecomRepository.findAllByMemberAndPortfolioIn(member, portfolios);
@@ -93,6 +95,7 @@ public class PortfolioService {
 
         return PortfolioLikeListResponse.from(portfolios, likeStatusMap);
     }
+
 
     public PortfolioListResponse getMyPortfolioList(int skip, int limit, String username) {
 
@@ -196,6 +199,16 @@ public class PortfolioService {
         portfolioRepository.save(portfolio);
 
         return PortfolioPostResponse.from(portfolio);
+    }
+
+    public PortfolioListResponse getTop10Portfolios() {
+
+        Pageable topTen = PageRequest.of(0, 10); // 첫 번째 페이지, 10개 항목
+
+        List<Portfolio> portfolios = portfolioRepository.findTopPortfolios(topTen);
+
+
+        return PortfolioListResponse.from(portfolios);
     }
 
     private JobSubCategory findJobSubCategory(Long jobId) {

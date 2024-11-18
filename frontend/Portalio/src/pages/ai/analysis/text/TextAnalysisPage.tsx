@@ -44,7 +44,7 @@ const TextAnalysisPage: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-6 gap-4 p-4 my-4">
+    <div className="grid grid-cols-6 gap-4 p-4 my-4 min-h-screen">
       <section className="col-span-1"></section>
 
       {/* 메인 내용 */}

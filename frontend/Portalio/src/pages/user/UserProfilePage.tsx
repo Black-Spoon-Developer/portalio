@@ -8,7 +8,7 @@ import PostsBoards from "../../components/mypage/PostBoards";
 
 const UserProfilePage: React.FC = () => {
   return (
-    <div className="grid grid-cols-4">
+    <div className="grid grid-cols-4 min-h-screen">
       <div className="col-span-1"></div>
       {/* 프로필 및 이력 / 경력, 소셜 섹션 */}
       <div className="col-span-2 my-8 flex flex-col ">
@@ -22,16 +22,20 @@ const UserProfilePage: React.FC = () => {
             <SocialLink />
           </div>
         </section>
+        
         {/* 대표 포트폴리오 */}
         <section className="border-2 border-gray-400 rounded-md mb-4 p-3">
           <PrimaryPortfolio />
         </section>
+
         {/* 대표 레포지토리 및 작성한 게시글 섹션 */}
-        <section className="flex border-2 border-gray-400 p-5 rounded-md">
-          {/* 대표 레포지토리 */}
-          <PrimaryRepository />
-          {/* 작성한 게시글 */}
-          <PostsBoards />
+        <section className="flex border-2 border-gray-400 rounded-md p-5 bg-white space-x-4">
+          <div className="flex-1">
+            <PrimaryRepository />
+          </div>
+          <div className="flex-1">
+            <PostsBoards />
+          </div>
         </section>
       </div>
     </div>

@@ -16,6 +16,7 @@ import { RepositoryResponse } from "../../../type/RepositoryType";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { userTicketUpdate } from "../../../api/TicketAPI";
+import { templates } from "../portfolio/PortfolioData";
 
 const ActivityCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -128,10 +129,8 @@ const ActivityCreatePage: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-6">
-      <section className="col-span-1"></section>
-      <section className="col-span-4">
-        <div className="flex mb-5">
+    <div className="min-h-screen">
+        <div className="flex mb-5 mt-10">
           <input
             type="text"
             placeholder="제목을 입력하세요"
@@ -161,6 +160,14 @@ const ActivityCreatePage: React.FC = () => {
                   ))}
                 </Select>
               </div>
+              <div>
+              <button
+                  onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+                  className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+                >
+                  MarkDown 사용법
+                </button>
+              </div>
             </AccordionDetails>
           </Accordion>
         </div>
@@ -180,7 +187,7 @@ const ActivityCreatePage: React.FC = () => {
 
         <Editor
           ref={editorRef}
-          initialValue="Hello, Toast UI Editor with Plugins!"
+          initialValue={templates.defaultMarkdown}
           previewStyle="vertical"
           height="1000px"
           initialEditType="markdown"
@@ -221,8 +228,6 @@ const ActivityCreatePage: React.FC = () => {
             </div>
           </div>
         )}
-      </section>
-      <section className="col-span-1"></section>
     </div>
   );
 };

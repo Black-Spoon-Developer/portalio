@@ -2,12 +2,7 @@ package com.example.portalio.domain.userdetail.controller;
 
 import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.jobhistory.dto.JobHistoryResponse;
-import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
-import com.example.portalio.domain.userdetail.dto.TicketResponse;
-import com.example.portalio.domain.userdetail.dto.UserDetailDTO;
-import com.example.portalio.domain.userdetail.dto.UserDetailRequest;
-import com.example.portalio.domain.userdetail.dto.UserSocialLinkRequest;
-import com.example.portalio.domain.userdetail.dto.UserSocialLinkResponse;
+import com.example.portalio.domain.userdetail.dto.*;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.service.UserDetailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,10 +78,10 @@ public class UserDetailController {
     
     // 유저 소셜 링크 조회
     @Operation(summary = "[개인회원] 소셜 링크 조회", description = "memberId 값으로 조회")
-    @GetMapping("/social/{memberId}")
-    public ResponseEntity<?> getUserSocialLink(@PathVariable("memberId") Long memberId) {
+    @GetMapping("/social/{memberUsername}")
+    public ResponseEntity<?> getUserSocialLink(@PathVariable("memberUsername") String memberUsername) {
 
-        UserSocialLinkResponse response = userDetailService.getUserSocialLink(memberId);
+        UserSocialLinkResponse response = userDetailService.getUserSocialLink(memberUsername);
 
         return ResponseEntity.ok(response);
     }
@@ -101,6 +96,30 @@ public class UserDetailController {
                                                 UserSocialLinkRequest request) {
 
         UserSocialLinkResponse response = userDetailService.saveUserSocialLink(oauth2User, request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 유저 자기소개 조회
+    @Operation(summary = "[개인회원] 유저 자기소개 조회", description = "memberId 값으로 자기소개 조회")
+    @GetMapping("/introduction/{memberUsername}")
+    public ResponseEntity<?> getUserIntroduction(@PathVariable("memberUsername") String memberUsername) {
+
+        UserIntroductionResponse response = userDetailService.getIntroductionByMemberUsername(memberUsername);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 유저 자기소개 수정 및 저장
+    @Operation(summary = "[개인회원] 유저 자기소개 저장 및 수정", description = "유저 자기소개 데이터 저장 또는 수정")
+    @PreAuthorize("isAuthenticated()")
+    @SecurityRequirement(name = "bearerAuth")
+    @PatchMapping("/introduction/saveOrEdit")
+    public ResponseEntity<?> saveUserIntroduction(
+            @AuthenticationPrincipal CustomOAuth2User oAuth2User,
+            @RequestBody @Valid UserIntroductionRequest request) {
+
+        UserIntroductionResponse response = userDetailService.saveIntroduction(oAuth2User, request);
 
         return ResponseEntity.ok(response);
     }

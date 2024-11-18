@@ -30,10 +30,10 @@ public class JobHistoryController {
 
     // 유저 경력/이력 전체 조회
     @Operation(summary = "[경력/이력]유저의 경력/이력 전체 조회", description = "memberId를 통해서 조회")
-    @GetMapping("/{memberId}")
-    public ResponseEntity<?> getJobHistoryList(@PathVariable("memberId") Long memberId) {
+    @GetMapping("/{memberUsername}")
+    public ResponseEntity<?> getJobHistoryList(@PathVariable("memberUsername") String memberUsername) {
 
-        JobHistoryListResponse response = jobHistoryService.getJobHistoryList(memberId);
+        JobHistoryListResponse response = jobHistoryService.getJobHistoryList(memberUsername);
 
         return ResponseEntity.ok(response);
     }

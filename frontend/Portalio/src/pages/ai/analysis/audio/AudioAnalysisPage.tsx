@@ -47,7 +47,7 @@ const AudioAnalysisPage: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-6">
+    <div className="grid grid-cols-6 gap-4 p-4 my-4 min-h-screen">
       <section className="col-span-1"></section>
       <section className="col-span-4 my-10">
         <header className="flex justify-between">

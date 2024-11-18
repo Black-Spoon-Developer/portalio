@@ -20,6 +20,7 @@ public class BoardLikeResponse {
     private Integer boardCommentCount;
     private LocalDateTime created;
     private Long memberId;
+    private String memberUsername;
     private String memberNickname;
     private String picture;
     private Boolean isLiked;
@@ -37,6 +38,7 @@ public class BoardLikeResponse {
                 .boardCommentCount(board.getBoardComments().size())
                 .created(board.getCreated())
                 .memberId(board.getMember().getMemberId())
+                .memberUsername(board.getMember().getMemberUsername())
                 .memberNickname(board.getMember().getUserDetail().getUserNickname())
                 .picture(board.getMember().getMemberPicture())
                 .isLiked(isLiked)

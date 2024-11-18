@@ -14,6 +14,7 @@ interface QuestionDetailMdProps {
   questionContent: string;
   isLiked: boolean;
   memberId: number;
+  memberUsername: string;
   memberNickname: string;
   memberPicture: string;
   solved: boolean;
@@ -25,6 +26,7 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
   questionContent,
   isLiked,
   memberId,
+  memberUsername,
   memberNickname,
   memberPicture,
   solved,
@@ -69,7 +71,7 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
 
   // 작성자 사진 누르면 작성자의 프로필 페이지로 이동
   const handleAuthorProfile = () => {
-    navigate(`/users/profile/${userID}`);
+    navigate(`/users/profile/${memberUsername}`);
   };
 
   // 글 수정 버튼을 누르면 수정 페이지로 이동
@@ -82,7 +84,7 @@ const QuestionDetailMd: React.FC<QuestionDetailMdProps> = ({
       <section className="flex justify-between">
         <div className="flex items-center">
           <button onClick={handleAuthorProfile}>
-            <img src={memberPicture} alt="" className="size-12 rounded-full" />
+            <img src={memberPicture} alt="" className="w-10 h-10 rounded-full" />
           </button>
           <div className="ml-4 font-bold">{memberNickname}</div>
         </div>

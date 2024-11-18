@@ -44,7 +44,7 @@ const RepositoryEditPage: React.FC = () => {
       if (repository_id) {
         try {
           const response = await getRepositoryDetail(parseInt(repository_id, 10));
-          const data: RepositoryRequest = response.data;
+          const data: RepositoryRequest = response;
           setTitle(data.repositoryTitle);
           setContent(data.repositoryContent);
           setStartDate(data.startDate);
@@ -196,8 +196,8 @@ const RepositoryEditPage: React.FC = () => {
   };
 
   return (
-    <div> 
-      <div className="flex mb-5">
+    <div className='min-h-screen'> 
+      <div className="flex mb-5 mt-10">
         <input 
           type="text" 
           placeholder="제목을 입력하세요" 
@@ -206,7 +206,14 @@ const RepositoryEditPage: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-
+      <div>
+      <button
+          onClick={() => window.open("/markdown-guide", "_blank", "width=800,height=600")}
+          className="m-3 px-3 p-2 text-lg font-semibold rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+        >
+          MarkDown 사용법
+        </button>
+      </div>
       <div className="flex mb-5 space-x-4">
         <TextField
           label="시작 날짜"

@@ -9,7 +9,7 @@ const UserSettingPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6 min-h-screen">
       <h1 className="text-3xl font-semibold mb-4">계정 설정</h1>
       <p className="text-gray-600 mb-6">
         계정 정보를 확인하고 수정할 수 있어요.

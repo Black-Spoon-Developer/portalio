@@ -4,12 +4,7 @@ import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
-import com.example.portalio.domain.userdetail.dto.UserDetailDTO;
-import com.example.portalio.domain.userdetail.dto.UserDetailRequest;
-import com.example.portalio.domain.userdetail.dto.TicketRankingResponse;
-import com.example.portalio.domain.userdetail.dto.TicketResponse;
-import com.example.portalio.domain.userdetail.dto.UserSocialLinkRequest;
-import com.example.portalio.domain.userdetail.dto.UserSocialLinkResponse;
+import com.example.portalio.domain.userdetail.dto.*;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
 import com.example.portalio.domain.userdetail.error.NoTicketAvailableException;
 import com.example.portalio.domain.userdetail.error.NoUserDetailException;
@@ -87,8 +82,8 @@ public class UserDetailService {
     }
     
     // 유저 소셜링크 조회
-    public UserSocialLinkResponse getUserSocialLink(Long memberId) {
-        UserDetail userDetail = userDetailRepository.findByMemberId(memberId)
+    public UserSocialLinkResponse getUserSocialLink(String memberUsername) {
+        UserDetail userDetail = userDetailRepository.findByMember_MemberUsername(memberUsername)
                 .orElseThrow(NoUserDetailException::new);
 
         return UserSocialLinkResponse.from(userDetail);
@@ -112,5 +107,25 @@ public class UserDetailService {
         return  UserSocialLinkResponse.from(savedUserDetail);
     }
 
+    // 유저 자기소개 조회
+    public UserIntroductionResponse getIntroductionByMemberUsername(String memberUsername) {
+        UserDetail userDetail = userDetailRepository.findByMember_MemberUsername(memberUsername)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
+        return UserIntroductionResponse.from(userDetail);
+    }
+
+    // 유저 자기소개 저장 및 수정
+    public UserIntroductionResponse saveIntroduction(CustomOAuth2User oAuth2User, UserIntroductionRequest request) {
+        Long memberId = oAuth2User.getMemberId();
+        UserDetail userDetail = userDetailRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 자기소개 데이터 업데이트
+        userDetail.setUserIntroductionTitle(request.getUserIntroductionTitle());
+        userDetail.setUserIntroductionContent(request.getUserIntroductionContent());
+        userDetailRepository.save(userDetail);
+
+        return UserIntroductionResponse.from(userDetail);
+    }
 }

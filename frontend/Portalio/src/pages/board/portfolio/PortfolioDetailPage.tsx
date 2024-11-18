@@ -55,6 +55,7 @@ const PortfolioDetailPage: React.FC = () => {
       if (portfolio_id) {
         const response = await fetchPortfolioDetail(portfolio_id);
         setPortfolio(response);
+        console.log("PortfolioDetaiPage.tsx: ", response.portfolioIsPrimary);
       }
     } catch (error) {
       alert("글 조회를 실패했습니다.: " + error);
@@ -80,19 +81,27 @@ const PortfolioDetailPage: React.FC = () => {
       </div>
       <div className="col-span-1"></div>
       <div className="mx-5 my-8 col-span-3">
-        <PortfolioDetailMd
-          portfolioTitle={portfolio?.portfolioTitle ?? ""}
-          portfolioContent={portfolio?.portfolioContent ?? ""}
-          memberNickname={portfolio?.memberNickname ?? ""}
-          memberPicture={portfolio?.picture ?? ""}
-          isLiked={portfolio?.isLiked ?? false}
-          memberId={portfolio?.memberId ?? 0}
-          setUpdateDetailTrigger={setUpdateDetailTrigger}
-        />
-        <PortfolioDetailCommentsInput
-          setUpdateCommentTrigger={setUpdateCommentTrigger}
-        />
-        <PortfolioDetailComments comments={comments} />
+        {portfolio ? (
+          <>
+            <PortfolioDetailMd
+              portfolioTitle={portfolio.portfolioTitle}
+              portfolioContent={portfolio.portfolioContent}
+              memberNickname={portfolio.memberNickname}
+              memberUsername={portfolio.memberUsername}
+              memberPicture={portfolio.picture}
+              isLiked={portfolio.isLiked}
+              memberId={portfolio.memberId}
+              setUpdateDetailTrigger={setUpdateDetailTrigger}
+              portfolioIsPrimary={portfolio.portfolioIsPrimary}
+            />
+            <PortfolioDetailCommentsInput
+              setUpdateCommentTrigger={setUpdateCommentTrigger}
+            />
+            <PortfolioDetailComments comments={comments} />
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
       </div>
       <div className="col-span-1">
         <PortfolioDetailPdf
