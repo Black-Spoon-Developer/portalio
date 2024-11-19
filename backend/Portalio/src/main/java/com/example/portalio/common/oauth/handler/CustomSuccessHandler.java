@@ -68,18 +68,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
 
-        MemberDTO memberDTO;
-
-        // 멤버 정보가 없으면 생성
-        if (member == null) {
-            // 멤버 객체 생성
-            Member newMember = Member.of(name, username, picture, Role.USER);
-            Member savedMember = memberRepository.save(newMember);
-
-            memberDTO = MemberDTO.from(savedMember);
-        } else {
-            memberDTO = MemberDTO.from(member);
-        }
+        MemberDTO memberDTO = MemberDTO.from(member);
 
         // 유저 디테일 정보에 email, default 닉네임, 외래키 저장
         UserDetail userDetail = userDetailRepository.findByMemberId(memberDTO.getMemberId())
