@@ -7,6 +7,7 @@ import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
@@ -57,11 +58,13 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+        String name = customUserDetails.getName();
         String email = customUserDetails.getEmail();
         String username = customUserDetails.getUsername();
         String role = auth.getAuthority();
+        String picture = customUserDetails.getPicture();
 
-
+        // 이 부분 수정
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
 
