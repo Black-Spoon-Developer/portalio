@@ -62,20 +62,23 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email = customUserDetails.getEmail();
         String username = customUserDetails.getUsername();
         String role = auth.getAuthority();
+        String picture = customUserDetails.getPicture();
 
         // 이 부분 수정
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
 
+        MemberDTO memberDTO;
+
         // 멤버 정보가 없으면 생성
         if (member == null) {
             // 멤버 객체 생성
-            Member member = Member.of(name, username, picture, Role.USER);
-            Member savedMember = memberRepository.save(member);
+            Member newMember = Member.of(name, username, picture, Role.USER);
+            Member savedMember = memberRepository.save(newMember);
 
-            MemberDTO memberDTO = MemberDTO.from(savedMember);
+            memberDTO = MemberDTO.from(savedMember);
         } else {
-            MemberDTO memberDTO = MemberDTO.from(member);
+            memberDTO = MemberDTO.from(member);
         }
 
         // 유저 디테일 정보에 email, default 닉네임, 외래키 저장
