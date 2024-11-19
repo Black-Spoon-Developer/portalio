@@ -62,7 +62,7 @@ const PopularPortfolio: React.FC = () => {
                   <h2 className="text-sm">{portfolio.memberNickname} 님의 포트폴리오</h2>
                 </div>
                 <div className="flex items-center cursor-pointer line-clamp-2">
-                  <h2 className="text-lg">{portfolio.portfolioTitle}</h2>
+                  <h2 className="text-base">{portfolio.portfolioTitle}</h2>
                 </div>
                 <div className="flex items-center justify-between cursor-pointer line-clamp-2">
                   <h2 className="text-sm text-gray-500">
