@@ -22,12 +22,11 @@ const UserNavbar: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
-  const userId = Number(useSelector((state: RootState) => state.auth.memberId));
 
   const userProfile = useSelector(
     (state: RootState) => state.auth.memberPicture
   );
-  const userName = useSelector((state: RootState) => state.auth.memberName);
+  const memberUsername = useSelector((state: RootState) => state.auth.memberUsername);
   const userNickname = useSelector(
     (state: RootState) => state.auth.memberNickname
   );
@@ -69,7 +68,7 @@ const UserNavbar: React.FC = () => {
           <img src={ticketIcon} alt="no-image" className="size-8 mr-3" />
           <div className="font-bold">{userTicket || 0}</div>
         </div>
-        <div className="mx-5 font-bold">{userNickname || userName}</div>
+        <div className="mx-5 font-bold">{userNickname || memberUsername}</div>
         <Tooltip title="프로필 메뉴">
           <IconButton onClick={handleMenuOpen} size="small" sx={{ ml: 2 }}>
             <Avatar
@@ -111,7 +110,7 @@ const UserNavbar: React.FC = () => {
         >
           <MenuItem
             onClick={() => {
-              navigate(`/users/profile/${userId}`);
+              navigate(`/users/profile/${memberUsername}`);
               handleMenuClose();
             }}
           >
@@ -120,7 +119,7 @@ const UserNavbar: React.FC = () => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              navigate(`/users/profile/${userId}/settings`);
+              navigate(`/users/profile/${memberUsername}/settings`);
               handleMenuClose();
             }}
           >
