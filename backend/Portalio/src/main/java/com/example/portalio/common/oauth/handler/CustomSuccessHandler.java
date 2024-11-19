@@ -73,7 +73,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             Member member = Member.of(name, username, picture, Role.USER);
             Member savedMember = memberRepository.save(member);
 
-            MemberDTO memberDTO = MemberDTO.from(member);
+            MemberDTO memberDTO = MemberDTO.from(savedMember);
         } else {
             MemberDTO memberDTO = MemberDTO.from(member);
         }
