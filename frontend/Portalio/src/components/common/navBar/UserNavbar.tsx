@@ -22,11 +22,11 @@ const UserNavbar: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
-  const memberUsername = useSelector((state: RootState) => state.auth.memberUsername);
 
   const userProfile = useSelector(
     (state: RootState) => state.auth.memberPicture
   );
+  const userId = Number(useSelector((state: RootState) => state.auth.memberId));
   const userName = useSelector((state: RootState) => state.auth.memberName);
   const userNickname = useSelector(
     (state: RootState) => state.auth.memberNickname
@@ -111,7 +111,7 @@ const UserNavbar: React.FC = () => {
         >
           <MenuItem
             onClick={() => {
-              navigate(`/users/profile/${memberUsername}`);
+              navigate(`/users/profile/${userId}`);
               handleMenuClose();
             }}
           >
@@ -120,7 +120,7 @@ const UserNavbar: React.FC = () => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              navigate(`/users/profile/${memberUsername}/settings`);
+              navigate("/settings");
               handleMenuClose();
             }}
           >

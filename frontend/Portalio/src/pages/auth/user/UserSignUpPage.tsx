@@ -189,7 +189,7 @@ const UserSignupPage: React.FC = () => {
                 onChange={handleNicknameInput}
               />
               <button
-                className="ml-3 px-4 h-14 text-lg font-bold text-white bg-conceptGreen hover:bg-hoverConceptGreen rounded-xl shadow-md whitespace-nowrap"
+                className="ml-3 px-4 h-14 text-lg font-bold text-white bg-conceptGreen hover:bg-hoverConceptGreen rounded-xl shadow-md"
                 onClick={handleNicknameDuplicateCheck}
               >
                 중복 체크
