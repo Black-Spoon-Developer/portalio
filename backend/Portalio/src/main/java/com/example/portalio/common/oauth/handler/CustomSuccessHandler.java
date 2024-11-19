@@ -7,6 +7,7 @@ import com.example.portalio.common.oauth.dto.CustomOAuth2User;
 import com.example.portalio.common.oauth.dto.UserDTO;
 import com.example.portalio.domain.member.dto.MemberDTO;
 import com.example.portalio.domain.member.entity.Member;
+import com.example.portalio.domain.member.enums.Role;
 import com.example.portalio.domain.member.error.MemberNotFoundException;
 import com.example.portalio.domain.member.repository.MemberRepository;
 import com.example.portalio.domain.userdetail.entity.UserDetail;
@@ -57,15 +58,25 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+        String name = customUserDetails.getName();
         String email = customUserDetails.getEmail();
         String username = customUserDetails.getUsername();
         String role = auth.getAuthority();
 
-
+        // 이 부분 수정
         Member member = memberRepository.findByMemberUsername(username)
                 .orElse(null);
 
-        MemberDTO memberDTO = MemberDTO.from(member);
+        // 멤버 정보가 없으면 생성
+        if (member == null) {
+            // 멤버 객체 생성
+            Member member = Member.of(name, username, picture, Role.USER);
+            Member savedMember = memberRepository.save(member);
+
+            MemberDTO memberDTO = MemberDTO.from(member);
+        } else {
+            MemberDTO memberDTO = MemberDTO.from(member);
+        }
 
         // 유저 디테일 정보에 email, default 닉네임, 외래키 저장
         UserDetail userDetail = userDetailRepository.findByMemberId(memberDTO.getMemberId())
