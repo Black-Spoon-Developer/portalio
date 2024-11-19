@@ -41,14 +41,14 @@ const LoginPage: React.FC = () => {
                   >
                     개인
                   </button>
-                  {/* <button
+                  <button
                     onClick={() => setIsUserLogin(false)}
                     className={`text-2xl font-bold ${
                       !isUserLogin ? "text-conceptSkyBlue" : "text-conceptGrey"
                     } hover:text-conceptSkyBlue`}
                   >
                     채용 담당자
-                  </button> */}
+                  </button>
                 </div>
               </div>
               {/* 로그인 부분 */}
