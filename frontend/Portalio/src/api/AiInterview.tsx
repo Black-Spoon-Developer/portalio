@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "./BaseVariable";
+import { AI_BASE_URL } from "./BaseVariable";
 import store, { RootState } from "../store";
 import { FastRequest } from "../type/AiInterview";
 
@@ -7,7 +7,7 @@ export const getInterviewReports = async (FastData: FastRequest) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post(
-    `${BASE_URL}/api/v1/mock-interview/reports`,
+    `${AI_BASE_URL}/api/v1/mock-interview/reports`,
     FastData,
     {
       headers: {
@@ -21,7 +21,7 @@ export const getInterviewReports = async (FastData: FastRequest) => {
 export const getJobOpening = async (job_categories: number[]) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/api/v1/job-opening/categories`,
+      `${AI_BASE_URL}/api/v1/job-opening/categories`,
       { job_categories }, // job_categories를 객체로 감싸서 전송
       {
         headers: {
