@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "./BaseVariable";
+import { AI_BASE_URL } from "./BaseVariable";
 import { RootState } from "../store";
 import store from "../store";
 
@@ -8,7 +8,7 @@ export const getAiInterviewAnalysis = async (interview_id: number) => {
   const state: RootState = store.getState();
   const accessToken = state.auth.accessToken;
   const response = await axios.post(
-    `${BASE_URL}/api/v1/mock-interview/report/${interview_id}`,
+    `${AI_BASE_URL}/api/v1/mock-interview/report/${interview_id}`,
     {},
     {
       headers: {
