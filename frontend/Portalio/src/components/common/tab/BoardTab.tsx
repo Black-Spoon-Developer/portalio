@@ -32,7 +32,7 @@ const BoardTab: React.FC<BoardTabProps> = ({ selectedTab, setSelectedTab }) => {
 
   // 글 작성 페이지로 가는 핸들러 함수
   const handleCreateClick = () => {
-    if (userID) {
+    if (!userID) {
       alert("로그인을 해주세요!");
       return;
     }
