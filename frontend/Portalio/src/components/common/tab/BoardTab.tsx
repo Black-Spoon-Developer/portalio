@@ -1,6 +1,8 @@
 import React from "react";
 import { MdOutlineCreate } from "react-icons/md";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../store";
 
 interface BoardTabProps {
   selectedTab: number;
@@ -8,6 +10,7 @@ interface BoardTabProps {
 }
 
 const BoardTab: React.FC<BoardTabProps> = ({ selectedTab, setSelectedTab }) => {
+  const userID = useSelector((state: RootState) => state.auth.memberId);
   const navigate = useNavigate();
   const tabs = ["포트폴리오", "활동", "자유", "질문"];
 
@@ -29,6 +32,11 @@ const BoardTab: React.FC<BoardTabProps> = ({ selectedTab, setSelectedTab }) => {
 
   // 글 작성 페이지로 가는 핸들러 함수
   const handleCreateClick = () => {
+    if (userID) {
+      alert("로그인을 해주세요!");
+      return;
+    }
+
     const url = getUrlByTab();
     navigate(url);
   };
