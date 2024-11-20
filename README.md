@@ -1,426 +1,361 @@
-![메인페이지](https://github.com/Eungae-D/Dallim/assets/135101171/bd848807-e07b-49ae-99c4-970bda51e714)
+![image.png](https://github.com/nosong2/portalio/blob/main/exec/gifs/PortAlio.png?raw=true)
 
-<br />
+## 👨‍👨‍👦‍👦 Black Spoon Developer 팀 소개
+| 김헌규 | 이진송 | 차상곤 |
+| --- | --- | --- |
+| Team Leader | Full Stack<br>Tech Leader | Full Stack<br>Developer | 
+| <img src="https://avatars.githubusercontent.com/u/156166991?v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/157494028?s=40&v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/102268323?v=4" width="150"/> | 
+| [@HG-KR98](https://github.com/HG-KR98) | [@nosong2](https://github.com/nosong2) | [@CHASANGGON](https://github.com/CHASANGGON) | 
 
-## 📌 목차
-1. [서비스 소개](#-소개)
-2. [팀 구성](#-팀-구성)
-3. [주요 기능](#-주요-기능)
-4. [주요 기술](#-주요-기술)
-5. [빌드 환경](#-빌드-환경)
-6. [산출물](#-산출물) (최종발표자료, 아키텍쳐, 디자인, 요구사항 명세서, API 명세서, ERD)
+| 윤민재 | 박재영 | 김은섭 |
+| --- | --- | --- |
+| AI<br>Tech Leader | AI<br>Developer | AI<br>Developer |
+| <img src="https://avatars.githubusercontent.com/u/156272655?v=4" width="150"/> | <img src="https://avatars.githubusercontent.com/u/156193077?v=4"  width="150"/> | <img src="https://avatars.githubusercontent.com/u/162590823?v=4" width="150"/> |
+| [@GloryMJ](https://github.com/GloryMJ) | [@INPII](https://github.com/INPII) | [@subway9852](https://github.com/subway9852) |
 
-<br />
-
-## ⌚ 서비스 소개
-
-</aside>
-
-⌛ 프로젝트 기간 : 2024.10.14 ~ 2024.11.19 (37일)
+# 📷 프로젝트 소개
 
 
-### 개요
+**Portalio**는 전공에 관계없이 누구나 **자신의 포트폴리오**를 쉽고 체계적으로 **작성**하고 **공유**할 수 있는 **포트폴리오 관리 플랫폼**입니다. 자신만의 **프로젝트**와 **경력**을 **관리**하고, 이를 통해 개인의 **전문성**을 효과적으로 알릴 수 있도록 돕는 서비스를 제공합니다.
 
-**SSAFY 11기 2학기 자율 프로젝트**  
-
- **PortAlio**
-
-Portalio는 비전공자 개발자들의 경험 공유에서 시작되었습니다. .md 파일을 처음 접하는 사용자에게 템플릿과 가이드를 제공하며
-
-**워치**를 이용하여 러닝을 하고, 러닝이 끝나면 실시간으로 연동되는 데이터를 **모바일**에서 러닝 기록을 확인할 수 있습니다. 또한 캐릭터, 행성에 대한 **커스터마이징**, 지정된 날짜/시간에 대한 **알림** 및 실시간 러닝 **랭킹** 시스템 등을 통해 사용자가 꾸준히 러닝을 할 수 있도록 하였습니다.
-
-<br />
-
-## 👥 팀 구성
-<table align="center">
-  <tr>
-    <td align="center"><a href=><img src=" width="100px;" height="120px;" alt=""/><br /><sub><b>김헌규<br>PM/Full-stack<br/></b></sub></a></td>
-    <td align="center"><a href="https://github.com/pum005"><img src="https://avatars.githubusercontent.com/u/108645121?v=4" width="100px;" height="120px;" alt=""/><br /><sub><b>차상곤<br>Infra/Full-stack<br/></b></sub></a></td>
-    <td align="center"><a href="https://github.com/SeongLI"><img src="https://avatars.githubusercontent.com/u/110223414?v=4" width="100px;" height="120px;" alt=""/><br /><sub><b>이진송<br> Full-Stack<br/></b></sub></a></td>
-    <td align="center"><a href="https://github.com/Eungae-D"><img src="https://avatars.githubusercontent.com/u/135101171?v=4" width="100px;" height="120px;" alt=""/><br /><sub><b>박재영<br>AI/BE<br/></b></sub></a></td>
-    <td align="center"><a href="https://github.com/soyeonnnb"><img src="https://avatars.githubusercontent.com/u/71217221?v=4" width="100px;" height="120px;" alt=""/><br /><sub><b>윤민재<br> AI/BE<br/></b></sub></a></td>
-    <td align="center"><a href="https://github.com/qkrrlgus114"><img src="https://avatars.githubusercontent.com/u/121294224?v=4" width="100px;" height="120px;" alt=""/><br /><sub><b>김은섭<br> AI<br/></b></sub></a></td>
-</table>
-</br>
-
-
-## 📌 주요 기능
-
+# 🔧 기술 스택
 <details>
-<summary>:full_moon:<strong>메인 페이지</strong></summary>
-<br>
+  <summary>Android</summary>
 
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="33%">비로그인</th>
-    <th align="center" width="33%">메인</th>
-    <th align="center" width="33%">워치 가이드</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="소셜로그인 페이지" src="https://github.com/soyeonnnb/dallim/assets/71217221/84a3cbfd-2989-4f38-b777-e71ce076af7a" ></td>
-    <td align="center"><img height="400" alt="메인페이지" src="https://github.com/soyeonnnb/dallim/assets/71217221/5f655bb0-6521-40e3-9a3a-74b004d9bbd8"></td>
-    <td align="center"><img height="400" alt="갤럭시워치 가이드" src="https://github.com/soyeonnnb/dallim/assets/71217221/b8600b73-51da-41ac-b406-c49f07092e06"></td>
-  </tr>
-  <tr>
-    <td align="center">어플을 키고 소셜 로그인(네이버, 카카오)을 통해 로그인을 할 수 있습니다.</td>
-    <td align="center">소셜 로그인을 성공하면 메인 페이지로 이동하게 됩니다.</td>
-    <td align="center">갤럭시 워치에 대한 가이드를 볼 수 있습니다.</td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="50%">달력</th>
-    <th align="center" width="50%">개인정보 처리방침</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="달력" src="https://github.com/soyeonnnb/dallim/assets/71217221/91e4050e-f7bc-4b5f-ad5b-58c0fea0927d"></td>
-    <td align="center"><img height="400" alt="개인정보 처리방침" src="https://github.com/soyeonnnb/dallim/assets/71217221/bc19690d-3092-41ed-951d-a210c94ae943"></td>
-  </tr>
-  <tr>
-    <td align="center">서비스 출석일과 관련된 달력입니다. 출석의 경우 해당 날짜에 달리기 종료시, 출석으로 인정됩니다.</td>
-    <td align="center">서비스 개인정보 처리에 대한 링크로 이어지는 창이 뜹니다. 확인을 선택하면 서비스 개인정보 처리방침 페이지로 이동하게 됩니다.</td>
-  </tr>
-</table>
+  | Android | Version |
+  | --- | --- |
+  | Android Studio | 2024.1.1 |
+  | Android min SDK | 28 |
+  | Android target SDK | 34 |
+  | Android max SDK | 34 |
 
 </details>
 
 <details>
-<summary>:waxing_gibbous_moon:<strong>차트 페이지</strong></summary>
-<br>
+  <summary>Backend</summary>
 
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="33%">차트 메인</th>
-    <th align="center" width="33%">차트 메인(하단 스크롤업)</th>
-    <th align="center" width="33%">러닝 그래프 터치</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="차트 메인" src="https://github.com/soyeonnnb/dallim/assets/71217221/d5f78e28-573a-4cbd-850f-94e5e2b725b8"></td>
-    <td align="center"><img height="400" alt="차트 월별기록" src="https://github.com/soyeonnnb/dallim/assets/71217221/9a30465b-7ae9-454d-a772-2b68c3708e6c"></td>
-    <td align="center"><img height="400" alt="차트 월별 상세기록" src="https://github.com/soyeonnnb/dallim/assets/71217221/fc727fc6-29c0-4e2a-a2d4-7a9835d8dbc2"></td>
-  </tr>
-  <tr>
-    <td align="center">차트 메인페이지입니다. 달력을 통해 어느 날짜에 러닝을 했는지, 이번주 기록이 어떻게 되는지 확인할 수 있습니다.</td>
-    <td align="center">하단 스크롤바를 위로 올리면 월별로 달린 기록을 확인할 수 있습니다.</td>
-    <td align="center">러닝 그래프 터치시 해당 러닝 기록을 볼 수 있습니다.</td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="25%">차트 메인(슬라이드)</th>
-    <th align="center" width="50%">차트 기록</th>
-    <th align="center" width="25%">페이스 차트</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="일별 기록 목록" src="https://github.com/soyeonnnb/dallim/assets/71217221/80d05027-1041-4318-8123-d99741d874ad"></td>
-    <td align="center">
-      <img height="400" alt="기록 상세1" src="https://github.com/soyeonnnb/dallim/assets/71217221/adba23df-2cf2-4274-95cb-643c39b0cb2e">
-      <img height="400" alt="기록상세2" src="https://github.com/soyeonnnb/dallim/assets/71217221/88e4e329-d87a-477d-8891-b79377fe73e3">
-    </td>
-    <td align="center"><img height="400" alt="페이스 차트" src="https://github.com/soyeonnnb/dallim/assets/71217221/b775563b-4111-42ad-bf43-c948fbc0c25b">/td>
-  </tr>
-  <tr>
-    <td align="center">달력에 표시된 러닝 기록 선택 시, 해당 일자에 뛴 기록이 나타나게 됩니다.</td>
-    <td align="center">카드 선택 시, 기록의 상세보기로 이동하며 해당 뷰에서 스크롤을 통해 속도, 심박수 그래프, 같이 달린 러닝메이트도 함께 나타납니다.</td>
-    <td align="center">차트 기록에서 오른쪽 슬라이드를 통해 페이스 차트를 확인할 수 있습니다.</td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="25%">페이스 차트 터치</th>
-    <th align="center" width="25%">페이스 차트 비교</th>
-    <th align="center" width="25%">러닝 메이트와 기록비교</th>
-    <th align="center" width="25%">심박수 차트</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="페이스차트 터치" src="https://github.com/soyeonnnb/dallim/assets/71217221/8fee24b2-c3c9-4cbe-af95-443e9326203c"></td>
-    <td align="center"><img height="400" alt="페이스차트 비교 1" src="https://github.com/soyeonnnb/dallim/assets/71217221/89906ed1-3d26-4858-b2f2-707e1cb340ff"></td>
-    <td align="center"><img height="400" alt="러닝메이트와 기록 비교" src="https://github.com/soyeonnnb/dallim/assets/71217221/5952fe7f-62ed-4540-8d2d-d3e62532899e"></td>
-    <td align="center"><img height="400" alt="심박수 기록" src="https://github.com/soyeonnnb/dallim/assets/71217221/96271910-f950-4fa4-900a-096b66ce22ef"></td>
-  </tr>
-  <tr>
-    <td align="center">그래프를 선택하면 선택한 지점의 평균 페이스가 나타납니다.</td>
-    <td align="center">같이 달리기 비교 토글 터치 시 함께 달린 러닝메이트와 비교를 할 수 있습니다.</td>
-    <td align="center">같이 달린 러닝메이트와 달린 기록 리스트를 확인할 수 있습니다.</td>
-    <td align="center">페이스 차트에서 한칸 더 옆으로 이동 시 심박수 차트가 나타납니다. 해당 그래프 선택 시, 해당 지점에서의 심박수가 있는 영역에 따라 색상이 선택됩니다.</td>
-  </tr>
-</table>
+  | Backend | Version |
+  | --- | --- |
+  | OpenJDK | 17.0.12 |
+  | Spring Boot | 3.3.3 |
+  | Spring Data JPA | 3.3.3 |
+  | Nginx | 1.18.0 |
+  | MySQL | 8.4.1 |
+  | Node.js | 20.18.0 |
+  | Python | 3.12.6 |
+  | FastAPI | 0.115.4 |
+  | SQLAlchemy | 2.0.36 |
+  | Oauth | 2.0 |
 
 </details>
 
 <details>
-<summary>:first_quarter_moon:<strong>소셜 페이지</strong></summary>
-<br>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="25%">소셜 메인(전체)</th>
-    <th align="center" width="25%">러닝메이트 상세보기</th>
-    <th align="center" width="25%">러닝메이트와 비교하기</th>
-    <th align="center" width="25%">러닝메이트와 친구추가</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="소셜 전체 메인" src="https://github.com/soyeonnnb/dallim/assets/71217221/87e0b9b9-43f8-4522-ba67-36d6608117ac"></td>
-    <td align="center"><img height="400" alt="러닝메이트 상세보기" src="https://github.com/soyeonnnb/dallim/assets/71217221/de2f5ce9-7c1e-4ac7-b01a-83b935d5dc6f"></td>
-    <td align="center"><img height="400" alt="러닝메이트와 비교하기" src="https://github.com/soyeonnnb/dallim/assets/71217221/120cfb3d-bb72-4591-aca3-df55d04e1bd8"></td>
-    <td align="center"><img height="400" alt="러닝메이트와 친구추가" src="https://github.com/soyeonnnb/dallim/assets/71217221/e6ce1f0a-c82d-4f43-88b7-576916e78528"></td>
-  </tr>
-  <tr>
-    <td align="center">소셜버튼 터치시 전체 랭킹을 볼 수 있는 화면입니다.</td>
-    <td align="center">랭킹에 나타난 프로필 터치 시 해당 유저의 실제 프로필과 기록들을 볼 수 있습니다. 또한 등록하기 버튼을 통해 러닝메이트를 등록할 수 있습니다.</td>
-    <td align="center">카드 터치 시 해당 러닝 메이트와 나와의 기록을 비교할 수 있습니다.</td>
-    <td align="center">친구 요청 버튼을 통해 친구 요청을 보낼 수 있습니다.</td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="25%">소셜 메인(친구)</th>
-    <th align="center" width="50%">친구 검색</th>
-    <th align="center" width="25%">친구 목록</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="소셜 친구 메인" src="https://github.com/soyeonnnb/dallim/assets/71217221/c985647b-7414-4896-a774-e94fd746453b"></td>
-    <td align="center">
-      <img height="400" alt="친구 검색" src="https://github.com/soyeonnnb/dallim/assets/71217221/786d66d7-c33c-4599-bf26-d2845db71a7a">
-      <img height="400" alt="러닝메이트와 비교하기" src="https://github.com/soyeonnnb/dallim/assets/71217221/059cc262-f358-4216-8373-38541660ae0b">
-    </td>
-    <td align="center"><img height="400" alt="친구 목록" src="https://github.com/soyeonnnb/dallim/assets/71217221/0595a79f-5c8c-400b-b3d2-229cbb7bd119"></td>
-  </tr>
-  <tr>
-    <td align="center">상단의 토글 바 터치 시 내가 등록한 친구들의 랭킹을 볼 수 있습니다.</td>
-    <td align="center">메인(친구)의 우측 상단 버튼을 통해 모달(친구 검색, 목록, 받은 요청)을 보여주며, 닉네임 검색을 통하여 유저를 조회, 요청할 수 있습니다.</td>
-    <td align="center">친구 목록 버튼을 터치하여 현재 나의 친구 목록을 볼 수 있습니다.</td>
-  </tr>
-</table>
-
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="33%">친구 목록 삭제</th>
-    <th align="center" width="33%">받은 요청</th>
-    <th align="center" width="33%">받은요청 수락, 거절</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="친구 목록 삭제" src="https://github.com/soyeonnnb/dallim/assets/71217221/321adc49-fb83-47cc-8d77-17bcb7cd59e8"></td>
-    <td align="center"><img height="400" alt="받은 요청" src="https://github.com/soyeonnnb/dallim/assets/71217221/a50f4ce8-ee7d-4198-9a27-79f2f7bca6bf"></td>
-    <td align="center"><img height="400" alt="받은 요청 수락/거절" src="https://github.com/soyeonnnb/dallim/assets/71217221/ff8ab67d-921f-4c12-9320-1793535538c6"></td>
-  </tr>
-  <tr>
-    <td align="center">친구 목록에서 삭제 버튼을 누르게 되면 친구가 삭제가 됩니다.</td>
-    <td align="center">받은 요청 버튼을 클릭하여 요청받은 목록을 볼 수 있습니다.</td>
-    <td align="center">받은 요청을 수락,또는 거절을 할 수 있습니다.</td>
-  </tr>
-</table>
+  <summary>CI/CD</summary>
+  | CI/CD | Version |
+  | --- | --- |
+  | Jenkins | 2.484 |
+  | Docker | 27.3.1 |
+  | Docker Compose | 2.29.7 |
+  | ngrok | 3.18.4 |
 
 </details>
 
 <details>
-<summary>:waxing_crescent_moon:<strong>편집 페이지</strong></summary>
-<br>
+  <summary>Frontend</summary>
 
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="50%">편집 메인(캐릭터)</th>
-    <th align="center" width="50%">캐릭터 구매</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img height="400" alt="편집 기본캐릭터" src="https://github.com/soyeonnnb/dallim/assets/71217221/2eccb818-dd46-47d6-b432-0e86c1ce2c28">
-      <img height="400" alt="소유하지 않은 캐릭터" src="https://github.com/soyeonnnb/dallim/assets/71217221/3c3c4bb2-c85c-4bdc-a38a-633a83c07607">
-    </td>
-    <td align="center">
-      <img height="400" alt="캐릭터 구매 모달" src="https://github.com/soyeonnnb/dallim/assets/71217221/1282b45f-b98b-47d4-b94b-5a6499709ec0">
-      <img height="400" alt="캐릭터 구매 성공" src="https://github.com/soyeonnnb/dallim/assets/71217221/875bd77a-0e22-4027-9c20-bc767a7ee9a2">
-    </td>
-  </tr>
-  <tr>
-    <td align="center">편집 버튼 터치 시 기본적으로 캐릭터 선택 화면으로 이동하게 됩니다.</td>
-    <td align="center">구매 버튼 터치시 포인트를 사용하여 구매할 수 있습니다.</td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="33%">편집 메인(행성)</th>
-    <th align="center" width="33%">워치화면 미리보기</th>
-    <th align="center" width="33%">행성 구매</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="편집 기본행성" src="https://github.com/soyeonnnb/dallim/assets/71217221/f7c23a3f-e32f-471d-b91f-602b61ca8c8c"></td>
-    <td align="center"><img height="400" alt="행성 워치화면 미리보기" src="https://github.com/soyeonnnb/dallim/assets/71217221/8ac5f117-ad5a-4c70-acea-12e68f843752"></td>
-    <td align="center"><img height="400" alt="행성 구매" src="https://github.com/soyeonnnb/dallim/assets/71217221/0d80e324-3b11-413b-a4af-6a68e8d1b183"></td>
-  </tr>
-  <tr>
-    <td align="center">상단의 행성 토글 터치 시 대표 행성을 지정할 수 있는 페이지로 이동합니다.</td>
-    <td align="center">행성에 있는 워치 버튼을 터치하면 현재 워치에서 나오는 미리 보기 화면을 볼 수 있습니다.</td>
-    <td align="center">잠겨있는 행성을 포인트를 통하여 구매할 수 있습니다.</td>
-  </tr>
-</table>
+  | Frontend | Version |
+  | --- | --- |
+  | React | 18.3.1 |
+  | TypeScript | 5.5.3 |
 
 </details>
 
 <details>
-<summary>:new_moon:<strong>프로필 페이지</strong></summary>
-<br>
+  <summary>AI</summary>
 
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="33%">프로필 메인</th>
-    <th align="center" width="33%">닉네임 변경</th>
-    <th align="center" width="33%">러닝 메이트 설정</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="프로필 메인" src="https://github.com/soyeonnnb/dallim/assets/71217221/44d9cfce-a78c-4b7a-9628-61a6a325128a"></td>
-    <td align="center"><img height="400" alt="닉네임 변경" src="https://github.com/soyeonnnb/dallim/assets/71217221/b326d2cb-b793-4a88-8057-81aae6a2f9ca"></td>
-    <td align="center"><img height="400" alt="러닝메이트 설정" src="https://github.com/soyeonnnb/dallim/assets/71217221/1194c2fd-cb26-4c9a-b0c5-5f481b8ce8b8"></td>
-  </tr>
-  <tr>
-    <td align="center">프로필 버튼을 터치 시 프로필 페이지로 이동하며, 나의 정보(레벨, 닉네임, 경험치, 대표캐릭터)를 볼 수 있습니다.</td>
-    <td align="center">닉네임 변경은 5글자이상, 띄어쓰기, 닉네임 중복이 발생하게 되면 변경이 불가능합니다. 그 외는 변경할 수 있습니다.</td>
-    <td align="center">러닝 메이트 버튼 터치 시 내가 등록한 상대의 러닝 기록을 볼 수 있고, 왼쪽 슬라이드로 러닝 기록 리스트를 볼 수 있습니다. 삭제 버튼 터치 시 내가 설정한 러닝 기록을 삭제 할 수 있습니다.</td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <th align="center" width="33%">워치 설정</th>
-    <th align="center" width="33%">운동 알림 설정</th>
-    <th align="center" width="33%">로그아웃</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="워치 설정" src="https://github.com/soyeonnnb/dallim/assets/71217221/266962ed-b56c-44dc-b91a-998b37c5b33e"></td>
-    <td align="center"><img height="400" alt="운동알림 설정" src="https://github.com/soyeonnnb/dallim/assets/71217221/9eab2d90-e6c6-4f28-a939-69a1f8f6dba0"></td>
-    <td align="center"><img height="400" alt="로그아웃" src="https://github.com/soyeonnnb/dallim/assets/71217221/c60ee114-58aa-4d48-86e8-f44f15022636"></td>
-  </tr>
-  <tr>
-    <td align="center">워치 버튼 터치 시 워치 설정 페이지로 이동하며, 워치에서 발급받은 인증번호로 휴대폰이랑 워치를 연동할 수 있습니다.</td>
-    <td align="center">알림 버튼 터치 시 알림 설정 페이지로 이동하며, 원하는 때에 운동을 할 수 있도록, 요일과 시간을 설정하여 푸쉬 알림(FCM)을 받을 수 있습니다.</td>
-    <td align="center">로그아웃 버튼 클릭시 소셜 로그아웃을 진행할 수 있습니다. 네이버는 서비스 로그아웃을 진행할 수 있습니다.</td>
-  </tr>
-</table>
+  | AI | Version |
+  | --- | --- |
+  | Torch | 2.5.1 |
+  | Mediapipe | 0.10.14 |
+  | Librosa | 0.10.2.post1 |
+  | Google speech-to-text | 2.28.0 |
+  | Google text-to-speech | 2.21.0 |
+  | Openai | 1.53.0 |
+  | Resnet-50 | - |
 
 </details>
 
-<details>
-<summary>:full_moon_with_face:<strong>위젯</strong></summary>
-<br>
+# 🏗️ 서비스 아키텍처
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/Web%20App%20Reference%20Architecture.png?raw=true">
 
-<table width="100%">
-  <tr>
-    <th align="center" width="100%">위젯</th>
-  </tr>
-  <tr>
-    <td align="center"><img height="400" alt="위젯" src="https://github.com/soyeonnnb/dallim/assets/71217221/91503194-5b51-4c89-8f98-99f94b3bcf04"></td>
-  </tr>
-  <tr>
-    <td align="center">내가 운동한 날짜, 그리고 귀여운 달림 캐릭터들을 위젯으로 사용할 수 있습니다.</td>
-  </tr>
-</table>
+# **✨  주요 기능**
+### 1. MD 형식으로 포트폴리오를 작성해보세요.
+- MarkDown 형식이 익숙치 않은 사용자를 위해 MD형식의 템플릿과 사용법을 지원합니다.
+- 사용자는 프로젝트, 경력, 자기소개 등을 포함한 포트폴리오를 손쉽게 작성할 수 있습니다.
+- 카테고리화된 템플릿을 통해 체계적으로 자신의 성과를 정리할 수 있습니다.
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EA%B2%8C%EC%8B%9C%EA%B8%80%20-%20%ED%8F%AC%ED%8A%B8%ED%8F%B4%EB%A6%AC%EC%98%A4.gif?raw=true">
 
-</details>
-<br />
 
-## 🔗 주요 기술
+### 2. 레포지토리, 활동/질문/자유게시글을 남기세요
+- 사용자는 레포지토리, 활동/질문/자유 게시판을 통해 자신의 활동을 기록하세요.
+**1. 레포지토리 작성**
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EA%B2%8C%EC%8B%9C%EA%B8%80%20-%20%EB%A0%88%ED%8F%AC%EC%A7%80%ED%86%A0%EB%A6%AC.gif?raw=true">
+**2. 자유/질문 게시글 작성**
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EA%B2%8C%EC%8B%9C%EA%B8%80%20-%20%EC%A7%88%EB%AC%B8%EC%9E%90%EC%9C%A0%EA%B2%8C%EC%8B%9C%EA%B8%80.gif?raw=true">
+**3. 레포지토리와 연결된 활동게시글 작성**
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EA%B2%8C%EC%8B%9C%EA%B8%80%20-%20%ED%99%9C%EB%8F%99%EA%B2%8C%EC%8B%9C%ED%8C%90.gif?raw=true">
 
-### [ DALLIM ]
-- **Blender**: 독창적인 3D 모델링과 커스텀 디자인을 통한 4종의 캐릭터와 5개의 행성 제작
+### 3. 다양한 전공자 대상 & 공유와 피드백
 
-- **Gamification**: 사용자 참여 및 동기 부여를 증진시키는 게임화 요소
-    - **CHARACTER (캐릭터)**: 선택 가능한 4종의 캐릭터, 각각 고유의 3단계 진화 과정을 경험
-    - **PLANET (행성)**: 사용자가 5종류의 행성 중에서 선택하여 장착
-    - **Point (포인트)**: 사용자의 활동에 따라 포인트 부여, 캐릭터 및 행성 구매에 사용
-    - **FRIEND MANAGEMENT (친구 관리)**: 온라인 친구와의 연결, 기록 비교 및 대결 기능
-    - **ALARM (알람)**: 정해진 시간에 러닝을 시작하도록 동기 부여, 일관된 운동 습관 형성 지원
-- **FCM(Firebase Cloud Messaging) Push**: 목표 달성 및 러닝에 대한 지속적인 관심과 참여를 유도하는 푸시 알림
-- **Mobile Widget**: 사용자의 모바일 홈 화면에 위젯 추가로 러닝 관련 정보 표시
-- **Location Weather**: 현재 위치 기반 날씨 정보를 제공하여 러닝 조건에 최적화된 환경 확인 및 악천후 대비 가능
-- **Social Login (NAVER, KAKAO)**: 사용자의 편의성을 높이고 빠른 로그인 경험을 제공하는 네이버 및 카카오 OAuth 인증
+- 작성한 포트폴리오를 공개적으로 공유하여, 다른 사용자로부터 피드백을 받을 수 있습니다.
+- 동료와의 협업 및 네트워킹을 통해 더 나은 포트폴리오를 완성할 수 있습니다.
+- 예술, 디자인, 경영, 과학 등 다양한 전공을 고려하여 포트폴리오에 이미지, 동영상 등을 업로드 및 재생 할 수 있도록 지원합니다.
+- 비개발자도 손쉽게 사용할 수 있도록 직관적인 UI/UX를 구현했습니다.
 
-### [ FRONT ]
-- **React**: 서비스 소개 웹 페이지 제작을 위한 라이브러리
-- **React-Native**: 갤럭시워치와 안드로이드 모바일 연결에 적합한 모바일 애플리케이션 프레임워크
-- **TypeScript**: 코드의 안정성 및 유지 보수성을 높이는 강력한 타입 시스템을 제공
-- **Styled-Components (Atomic Design)**: React 컴포넌트에 직접 CSS 스타일을 적용하는 효율적인 방법, 코드의 가독성 및 유지 보수성 개선
+### 4. 채용 정보 제공
 
-- **Recoil**: React 앱의 상태 관리, atom과 selector를 통해 유연하고 효과적인 상태 관리 가능
-    - **CSR (클라이언트 사이드 렌더링) 활용**: 상태 변경(예: 캐릭터, 행성)에 따른 컴포넌트 자동 업데이트로 동적인 UI 및 실시간 상호작용 지원
-    - **SSR (서버 사이드 렌더링) 활용**: 초기 상태를 서버에서 설정하고 HTML을 생성하여 클라이언트로 전송, 빠른 페이지 로드
-- **Axios**: 애플리케이션에서 HTTP 통신을 쉽고 효율적으로 처리
-- **react-native-gifted-charts**: 사용자 데이터를 시각적으로 표현하여 분석과 이해를 돕는 강력한 데이터 시각화 도구
+- 학과코드를 입력하고, 그와 관련된 채용 정보를 실시간으로 제공해줍니다.
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EC%B1%84%EC%9A%A9%EC%A0%95%EB%B3%B4.gif?raw=true">
 
-### [ BACK ]
-- **Brotli 알고리즘을 활용한, 데이터 전송량 70% 압축**
-    - 운동 시간이 증가함에 따라, 갤럭시 워치와 서버 간 데이터 전송량이 너무 많이지는 문제가 발생
-    - 네트워크 비용을 줄이기 위해, HTTP 생태계의 gzip, brotli 중 압축 성능이 우수한 brotli 알고리즘 적용
-      
-- **갤럭시 워치에서 제공한 운동 기록 Raw 데이터를 서버에서 필요한 형태로 가공, 저장 파이프라인 구축**
-    - 갤럭시워치에서 제공한 운동 raw 데이터를 그대로 MongoDB로 저장하는 것은 불필요한 데이터로 인해 Disk가 낭비되는 문제가 발생   
-    - 달림 서비스에서 운동기록을 사용하는 차트와 함께 달리기 기능에 필요한 정보만을 추출해서 저장하도록 변경
-    - 불필요한 데이터를 줄이고, 조회 속도를 0.3ms로 개선
+### 5. 모의 면접
+
+**1. 모의면접 페이지로 이동**
+- AI 모의면접을 활용해 AI면접을 대비할 수 있습니다.
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EB%AA%A8%EC%9D%98%EB%A9%B4%EC%A0%91%20%EB%A1%9C%EB%B9%84%EA%B9%8C%EC%A7%80.gif?raw=true">
+
+**2. 모의면접 진행**
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EB%AA%A8%EC%9D%98%ED%99%94%EC%83%81%EB%A9%B4%EC%A0%91.gif?raw=true">
+
+**AI 주요 기능**
+1. tts & stt 를 활용, 사용자의 포트폴리오 기반 사용자 맞춤 면접 질문 생성
+2. 화상 데이터 분석(AI Hub - Resnet-50)
+ 면접 영상 기반 안면 인식(랜드마크) 활용 사용자 감정 분석(면접 집중도 분석)
+ 동공 랜드마크, 상체 움직임 등 자료 활용 면접 집중도 분석
+3. 음성 데이터 분석(AI Hub - Resnet-50)
+ 음성의 높낮이, 떨림 등 자료 활용 면접 집중도 분석
+4. GPT API 활용
+ stt 과정에서 나온 데이터를 읽기 편하게 다듬어서 사용자에게 노출
  
-### [ WATCH ]
-- **EncryptedSharedpreferences 라이브러리**
-    - 스마트 워치의 유저 정보를 안전하게 암호화를 통해 저장
-    - AES 256 알고리즘 사용
+ 
+https://github.com/nosong2/portalio/blob/main/exec/gifs/%EB%A1%9C%EA%B7%B8%EC%9D%B8%ED%99%94%EB%A9%B4.png?raw=true
+### 📱작동 화면
+**로그인 화면**
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%EB%A1%9C%EA%B7%B8%EC%9D%B8%ED%99%94%EB%A9%B4.png?raw=true"/>
 
-- **Room 라이브러리**
-    - SQLite DB를 쉽고 편리하게 사용하게 해주는 라이브러리
-    - SQL에 문제가 생길 경우 컴파일단에서 에러 발생시키는 장점
+1. **프로필 사진 수정**
+네이버, 구글 소셜 로그인이 가능해요.
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%ED%94%84%EB%A1%9C%ED%95%84-%ED%94%84%EC%82%AC.gif?raw=true"/>
 
-- **기록 측정**
-    - FusedLocationProviderClient 클래스를 이용해서 위치 정보 수집
-    - 가속도 센서, 자이로스코프, 자기장 센서 등의 여러 가지 종합적인 정보를 통해 예측 위치 서비스 제공
-    - Location 클래스를 이용해 속도 정보를 받아서 측정.
-    - 속도, 거리, 심박수, 발걸음을 1초마다 리스트에 저장해서 달리기 종료가 되면 모든 데이터를 MongoDB로 전송
+2. 자기소개 수정
+한줄 자기 소개를 수정할 수 있어요
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%ED%94%84%EB%A1%9C%ED%95%84-%EC%9E%90%EA%B8%B0%EC%86%8C%EA%B0%9C.gif?raw=true"/>
 
-### [ 협업툴 ]
-- **GitLab**: 프로젝트의 코드와 문서 관리
+3. 이력, 경력, 소셜 수정
+이력, 경력, 소셜 정보를 수정할 수 있어요
+<img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/%ED%94%84%EB%A1%9C%ED%95%84-%EC%9D%B4%EB%A0%A5%EA%B2%BD%EB%A0%A5%EC%86%8C%EC%85%9C.gif?raw=true"/>
 
-- **Jira**: 프로젝트 일정, 이슈 및 작업 관리
-    - **Scrum (Agile)**: 1주 주기의 프로젝트 스프린트와 매일 5분의 스크럼미팅을 통한 통한 긴밀한 팀 협업과 소통
-- **Mattermost**: 팀 내 의사소통 및 파일 공유를 지원하는 협업 도구 활용
-- **Figma**: 프로젝트의 UI/UX 설계 및 디자인 가이드라인 구축에 활용, 팀원 간의 효과적인 디자인 커뮤니케이션 및 일관성 있는 디자인 유지
+# 🔨 기술 소개
 
-<br />
+## ➡️ **정리된 주요 기술 스택**
+1. **MediaPipe**: 동공 및 상체 움직임 분석.
+2. **OpenCV**: 영상 데이터 전처리 및 ROI 설정.
+3. **Librosa**: 음성 분석(말하기 속도, 볼륨, 무음 구간 등).
+4. **PyTorch**: 감정 분석 모델 학습 및 적용.
+5. **OpenAI API**: 면접 질문 생성 및 답변 분석.
+6. **Google Cloud Speech-to-Text & Text-to-Speech**: 음성 데이터 처리 및 전달.
 
-## 🛠 빌드 환경
 
-| FrontEnd                | BackEnd                                      | Database   | Infra                      |
-| :---------------------- | :------------------------------------------- | :--------- | :------------------------- |
-| Node.js 18.16.1         | Java 11           | MySQL | AWS EC2 (Ubuntu 20.04 LTS) |
-| React.js 18.2.0         | Spring Boot 2.7.15                            | MongoDB    | Docker 23.0.6              |
-| react-native        | Gradle 8.1.1                                 | Redis      | Nginx 1.18.0               |
-| typescript      | Spring Data JPA                                          |    | Jenkins 2.401.2 LTS        |
-| react-native styled components      | Spring Security |            |               |
-| | lombok                                       |            |       |
-| | Oauth 2.0                                         |   |
-| | JWT                                          |  |
+## ➡️ Spring Security, JWT
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKCAZqvGwovmjKOU86x56uoPK0drzJRCIxYA&s" width="100"/>
+<img src="https://blog.kakaocdn.net/dn/x9OS9/btr0HyQ7jwf/KthFxTqL06rlOjel1kxmRK/img.png" width="100"/>
 
-<br>
-<br>
+### 도입 이유
+- 접근 제어를 쉽게 구현할 수 있어, 인증(Authentication)과 인가(Authorization)를 관리하기 위해 도입했습니다.
+- Security의 FilterChain에 직접 구현한 Filter를 배치해 보안을 강화할 수 있도록 하였습니다.
 
-## 📄 산출물
+### 도입 결과
+- **보안성 강화**: 인증 및 인가 과정이 Spring Security로 일관성 있게 처리됨으로써, RBAC(Roll-Based-Access-Control)을 통한 API에 대한 무단 접근을 방지할 수 있었습니다.
+- **XSS와 CSRF 공격 방지**: XSS 공격을 방지하기 위해 Access Token은 로컬 스토리지에 저장했고, Refresh Token은 httpOnly 옵션을 적용한 쿠키에 저장하여 브라우저 스크립트에서 접근할 수 없도록 했습니다. Refresh Token은 오직 토큰 재발급 기능만 수행하게 하여, CSRF 공격에 취약할 수 있음을 인지하면서도 피해 범위를 최소화할 수 있었습니다.
+- **JWT 복제 공격 방지**: 로그아웃 시, JWT가 복제되는 것을 방지하기 위해 생명주기가 긴 Refresh Token을 서버 측에서 관리하였습니다. 이를 통해 사용자의 Request가 들어올 때마다 서버에서 토큰의 유효성을 검증하고, 서버가 인증의 주도권을 가지는 구조로 개선하였습니다.
+- **Refresh Token의 Rotate 전략**: Access Token이 만료될 때 Refresh Token도 함께 재발급하는 'Rotate' 기능을 도입했습니다. 이를 통해 Refresh Token이 탈취되었을 경우 피해를 줄일 수 있었고, 비록 두 토큰의 생명주기가 동일해지는 단점이 있지만 보안성을 향상시키는 데 기여했습니다.
 
-#### 최종발표자료
-[😎 캔바 링크](https://www.canva.com/design/DAFz9CVPbIQ/V0Vt5LbQ50ublWIr1kfoPQ/view?utm_content=DAFz9CVPbIQ&utm_campaign=designshare&utm_medium=link&utm_source=editor)
+## ➡️ **MediaPipe**
 
-#### 아키텍쳐
-![아키텍쳐구조도](https://github.com/qkrrlgus114/dallim/assets/121294224/892ffed3-c63a-4711-9025-27a837a29fbd)
+![](https://velog.velcdn.com/images/nosong2/post/438036f5-a26b-47e4-9ff7-7084961b1326/image.png)
 
-#### 디자인
-![디자인](https://github.com/soyeonnnb/dallim/assets/71217221/208e7f63-553c-4aa7-9a7e-75177067fffe)
+### **도입 이유**
+- 면접자의 **집중도**를 분석하기 위해 도입.
+- **시선 추적**: 동공 움직임 분석을 통해 면접 중 다른 곳을 바라보는지, 집중 여부 및 부정행위 가능성을 평가.
+- **상체 움직임 추적**: 상체 움직임 데이터를 기반으로 면접에 얼마나 몰입했는지 분석.
+- MediaPipe의 **Landmark 좌표**를 활용하여 인체 각 부분의 위치를 정밀히 분석 가능.
 
-#### 요구사항 명세서
-![요구사항명세서](https://github.com/soyeonnnb/dallim/assets/71217221/3ce49661-226f-43c7-b8d8-4b6dfb06c62b)
+### **도입 결과**
+1. **얼굴 인식**
+   - **동공 움직임 분석**: 프레임 단위로 눈의 동공 위치를 추적하여 집중도를 계산.
+   - **눈 깜빡임 예외 처리**: 눈 위아래 좌표 간 거리가 급격히 줄어드는 경우(눈 깜빡임)는 집중도 계산에서 제외.
+2. **포즈 인식**
+   - **상체 움직임 분석**: 프레임별 상체 Landmark 좌표의 변화를 비교하여 움직임 기반 집중도 점수(focus_score) 계산.
 
-#### API 명세서
-![API명세서](https://github.com/soyeonnnb/dallim/assets/71217221/79e9b12e-11da-408d-8709-e5dd3d716a20)
 
-#### ERD
-![erd](https://github.com/soyeonnnb/dallim/assets/71217221/80c07fba-03d5-40bc-a2e5-2508cdbf8da8)
+## ➡️ **OpenCV**
 
-<br/>
+<img src="https://velog.velcdn.com/images/nosong2/post/8987bb92-7ede-405e-97f7-8a6848fb0a6f/image.png" width="300" />
+
+
+### **도입 이유**
+- MediaPipe의 분석 정확도를 높이고, **영상 데이터를 효율적으로 처리**하기 위해 사용.
+- **ROI(Region of Interest)** 설정: 얼굴과 상체에 포커스를 맞춘 영역을 추출하여 불필요한 데이터 제거.
+- **영상 전처리**: 밝기 조정, 노이즈 제거 등을 통해 영상 데이터 품질 향상.
+
+### **도입 결과**
+1. MediaPipe와의 결합으로 동공 및 상체 움직임 분석 정확도 향상.
+2. **ROI 설정**을 통해 분석 대상인 얼굴과 상체를 효율적으로 추적.
+3. **프레임 속도 최적화**: 실시간 처리 속도를 높여 원활한 모의 면접 환경 제공.
+
+
+## ➡️ **Librosa**
+
+![](https://velog.velcdn.com/images/nosong2/post/0ae8e2bf-d84c-4a85-ac70-13e5097563b9/image.png)
+
+### **도입 이유**
+- **음성 분석**을 통해 면접자의 **말하기 품질**을 평가.
+- **속도, 무음 구간, 음성의 입체감** 등을 분석하여 면접자의 의사소통 능력을 측정.
+
+### **도입 결과**
+1. **BPM 분석**
+   - 말하는 속도를 분석하여 빠르거나 느린 경우 피드백 제공.
+2. **RMS 에너지 분석**
+   - 음성의 볼륨 변화를 측정하여 면접자가 안정적으로, 입체적으로 말하는지 평가.
+   - 지나치게 볼륨이 튀는 경우 발화의 일관성 부족으로 판단.
+3. **무음 구간 분석**
+   - 대답 중 **무음 구간의 빈도와 길이**를 파악하여 면접 준비 상태와 발화 유창성을 분석.
+
+
+## ➡️ **PyTorch**
+
+![](https://velog.velcdn.com/images/nosong2/post/de98421a-1c72-4805-a390-e6459aaf7877/image.webp)
+
+### **도입 이유**
+- **감정 분석**을 위해 딥러닝 모델을 사용.
+- AI Hub에서 제공하는 한국인 표정 데이터를 활용하여 **ResNet 모델**로 학습, 감정 변화를 실시간으로 추적.
+
+### **도입 결과**
+- 면접자의 표정을 기반으로 감정 변화를 분석하여 면접 진행 중 긍정적, 부정적 감정을 파악.
+- 면접 도중 긴장, 자신감 등의 심리 상태를 시각적으로 피드백 가능.
+
+
+## ➡️ **OpenAI API**
+
+![](https://velog.velcdn.com/images/nosong2/post/650d6386-4a02-4090-9573-06f90521c0cc/image.png)
+
+
+### **도입 이유**
+- 면접 질문 생성 및 분석을 위해 도입.
+- 면접자의 답변이 **질문 의도에 맞는지** 분석하고, 다음 **추가 예상 질문**을 생성하기 위해 사용.
+
+### **도입 결과**
+1. 면접자의 **직무 및 포트폴리오**를 바탕으로 적합한 질문을 자동 생성.
+2. 면접 답변을 분석하여 질문 의도와의 일치 여부를 평가.
+3. 면접 중 추가로 예상되는 질문을 실시간으로 생성하여 면접의 유연성을 향상.
+
+
+## ➡️ **Google Cloud Speech-to-Text (STT) & Text-to-Speech (TTS)**
+
+![](https://velog.velcdn.com/images/nosong2/post/b3472953-c193-4467-87ca-725b38930737/image.png)
+
+
+### **도입 이유**
+- **STT**: 면접자의 답변을 실시간으로 텍스트로 변환하여 분석.
+- **TTS**: 생성된 면접 질문을 음성으로 변환하여 면접자에게 전달.
+
+### **도입 결과**
+1. **STT**: 면접자의 답변을 텍스트로 변환하여 분석 정확도 향상.
+2. **TTS**: 자연스러운 음성으로 면접 질문을 전달하여 면접 환경 개선.
+3. 면접 진행 속도와 효율성을 동시에 확보.
+
+---
+
+# 📚💻 개발 문서
+
+<details>
+  <summary>📋✨ 기능 정의서</summary>
+  
+![기능 정의서](https://github.com/nosong2/portalio/blob/5f58e37301917cf90ca29400bbf9aae5c0d69898/exec/gifs/Portalio_%EA%B8%B0%EB%8A%A5%EB%AA%85%EC%84%B8%EC%84%9C.pdf)
+  
+</details>
+
+<details>
+  <summary>🗂️ ERD (Entity Relationship Diagram)</summary>
+  
+  <img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/ERD.png?raw=true">
+
+</details>
+
+<details>
+  <summary>👣 유저 플로우 (User Flow)</summary>
+  
+  <img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/flow-chart.png?raw=true">
+
+</details>
+
+<details>
+  <summary>🖼️ 와이어프레임 (Wireframe)</summary>
+  
+  <img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/Figma1.png?raw=true">
+    <img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/Figma2.png?raw=true">
+    <img src="https://github.com/nosong2/portalio/blob/main/exec/gifs/Figma3.png?raw=true">
+
+</details>
+
+<details>
+  <summary> 📊 시퀀스 다이어그램 (Sequence Diagram)</summary>
+  <details>
+    <summary> 📝 회원가입 </summary>
+    <img src="https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21D102/-/raw/dev/etc/images/seq_signup.png?ref_type=heads">
+  </details>
+  <details>
+    <summary> 🔑 로그인 </summary>
+    <img src="https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21D102/-/raw/dev/etc/images/seq_login.png?ref_type=heads">
+  </details>
+  <details>
+    <summary> 💳 결제요청 </summary>
+    <img src="https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21D102/-/raw/dev/etc/images/seq_payment.png?ref_type=heads">
+  </details>
+  <details>
+    <summary> ✅ 결제승인 </summary>
+    <img src="https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21D102/-/raw/dev/etc/images/seq_approval.png?ref_type=heads">
+  </details>
+  <details>
+    <summary> 📜 결제내역 조회 & ❌ 결제 취소 </summary>
+    <img src="https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21D102/-/raw/dev/etc/images/seq_cancel.png?ref_type=heads">
+  </details>
+
+</details>
+
+
+## 🙆 협업 방식
+
+### **🙌 적극적인 의사소통**
+
+### Mattermost
+
+- 어려운 문제로 개발이 지연될 때 적극적으로 팀원들에게 도움을 요청하여 문제를 해결하고, 빠르게 개발을 진행할 수 있도록 했습니다. 문제 해결 과정을 투명하게 공유하며 팀의 협업을 원활하게 유지했습니다.
+
+### Discord
+
+- Discord의 원격 소통 및 화면 공유 기능을 활용해 팀원들과 긴밀히 협업 했습니다. 실시간 피드백을 통해 문제를 빠르게 해결하고, 원활한 의사소통으로 프로젝트의 효율성을 높였습니다.
+
+### Jira
+
+- Jira를 통해 프로젝트 이슈를 체계적으로 관리하며, 작업 진행 상황을 팀원들과 공유했습니다. 스프린트 계획을 수립하고, 우선순위를 설정해 프로젝트 목표를 명확히 해 협업의 효율을 높였습니다.
+
+### 코드 컨벤션
+
+- 구글 코딩 컨벤션을 참고한 우아한 테크코스(우테코) 컨벤션을 바탕으로 코드 컨벤션을 유지했습니다. 일관된 컨벤션으로 협업을 수월하게 진행할 수 있었습니다.
+
+> [우아한 테크코스 코드 컨벤션](https://github.com/woowacourse/woowacourse-docs/blob/main/styleguide/java/intellij-java-wooteco-style.xml)
+
+### Notion
+
+- 프로젝트 전반에 대한 내용과 공통 자료를 Notion을 통해 관리하며, 체계적인 정보 공유와 문서화를 실천했습니다.
+    - 명세서, 코드 컨벤션, 공유 자료, API 정의서, 환경변수 등을 문서화하여 모든 팀원이 쉽게 접근할 수 있도록 했습니다.
