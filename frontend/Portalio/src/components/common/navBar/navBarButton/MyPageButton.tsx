@@ -1,23 +1,20 @@
 import React from "react";
 import { CgProfile } from "react-icons/cg";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-import { sideNavActions } from "../../../../store/nav/SideNavSlice";
+import { useNavigate } from "react-router-dom";
 
 const MyPageButton: React.FC = () => {
-  const dispatch = useDispatch();
-
+  const navigate = useNavigate();
 
   const selectState = useSelector((state: RootState) => state.sideNav.tabState);
-
-  const onClick = () => {
-    dispatch(sideNavActions.selectMypage());
-  };
+  const memberUsername = useSelector((state: RootState) => state.auth.memberUsername);
+  
 
   return (
     <>
       <button
-        onClick={onClick}
+        onClick={() => navigate(`users/profile/${memberUsername}`)}
         className={`flex items-center my-8 text-conceptGrey hover:text-conceptSkyBlue font-bold ${
           selectState == "MyPage"
             ? "text-conceptSkyBlue border-l-4 border-conceptSkyBlue"
