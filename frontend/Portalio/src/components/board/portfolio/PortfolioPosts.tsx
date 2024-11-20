@@ -90,6 +90,7 @@ const PortfolioPosts: React.FC = () => {
     if (!userID || !ticket) {
       alert("로그인을 해주세요!");
       navigate("/users/login");
+      return;
     }
 
     if (ticket < 1) {

@@ -103,6 +103,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 response.setStatus(HttpStatus.OK.value());
 
             } else {
+                // 만료 되었을 때 삭제
+                Long jwtId = memberDTO.getRefreshTokenId();
+                refreshRepository.deleteById(jwtId);
+
                 // 유저 정보 추출
                 Long memberId = member.getMemberId();
                 String memberName = member.getMemberName();

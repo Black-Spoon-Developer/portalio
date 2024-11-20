@@ -3,6 +3,7 @@ package com.example.portalio.domain.member.dto;
 import com.example.portalio.common.jwt.entity.RefreshEntity;
 import com.example.portalio.domain.member.entity.Member;
 import com.example.portalio.domain.member.enums.Role;
+import com.example.portalio.domain.userdetail.entity.UserDetail;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,20 +26,24 @@ public class MemberDTO {
     private String memberUsername;
     private String memberNickname;
     private String refreshToken;
+    private Long refreshTokenId;
     private String memberPicture;
     private Role memberRole;
+    private UserDetail memberUserDetail;
     private int memberTicket;
     private boolean memberAuth;
 
     public static MemberDTO from(Member member) {
         RefreshEntity refreshToken = member.getRefreshToken();
+        UserDetail userDetail = member.getUserDetail();
 
-        if (refreshToken != null) {
+        if (refreshToken != null && userDetail != null) {
             MemberDTO memberDTO = MemberDTO.builder()
                     .memberId(member.getMemberId())
                     .memberName(member.getMemberName())
                     .memberNickname(member.getUserDetail().getUserNickname())
                     .refreshToken(member.getRefreshToken().getValue())
+                    .refreshTokenId(member.getRefreshToken().getRefreshTokenId())
                     .memberUsername(member.getMemberUsername())
                     .memberPicture(member.getMemberPicture())
                     .memberRole(member.getMemberRole())

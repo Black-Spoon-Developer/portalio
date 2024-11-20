@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // 로컬 스토리지 사용
+import sessionStorage from "redux-persist/lib/storage/session"; // 세션 스토리지 사용
 import authReducer from "./store/auth/AuthSlice"; // authSlice 가져오기
 import sideTabReducer from "./store/nav/SideNavSlice";
 import aiInterviewReducer from "./store/aiInterview/InterviewSlice";
@@ -8,7 +8,7 @@ import aiInterviewReducer from "./store/aiInterview/InterviewSlice";
 // persist 설정
 const persistConfig = {
   key: "root",
-  storage,
+  storage: sessionStorage,
   whitelist: ["auth", "sideNav", "aiInterview"], // auth, sideTab 슬라이스 추가
 };
 
