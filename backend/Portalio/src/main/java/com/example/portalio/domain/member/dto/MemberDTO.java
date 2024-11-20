@@ -25,6 +25,7 @@ public class MemberDTO {
     private String memberUsername;
     private String memberNickname;
     private String refreshToken;
+    private Long refreshTokenId;
     private String memberPicture;
     private Role memberRole;
     private int memberTicket;
@@ -39,6 +40,7 @@ public class MemberDTO {
                     .memberName(member.getMemberName())
                     .memberNickname(member.getUserDetail().getUserNickname())
                     .refreshToken(member.getRefreshToken().getValue())
+                    .refreshTokenId(member.getRefreshToken().getRefreshTokenId())
                     .memberUsername(member.getMemberUsername())
                     .memberPicture(member.getMemberPicture())
                     .memberRole(member.getMemberRole())
