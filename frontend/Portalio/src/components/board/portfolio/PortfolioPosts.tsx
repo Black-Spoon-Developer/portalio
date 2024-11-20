@@ -23,6 +23,11 @@ const PortfolioPosts: React.FC = () => {
   // 유저 ID 값 가져오기
   const userID = Number(useSelector((state: RootState) => state.auth.memberId));
 
+  // 유저 티켓 값 가져오기
+  const ticket = Number(
+    useSelector((state: RootState) => state.auth.memberTicket)
+  );
+
   // onMounted 할때 초기 게시글 불러오기
   useEffect(() => {
     loadMorePosts();
@@ -81,6 +86,17 @@ const PortfolioPosts: React.FC = () => {
 
   // 상세 조회 핸들러 함수
   const handlePostClick = async (postId: number, memberId: number) => {
+    // 멤버 ID가 없거나 즉, 로그인이 안됐거나 티켓이 없으면 리다이렉트하기
+    if (!userID || !ticket) {
+      alert("로그인을 해주세요!");
+      navigate("/users/login");
+    }
+
+    if (ticket < 1) {
+      alert("티켓이 부족합니다!");
+      return;
+    }
+
     // 내가 글 작성자라면 티켓 차감없이 상세 보기 가능
     if (memberId === userID) {
       navigate(`/portfolio/${postId}`);
@@ -133,7 +149,6 @@ const PortfolioPosts: React.FC = () => {
               className="border rounded-lg p-4 shadow cursor-pointer hover:bg-gray-100"
             >
               <div className="flex items-center mb-4">
-                {/* 이 부분 수정해야함 */}
                 <img
                   src={post.picture}
                   alt="프로필 이미지"
@@ -147,13 +162,12 @@ const PortfolioPosts: React.FC = () => {
                 </div>
               </div>
               <div className="h-80">
-
-              <img
-                src={post.portfolioThumbnailImg}
-                alt="no-image"
-                className="bg-gray-300 mb-2 w-full h-full object-cover"
+                <img
+                  src={post.portfolioThumbnailImg}
+                  alt="no-image"
+                  className="bg-gray-300 mb-2 w-full h-full object-cover"
                 />
-                </div>
+              </div>
               <p className="text-gray-700 mb-4 line-clamp-3">
                 {post.portfolioTitle}
                 {post.portfolioDescription}
