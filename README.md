@@ -20,18 +20,6 @@
 
 # 🔧 기술 스택
 <details>
-  <summary>Android</summary>
-
-  | Android | Version |
-  | --- | --- |
-  | Android Studio | 2024.1.1 |
-  | Android min SDK | 28 |
-  | Android target SDK | 34 |
-  | Android max SDK | 34 |
-
-</details>
-
-<details>
   <summary>Backend</summary>
 
   | Backend | Version |
