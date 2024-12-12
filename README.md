@@ -26,6 +26,7 @@
   | --- | --- |
   | OpenJDK | 17.0.12 |
   | Spring Boot | 3.3.3 |
+  | Spring Security | 3.2.2 |
   | Spring Data JPA | 3.3.3 |
   | Nginx | 1.18.0 |
   | MySQL | 8.4.1 |
