@@ -39,7 +39,8 @@
 
 <details>
   <summary>CI/CD</summary>
-  |** CI/CD **|** Version **|
+  
+  | CI/CD | Version |
   | --- | --- |
   | Jenkins | 2.484 |
   | Docker | 27.3.1 |
