@@ -39,12 +39,12 @@
 
 <details>
   <summary>CI/CD</summary>
-  | CI/CD | Version |
+  |** CI/CD **|** Version **|
   | --- | --- |
   | Jenkins | 2.484 |
   | Docker | 27.3.1 |
   | Docker Compose | 2.29.7 |
-  | ngrok | 3.18.4 |
+  | Nginx | 3.18.4 |
 
 </details>
 
